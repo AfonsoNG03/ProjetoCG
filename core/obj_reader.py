@@ -21,6 +21,6 @@ def my_obj_reader(filename: str) -> List:
     return position_list
 
 if __name__ == '__main__':
-    f_in = "toalha.obj"
+    f_in = "bikini.obj"
     result = my_obj_reader(f_in)
     print(result)

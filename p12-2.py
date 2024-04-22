@@ -9,6 +9,7 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
+from geometry.oceano import OceanoGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from light.ambient import AmbientLight
@@ -91,8 +92,9 @@ class Example(Base):
         self.distort_material.locate_uniforms()
 
         # Textura do oceano
-        ocean_geomatry = RectangleGeometry(width=100, height=100)
-        ocean = Mesh(ocean_geomatry, self.distort_material)
+        ocean_geometry = RectangleGeometry(width=100, height=100)
+        #ocean_geometry = OceanoGeometry(width=50, height=50)
+        ocean = Mesh(ocean_geometry, self.distort_material)
         ocean.rotate_x(-math.pi/2)
         ocean.set_position([0, 0, -55])
         self.scene.add(ocean)
@@ -107,7 +109,7 @@ class Example(Base):
         sand_geometry = RectangleGeometry(width=100, height=100)
         sand_material = TextureMaterial(
             texture=Texture(file_name="images/sand.jpg"),
-            property_dict={"repeatUV": [50, 50]}
+            property_dict={"repeatUV": [20, 20]}
         )
         sand = Mesh(sand_geometry, sand_material)
         sand.rotate_x(-math.pi/2)

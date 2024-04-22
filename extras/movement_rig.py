@@ -8,7 +8,7 @@ class MovementRig(Object3D):
     Add moving forwards and backwards, left and right, up and down (all local translations),
     as well as turning left and right, and looking up and down
     """
-    def __init__(self, units_per_second=1, degrees_per_second=60):
+    def __init__(self, units_per_second=5, degrees_per_second=60):
         # Initialize base Object3D.
         # Controls movement and turn left/right.
         super().__init__()
@@ -26,8 +26,8 @@ class MovementRig(Object3D):
         self.KEY_MOVE_BACKWARDS = "s"
         self.KEY_MOVE_LEFT = "a"
         self.KEY_MOVE_RIGHT = "d"
-        self.KEY_MOVE_UP = "r"
-        self.KEY_MOVE_DOWN = "f"
+        self.KEY_MOVE_UP = "space"
+        self.KEY_MOVE_DOWN = "x"
         self.KEY_TURN_LEFT = "q"
         self.KEY_TURN_RIGHT = "e"
         self.KEY_LOOK_UP = "t"
