@@ -8,16 +8,12 @@ from core_ext.camera import Camera
 from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
-from geometry.cadeira import CadeiraGeometry
-from geometry.oculos import OculosGeometry
-from geometry.bikini import BikiniGeometry
-from geometry.toalha import ToalhaGeometry
 from extras.movement_rig import MovementRig
-from extras.movement_rig2 import MovementRig2
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from light.ambient import AmbientLight
 from light.directional import DirectionalLight
+from material.material import Material
 from material.phong import PhongMaterial
 from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
@@ -34,86 +30,100 @@ class Example(Base):
         print("Initializing program...")
         print("Para mexer os oculos usar as teclas wasd e q r f t g")
         print("Para mexer a camera usar as setas (up left right down) e as teclas p l n m h b")
-        self.renderer = Renderer()
-        self.scene = Scene()
-        self.camera = Camera(aspect_ratio=800/600)
-        #self.camera.set_position([0.2, 0.5, -3])
-        #change camera global position to 0.65, 0.5, -2.7
-        self.camera.set_position([0.65, 0.5, 2])
-        ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
-        self.scene.add(ambient_light)
-        self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
-        self.scene.add(self.directional_light)
-        phong_material = PhongMaterial(
-            number_of_light_sources=2,
-            texture = Texture(file_name="images/grass.jpg")
-        )
-        geometry = OculosGeometry()
-        geometryCadeira = CadeiraGeometry()
-        phong_material2 = PhongMaterial(
-            number_of_light_sources=2,
-            texture = Texture(file_name="images/whool.jpg")
-        )
-        grid_textureCadeira = Texture(file_name="images/whool.jpg")
-        materialCadeira = TextureMaterial(texture=grid_textureCadeira)
-        self.meshCadeira = Mesh(geometry=geometryCadeira, material=phong_material2)
-        self.meshCadeira.set_position([0,0.1,0.5])
-        #material = SurfaceMaterial(property_dict={"useVertexColors": True})
-        grid_texture = Texture(file_name="images/crate.jpg")
-        material = TextureMaterial(texture=grid_texture)
-        self.mesh = Mesh(geometry=geometry,
-            material=phong_material)
 
-        geometryBikini = BikiniGeometry()
-        grid_textureBikini = Texture(file_name="images/whool.jpg")
-        materialBikini = TextureMaterial(texture=grid_textureBikini)
-        self.meshBikini = Mesh(geometry=geometryBikini, material=phong_material2)
-        self.meshBikini.set_position([1.5,0.1,0.5])
+        # Shaders para distorção
+        vertex_shader_code = """
+            uniform mat4 projectionMatrix;
+            uniform mat4 viewMatrix;
+            uniform mat4 modelMatrix;
+            in vec3 vertexPosition;
+            in vec2 vertexUV;
+            out vec2 UV;
 
-        geometryToalha = ToalhaGeometry()
-        grid_textureToalha = Texture(file_name="images/whool.jpg")
-        materialToalha = TextureMaterial(texture=grid_textureToalha)
-        self.meshToalha = Mesh(geometry=geometryToalha, material=phong_material2)
-        self.meshToalha.set_position([1,0.1,0.5])
-        
-        
-        self.rig2 = MovementRig2()
-        self.rig2.add(self.camera)
-        self.scene.add(self.rig2)
-        self.rig = MovementRig()
-        self.scene.add(self.meshCadeira)
-        self.scene.add(self.meshBikini)
-        self.scene.add(self.meshToalha)
-        self.rig.add(self.mesh)
-        self.rig.set_position([0, 0.5, -0.5])
-        self.scene.add(self.rig)
+            void main()
+            {
+                gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
+                UV = vertexUV;
+            }
+        """
+        fragment_shader_code = """
+            uniform sampler2D rgbNoise;
+            uniform sampler2D image;
+            in vec2 UV;
+            uniform float time;
+            uniform vec2 repeatUV;
+            out vec4 fragColor;
+
+            void main()
+            {
+                vec2 uvShift = UV + vec2(-0.033, 0.07) * time;
+                vec4 noiseValues = texture2D(rgbNoise, uvShift);
+                vec2 uvNoise = UV * repeatUV + 0.01 * noiseValues.rg;
+                fragColor = texture2D(image, uvNoise);
+            }
+        """
+        #
+        # Texturas
+        rgb_noise_texture = Texture("images/rgb-noise.jpg")
+        water_texture = Texture("images/water.jpg")
+        self.distort_material = Material(vertex_shader_code, fragment_shader_code)
+        self.distort_material.add_uniform("sampler2D", "rgbNoise", [rgb_noise_texture.texture_ref, 1])
+        self.distort_material.add_uniform("sampler2D", "image", [water_texture.texture_ref, 2])
+        self.distort_material.add_uniform("float", "time", 0.0)
+        self.distort_material.add_uniform("vec2", "repeatUV", [10, 10])
+        self.distort_material.locate_uniforms()
+
+        # Textura do oceano
+        ocean_geomatry = RectangleGeometry(width=100, height=100)
+        ocean = Mesh(ocean_geomatry, self.distort_material)
+        ocean.rotate_x(-math.pi/2)
+        ocean.set_position([0, 0, -55])
+        self.scene.add(ocean)
+    
+        # Textura do céu
         sky_geometry = SphereGeometry(radius=50)
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
         sky = Mesh(sky_geometry, sky_material)
         self.scene.add(sky)
-        grass_geometry = RectangleGeometry(width=100, height=100)
-        grass_material = TextureMaterial(
+
+        # Textura da areia
+        sand_geometry = RectangleGeometry(width=100, height=100)
+        sand_material = TextureMaterial(
             texture=Texture(file_name="images/sand.jpg"),
             property_dict={"repeatUV": [50, 50]}
         )
-        grass = Mesh(grass_geometry, grass_material)
-        grass.rotate_x(-math.pi/2)
-        grass.set_position([0, 0, 45])
-        self.scene.add(grass)
+        sand = Mesh(sand_geometry, sand_material)
+        sand.rotate_x(-math.pi/2)
+        sand.set_position([0, 0, 45])
+        self.scene.add(sand)
+        #
 
-        ocean_geomatry = RectangleGeometry(width=100, height=100)
-        ocean_material = TextureMaterial(
-            texture=Texture(file_name="images/water.jpg"),
-            property_dict={"repeatUV": [50, 50]}
-        )
-        ocean = Mesh(ocean_geomatry, ocean_material)
-        ocean.rotate_x(-math.pi/2)
-        ocean.set_position([0, 0, -55])
-        self.scene.add(ocean)
+        # Criação da cena
+        self.renderer = Renderer()
+        self.scene = Scene()
+        self.rig = MovementRig()
+        #
+
+        # Criação da camera
+        self.camera = Camera(aspect_ratio=800/600)
+        self.camera.set_position([0.65, 0.5, 2])
+        self.rig.add(self.camera)
+        self.scene.add(self.rig)
+        #
+
+        # Adiciona luzes
+        # Luz ambiente
+        ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
+        self.scene.add(ambient_light)
+
+        # Luz direcional
+        self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
+        self.scene.add(self.directional_light)
+        
 
     def update(self):
+        self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
-        self.rig2.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
 
 
