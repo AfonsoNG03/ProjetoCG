@@ -63,6 +63,23 @@ class Example(Base):
             }
         """
         #
+
+        # Criação da cena
+        self.renderer = Renderer()
+        self.scene = Scene()
+        self.rig = MovementRig()
+        #
+
+        # Adiciona luzes
+        # Luz ambiente
+        ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
+        self.scene.add(ambient_light)
+
+        # Luz direcional
+        self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
+        self.scene.add(self.directional_light)
+        #
+
         # Texturas
         rgb_noise_texture = Texture("images/rgb-noise.jpg")
         water_texture = Texture("images/water.jpg")
@@ -98,10 +115,16 @@ class Example(Base):
         self.scene.add(sand)
         #
 
-        # Criação da cena
-        self.renderer = Renderer()
-        self.scene = Scene()
-        self.rig = MovementRig()
+        # Testes
+        phong_material = PhongMaterial(
+            property_dict={"baseColor": [1, 0, 1]},
+            number_of_light_sources=2
+        )
+        sphere_geometry = SphereGeometry()
+        sphere_right = Mesh(sphere_geometry, phong_material)
+        sphere_right.set_position([2.5, 0, 0])
+        self.scene.add(sphere_right)
+
         #
 
         # Criação da camera
@@ -110,17 +133,7 @@ class Example(Base):
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
-
-        # Adiciona luzes
-        # Luz ambiente
-        ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
-        self.scene.add(ambient_light)
-
-        # Luz direcional
-        self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
-        self.scene.add(self.directional_light)
         
-
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
