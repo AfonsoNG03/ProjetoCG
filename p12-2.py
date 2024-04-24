@@ -19,8 +19,11 @@ from material.phong import PhongMaterial
 from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
 from material.texture import TextureMaterial
-
-
+from geometry.toalha import ToalhaGeometry
+from geometry.bikini import BikiniGeometry
+from geometry.oculos import OculosGeometry
+from geometry.cadeira import CadeiraGeometry
+    
 class Example(Base):
     """
     Render the axes and the rotated xy-grid.
@@ -64,6 +67,35 @@ class Example(Base):
             }
         """
         #
+
+        #Objetos
+        Toalha_geometry = ToalhaGeometry()
+        Toalha_material = TextureMaterial(texture=Texture(file_name="images/rgb-noise.jpg"), property_dict={"repeatUV": [1, 1]})
+        self.Toalha = Mesh(Toalha_geometry, Toalha_material)
+        self.rigToalha = MovementRig()
+        self.rigToalha.add(self.Toalha)
+        self.rigToalha.set_position([6, 0, 0])
+
+        Cadeira_geometry = CadeiraGeometry()
+        Cadeira_material = TextureMaterial(texture=Texture(file_name="images/crate.jpg"), property_dict={"repeatUV": [50, 50]})
+        self.Cadeira = Mesh(Cadeira_geometry, Cadeira_material)
+        self.rigCadeira = MovementRig()
+        self.rigCadeira.add(self.Cadeira)
+        self.rigCadeira.set_position([5, 0, 0])
+
+        Oculos_geometry = OculosGeometry()
+        Oculos_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"), property_dict={"repeatUV": [50, 50]})
+        self.Oculos = Mesh(Oculos_geometry, Oculos_material)
+        self.rigOculos = MovementRig()
+        self.rigOculos.add(self.Oculos)
+        self.rigOculos.set_position([1, 0.5, 0])
+
+        Bikini_geometry = BikiniGeometry()
+        Bikini_material = TextureMaterial(texture=Texture(file_name="images/grid.jpg"), property_dict={"repeatUV": [50, 50]})
+        self.Bikini = Mesh(Bikini_geometry, Bikini_material)
+        self.rigBikini = MovementRig()
+        self.rigBikini.add(self.Bikini)
+        self.rigBikini.set_position([4, 0, 0])
 
         # Criação da cena
         self.renderer = Renderer()
@@ -133,6 +165,10 @@ class Example(Base):
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0.65, 0.5, 2])
         self.rig.add(self.camera)
+        self.scene.add(self.rigToalha)
+        self.scene.add(self.rigCadeira)
+        self.scene.add(self.rigOculos)
+        self.scene.add(self.rigBikini)
         self.scene.add(self.rig)
         #
         
@@ -140,7 +176,58 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
+        self.rig.update(self.input, self.delta_time)
+        if self.input.is_key_pressed("left"): 
+            self.Toalha.translate(self.delta_time * -5, 0, 0)
+        if self.input.is_key_pressed("right"): 
+            self.Toalha.translate(self.delta_time * 5, 0, 0)
+        if self.input.is_key_pressed("up"): 
+            self.Toalha.translate(0, 0, self.delta_time * 5)
+        if self.input.is_key_pressed("down"): 
+            self.Toalha.translate(0, 0, self.delta_time * -5)
+        if self.input.is_key_pressed("h"): 
+            self.Toalha.translate(0, self.delta_time * 5, 0)
+        if self.input.is_key_pressed("m"): 
+            self.Toalha.translate(0, self.delta_time * -5, 0)
 
+        if self.input.is_key_pressed("j"): 
+            self.Cadeira.translate(self.delta_time * -5, 0, 0)
+        if self.input.is_key_pressed("l"): 
+            self.Cadeira.translate(self.delta_time * 5, 0, 0)
+        if self.input.is_key_pressed("i"): 
+            self.Cadeira.translate(0, self.delta_time * 5, 0)
+        if self.input.is_key_pressed("k"): 
+            self.Cadeira.translate(0, self.delta_time * -5, 0)
+        if self.input.is_key_pressed("o"): 
+            self.Cadeira.translate(0, 0, self.delta_time * 5)
+        if self.input.is_key_pressed("p"): 
+            self.Cadeira.translate(0, 0, self.delta_time * -5)
+
+        if self.input.is_key_pressed("1"): 
+            self.Oculos.translate(self.delta_time * -5, 0, 0)
+        if self.input.is_key_pressed("2"): 
+            self.Oculos.translate(self.delta_time * 5, 0, 0)
+        if self.input.is_key_pressed("3"): 
+            self.Oculos.translate(0, self.delta_time * 5, 0)
+        if self.input.is_key_pressed("4"): 
+            self.Oculos.translate(0, self.delta_time * -5, 0)
+        if self.input.is_key_pressed("5"): 
+            self.Oculos.translate(0, 0, self.delta_time * 5)
+        if self.input.is_key_pressed("6"): 
+            self.Oculos.translate(0, 0, self.delta_time * -5)
+
+        if self.input.is_key_pressed("7"): 
+            self.Bikini.translate(self.delta_time * -5, 0, 0)
+        if self.input.is_key_pressed("8"): 
+            self.Bikini.translate(self.delta_time * 5, 0, 0)
+        if self.input.is_key_pressed("9"): 
+            self.Bikini.translate(0, self.delta_time * 5, 0)
+        if self.input.is_key_pressed("0"): 
+            self.Bikini.translate(0, self.delta_time * -5, 0)
+        if self.input.is_key_pressed("z"): 
+            self.Bikini.translate(0, 0, self.delta_time * 5)
+        if self.input.is_key_pressed("x"): 
+            self.Bikini.translate(0, 0, self.delta_time * -5)
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
