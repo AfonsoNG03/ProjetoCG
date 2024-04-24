@@ -23,6 +23,7 @@ from geometry.toalha import ToalhaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.oculos import OculosGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.modelo import ModeloGeometry
     
 class Example(Base):
     """
@@ -97,6 +98,13 @@ class Example(Base):
         self.rigBikini.add(self.Bikini)
         self.rigBikini.set_position([4, 0, 0])
 
+        Modelo_geometry = ModeloGeometry()
+        #Modelo_material = TextureMaterial(texture=Texture(file_name="images/grid.jpg"), property_dict={"repeatUV": [50, 50]})
+        self.Modelo = Mesh(Modelo_geometry)
+        self.rigModelo = MovementRig()
+        self.rigModelo.add(self.Modelo)
+        self.rigModelo.set_position([4, 0, 0])
+
         # Criação da cena
         self.renderer = Renderer()
         self.scene = Scene()
@@ -169,6 +177,7 @@ class Example(Base):
         self.scene.add(self.rigCadeira)
         self.scene.add(self.rigOculos)
         self.scene.add(self.rigBikini)
+        self.scene.add(self.rigModelo)
         self.scene.add(self.rig)
         #
         
