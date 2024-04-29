@@ -9,9 +9,14 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
-from geometry.oceano import OceanoGeometry
+from geometry.arvore import ArvoreGeometry
+from geometry.bikini import BikiniGeometry
+from geometry.cadeira import CadeiraGeometry
+from geometry.modelo import ModeloGeometry
+from geometry.oculos import OculosGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
+from geometry.toalha import ToalhaGeometry
 from light.ambient import AmbientLight
 from light.directional import DirectionalLight
 from material.material import Material
@@ -127,6 +132,56 @@ class Example(Base):
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)
 
+
+        modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
+        modelo_geometry = ModeloGeometry()
+        modelo = Mesh(modelo_geometry, modelo_material)
+        modelo.set_position([0, 0, 0])
+        self.scene.add(modelo)
+
+        arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
+        arvore_geometry = ArvoreGeometry()
+        arvore = Mesh(arvore_geometry, arvore_material)
+        arvore.scale(0.5)
+        arvore.set_position([0, 0, 2.5])
+        self.scene.add(arvore)
+
+        for i in range(30):
+            arvore = Mesh(arvore_geometry, arvore_material)
+            arvore.scale(0.5)
+            arvore.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
+            self.scene.add(arvore)
+
+        # Criação do bikini
+        bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
+        bikini_geometry = BikiniGeometry()
+        bikini = Mesh(bikini_geometry, bikini_material)
+        bikini.set_position([-1, 0, 0])
+        self.scene.add(bikini)
+
+        # Criação dos oculos
+        oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
+        oculos_geometry = OculosGeometry()
+        oculos = Mesh(oculos_geometry, oculos_material)
+        oculos.set_position([0, 0, 1])
+        self.scene.add(oculos)
+
+        # Criação da cadeira
+        #cadeira_material = TextureMaterial(texture=Texture("images/crate.jpg"))
+        #cadeira_geometry = CadeiraGeometry()
+        #cadeira = Mesh(cadeira_geometry, cadeira_material)
+        #cadeira.set_position([0, 0, 0])
+        #self.scene.add(cadeira)
+
+        # Criação das toalhas
+        texturas = [ "images/whool.jpg", "images/rgb-noise.jpg", "images/brick-wall.jpg", "images/sonic-spritesheet.jpg"]
+        toalha_geometry = ToalhaGeometry()
+        for i in range(30):
+            toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
+            toalha = Mesh(toalha_geometry, toalha_material)
+            toalha.scale(2.5)
+            toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
+            self.scene.add(toalha)
         #
 
         # Criação da camera
