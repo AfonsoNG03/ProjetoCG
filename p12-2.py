@@ -70,6 +70,10 @@ class Example(Base):
         """
         #
 
+        # Define grid properties
+        self.grid_size = 10  # Size of each grid cell
+        self.grid = {}  # Dictionary to store objects in each grid cell
+
         # Criação da cena
         self.renderer = Renderer()
         self.scene = Scene()
@@ -78,8 +82,8 @@ class Example(Base):
 
         # Adiciona luzes
         # Luz ambiente
-        ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
-        self.scene.add(ambient_light)
+        self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
+        self.scene.add(self.ambient_light)
 
         # Luz direcional
         self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
@@ -99,10 +103,10 @@ class Example(Base):
         # Textura do oceano
         ocean_geometry = RectangleGeometry(width=100, height=100)
         #ocean_geometry = OceanoGeometry(width=50, height=50)
-        ocean = Mesh(ocean_geometry, self.distort_material)
-        ocean.rotate_x(-math.pi/2)
-        ocean.set_position([0, 0, -55])
-        self.scene.add(ocean)
+        self.ocean = Mesh(ocean_geometry, self.distort_material)
+        self.ocean.rotate_x(-math.pi/2)
+        self.ocean.set_position([0, 0, -55])
+        self.scene.add(self.ocean)
     
         # Textura do céu
         sky_geometry = SphereGeometry(radius=50)
@@ -116,10 +120,10 @@ class Example(Base):
             texture=Texture(file_name="images/sand.jpg"),
             property_dict={"repeatUV": [20, 20]}
         )
-        sand = Mesh(sand_geometry, sand_material)
-        sand.rotate_x(-math.pi/2)
-        sand.set_position([0, 0, 45])
-        self.scene.add(sand)
+        self.sand = Mesh(sand_geometry, sand_material)
+        self.sand.rotate_x(-math.pi/2)
+        self.sand.set_position([0, 0, 45])
+        self.scene.add(self.sand)
         #
 
         # Testes
@@ -138,7 +142,7 @@ class Example(Base):
         modelo = Mesh(modelo_geometry, modelo_material)
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
-
+        
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
         arvore = Mesh(arvore_geometry, arvore_material)
@@ -190,11 +194,66 @@ class Example(Base):
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
+
+    def add_to_grid(self, obj):
+        """
+        Add an object to the grid based on its position.
+        """
+        position = obj.global_position
+        grid_x = int(position[0] / self.grid_size)
+        grid_y = int(position[1] / self.grid_size)
+        grid_z = int(position[2] / self.grid_size)
+        key = (grid_x, grid_y, grid_z)
+        if key not in self.grid:
+            self.grid[key] = []
+        self.grid[key].append(obj)
+
+    def update_grid(self):
+        """
+        Update the grid by reassigning objects to appropriate grid cells.
+        """
+        self.grid = {}
+        for obj in self.scene.children_list:
+            if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light:
+                continue
+            self.add_to_grid(obj)
+
+    def get_nearby_objects(self, obj):
+        """
+        Get objects in the same or adjacent grid cells as the given object.
+        """
+        position = obj.global_position
+        grid_x = int(position[0] / self.grid_size)
+        grid_y = int(position[1] / self.grid_size)
+        grid_z = int(position[2] / self.grid_size)
+        nearby_objects = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                for dz in [-1, 0, 1]:
+                    key = (grid_x + dx, grid_y + dy, grid_z + dz)
+                    if key in self.grid:
+                        nearby_objects.extend(self.grid[key])
+        return nearby_objects
+
+    def check_collisions(self):
+        """
+        Check for collisions between objects in the scene.
+        """
+        self.update_grid()
+        nearby_objects = self.get_nearby_objects(self.camera)
+        for other_obj in nearby_objects:
+            if self.camera != other_obj and self.camera.intersects(other_obj):
+                # Cant go into the same position as the object
+                print("Collision detected!")
+                break
+                pass
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
+        # Check for collisions
+        self.check_collisions()
 
 
 # Instantiate this class and run the program

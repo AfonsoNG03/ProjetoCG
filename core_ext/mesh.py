@@ -1,4 +1,5 @@
 import OpenGL.GL as GL
+import numpy as np
 
 from core_ext.object3d import Object3D
 
@@ -38,3 +39,19 @@ class Mesh(Object3D):
     @property
     def visible(self):
         return self._visible
+    
+    def intersects(self, other):
+        """
+        Checks if this mesh intersects with another object based on their bounding boxes.
+        """
+        min_point_self, max_point_self = self.bounding_box
+        min_point_other, max_point_other = other.bounding_box
+
+        # Check for intersection along each axis
+        for i in range(3):
+            if max_point_self[i] < min_point_other[i] or min_point_self[i] > max_point_other[i]:
+                return False  # No intersection
+
+        return True  # Intersection detected
+    
+   

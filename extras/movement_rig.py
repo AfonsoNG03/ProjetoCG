@@ -8,7 +8,7 @@ class MovementRig(Object3D):
     Add moving forwards and backwards, left and right, up and down (all local translations),
     as well as turning left and right, and looking up and down
     """
-    def __init__(self, units_per_second=5, degrees_per_second=60):
+    def __init__(self, units_per_second=3, degrees_per_second=60):
         # Initialize base Object3D.
         # Controls movement and turn left/right.
         super().__init__()
@@ -26,12 +26,18 @@ class MovementRig(Object3D):
         self.KEY_MOVE_BACKWARDS = "s"
         self.KEY_MOVE_LEFT = "a"
         self.KEY_MOVE_RIGHT = "d"
-        self.KEY_MOVE_UP = "space"
-        self.KEY_MOVE_DOWN = "x"
+        self.KEY_JUMP = "space"  # New key for jumping
+        self.KEY_MOVE_UP = "z"
+        self.KEY_MOVE_DOWN = "left ctrl"
         self.KEY_TURN_LEFT = "q"
         self.KEY_TURN_RIGHT = "e"
         self.KEY_LOOK_UP = "t"
         self.KEY_LOOK_DOWN = "g"
+        self.KEY_SPRINT = "left shift"  # New key for sprinting
+
+        # Flag to track if the player is currently jumping
+        self.is_jumping = False
+        self.jump_speed = 10  # Adjust as needed
 
     # Adding and removing objects applies to look attachment.
     # Override functions from the Object3D class.
@@ -44,6 +50,28 @@ class MovementRig(Object3D):
     def update(self, input_object, delta_time):
         move_amount = self._units_per_second * delta_time
         rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time
+        
+        # Sprint mechanic
+        if input_object.is_key_pressed(self.KEY_SPRINT):
+            move_amount *= 2  # Double the movement speed while sprinting
+
+        # Jump mechanic
+        if input_object.is_key_pressed(self.KEY_JUMP) and not self.is_jumping:
+            self.is_jumping = True
+
+        if self.is_jumping:
+            # Move the object vertically (upwards) according to jump speed
+            self.translate(0, self.jump_speed * delta_time, 0)
+            # Adjust jump speed to simulate gravity
+            self.jump_speed -= 15 * delta_time  # Simulate gravity (adjust as needed)
+
+            # Check if the object has reached the ground level
+            if self.global_position[1] <= 0:
+                self.global_position[1] = 0  # Ensure object rests on the ground
+                self.is_jumping = False
+                self.jump_speed = 10  # Reset jump speed
+
+
         if input_object.is_key_pressed(self.KEY_MOVE_FORWARDS):
             self.translate(0, 0, -move_amount)
         if input_object.is_key_pressed(self.KEY_MOVE_BACKWARDS):

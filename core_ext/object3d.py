@@ -9,10 +9,20 @@ class Object3D:
         self._matrix = Matrix.make_identity()
         self._parent = None
         self._children_list = []
+         # Initialize bounding box properties
+        self._min_bounds = np.array([-1, -1, -1])  # Minimum bounds of the bounding box
+        self._max_bounds = np.array([1, 1, 1])     # Maximum bounds of the bounding box
 
     @property
     def children_list(self):
         return self._children_list
+    
+    @property
+    def bounding_box(self):
+        """Returns the bounding box of the object."""
+        min_point = self.global_matrix @ np.array([self._min_bounds[0], self._min_bounds[1], self._min_bounds[2], 1])
+        max_point = self.global_matrix @ np.array([self._max_bounds[0], self._max_bounds[1], self._max_bounds[2], 1])
+        return min_point[:3], max_point[:3]
 
     @children_list.setter
     def children_list(self, children_list):
@@ -152,4 +162,18 @@ class Object3D:
             position[2] + direction[2]
         ]
         self.look_at(target_position)
+
+    def intersects(self, other):
+        """
+        Checks if this object intersects with another object based on their bounding boxes.
+        """
+        min_point_self, max_point_self = self.bounding_box
+        min_point_other, max_point_other = other.bounding_box
+
+        # Check for intersection along each axis
+        for i in range(3):
+            if max_point_self[i] < min_point_other[i] or min_point_self[i] > max_point_other[i]:
+                return False  # No intersection
+
+        return True  # Intersection detected
 
