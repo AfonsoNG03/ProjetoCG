@@ -16,6 +16,7 @@ from geometry.cadeira import CadeiraGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
@@ -212,9 +213,16 @@ class Example(Base):
         animal.set_position([-10, -1, -25])
         self.scene.add(animal)
 
+        # Criação rochas
+        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
+        rocks_geometry = rocksGeometry()
+        rocks = Mesh(rocks_geometry, rocks_material)
+        rocks.set_position([-10, -3, 20])
+        self.scene.add(rocks)
+
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0.65, 0.5, 2])
+        self.camera.set_position([0.65, 3, -2])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
