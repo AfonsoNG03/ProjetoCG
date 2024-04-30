@@ -9,20 +9,19 @@ class Object3D:
         self._matrix = Matrix.make_identity()
         self._parent = None
         self._children_list = []
-         # Initialize bounding box properties
-        self._min_bounds = np.array([-1, -1, -1])  # Minimum bounds of the bounding box
-        self._max_bounds = np.array([1, 1, 1])     # Maximum bounds of the bounding box
+         # Initialize bounding sphere properties
+        self._center = np.array([0, 0, 0])  # Center of the bounding sphere
+        self._radius = 1.0                   # Radius of the bounding sphere
 
     @property
     def children_list(self):
         return self._children_list
     
     @property
-    def bounding_box(self):
-        """Returns the bounding box of the object."""
-        min_point = self.global_matrix @ np.array([self._min_bounds[0], self._min_bounds[1], self._min_bounds[2], 1])
-        max_point = self.global_matrix @ np.array([self._max_bounds[0], self._max_bounds[1], self._max_bounds[2], 1])
-        return min_point[:3], max_point[:3]
+    def bounding_sphere(self):
+        """Returns the center and radius of the bounding sphere."""
+        center = self.global_matrix @ np.array([self._center[0], self._center[1], self._center[2], 1])
+        return center[:3], self._radius
 
     @children_list.setter
     def children_list(self, children_list):
@@ -165,15 +164,16 @@ class Object3D:
 
     def intersects(self, other):
         """
-        Checks if this object intersects with another object based on their bounding boxes.
+        Checks if this object intersects with another object based on their bounding spheres.
         """
-        min_point_self, max_point_self = self.bounding_box
-        min_point_other, max_point_other = other.bounding_box
-
-        # Check for intersection along each axis
-        for i in range(3):
-            if max_point_self[i] < min_point_other[i] or min_point_self[i] > max_point_other[i]:
-                return False  # No intersection
-
-        return True  # Intersection detected
+        center_self, radius_self = self.bounding_sphere
+        center_other, radius_other = other.bounding_sphere
+        
+        distance_squared = np.sum((center_self - center_other) ** 2)
+        sum_of_radii_squared = (radius_self + radius_other) ** 2
+        
+        if distance_squared <= sum_of_radii_squared:
+            return True  # Intersection detected
+        else:
+            return False  # No intersection
 

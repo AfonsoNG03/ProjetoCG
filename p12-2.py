@@ -71,7 +71,7 @@ class Example(Base):
         #
 
         # Define grid properties
-        self.grid_size = 10  # Size of each grid cell
+        self.grid_size = 2  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
 
         # Criação da cena
@@ -246,12 +246,12 @@ class Example(Base):
                 # Cant go into the same position as the object
                 print("Collision detected!")
                 break
-                pass
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
+        print(self.camera.global_position)
         # Check for collisions
         self.check_collisions()
 
