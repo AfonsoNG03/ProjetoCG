@@ -178,7 +178,7 @@ class Example(Base):
         #self.scene.add(cadeira)
 
         # Criação das toalhas
-        texturas = [ "images/whool.jpg", "images/rgb-noise.jpg", "images/brick-wall.jpg", "images/sonic-spritesheet.jpg"]
+        texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         for i in range(30):
             toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
