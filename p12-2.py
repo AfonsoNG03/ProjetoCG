@@ -9,11 +9,14 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
+from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.yatch import YatchGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
@@ -187,6 +190,27 @@ class Example(Base):
             toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
             self.scene.add(toalha)
         #
+        
+        # Criação do jet ski
+        jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
+        jetski_geometry = JetskiGeometry()
+        jetski = Mesh(jetski_geometry, jetski_material)
+        jetski.set_position([0, 0, -10])
+        self.scene.add(jetski)
+
+        # Criação yate
+        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
+        yatch_geometry = YatchGeometry()
+        yatch = Mesh(yatch_geometry, yatch_material)
+        yatch.set_position([10, -1, -13])
+        self.scene.add(yatch)
+
+        # Criação animal
+        animal_material = TextureMaterial(texture=Texture("images/k2.png"))
+        animal_geometry = animalGeometry()
+        animal = Mesh(animal_geometry, animal_material)
+        animal.set_position([-10, -1, -25])
+        self.scene.add(animal)
 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
