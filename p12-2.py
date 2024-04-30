@@ -10,12 +10,14 @@ from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
 from geometry.animal import animalGeometry
+from geometry.bola import bolaGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
 from geometry.rectangle import RectangleGeometry
@@ -203,7 +205,7 @@ class Example(Base):
         yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
         yatch_geometry = YatchGeometry()
         yatch = Mesh(yatch_geometry, yatch_material)
-        yatch.set_position([10, -1, -13])
+        yatch.set_position([10, 0, -13])
         self.scene.add(yatch)
 
         # Criação animal
@@ -219,6 +221,20 @@ class Example(Base):
         rocks = Mesh(rocks_geometry, rocks_material)
         rocks.set_position([-10, -3, 20])
         self.scene.add(rocks)
+
+        # Criação bola
+        bola_material = TextureMaterial(texture=Texture("images/volleyball.png"))
+        bola_geometry = bolaGeometry()
+        bola = Mesh(bola_geometry, bola_material)
+        bola.set_position([-5, 0.15, -3.5])
+        self.scene.add(bola)
+
+        #Easter Egg
+        pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
+        pokeball_geometry = pokeballGeometry()
+        pokeball = Mesh(pokeball_geometry, pokeball_material)
+        pokeball.set_position([0, -0.001, -12])
+        self.scene.add(pokeball)
 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
