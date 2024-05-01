@@ -9,19 +9,22 @@ class Object3D:
         self._matrix = Matrix.make_identity()
         self._parent = None
         self._children_list = []
-         # Initialize bounding sphere properties
-        self._center = np.array([0, 0, 0])  # Center of the bounding sphere
-        self._radius = 1.0                   # Radius of the bounding sphere
+        # Initialize bounding cylinder properties
+        self._center = np.array([0, 0, 0])  # Center of the bounding cylinder
+        self._height = 1.0                   # Height of the bounding cylinder
+        self._radius = 1.0                   # Radius of the bounding cylinder
+
 
     @property
     def children_list(self):
         return self._children_list
     
     @property
-    def bounding_sphere(self):
-        """Returns the center and radius of the bounding sphere."""
+    def bounding_cylinder(self):
+        """Returns the center, height, and radius of the bounding cylinder."""
         center = self.global_matrix @ np.array([self._center[0], self._center[1], self._center[2], 1])
-        return center[:3], self._radius
+        return center[:3], self._height, self._radius
+
 
     @children_list.setter
     def children_list(self, children_list):
@@ -164,16 +167,26 @@ class Object3D:
 
     def intersects(self, other):
         """
-        Checks if this object intersects with another object based on their bounding spheres.
+        Checks if this object intersects with another object based on their bounding cylinders.
         """
-        center_self, radius_self = self.bounding_sphere
-        center_other, radius_other = other.bounding_sphere
+        center_self, height_self, radius_self = self.bounding_cylinder
+        center_other, height_other, radius_other = other.bounding_cylinder
+
+        # Calculate the squared distance between the centers projected onto the XY plane
+        distance_xy_squared = np.sum((center_self[:2] - center_other[:2]) ** 2)
         
-        distance_squared = np.sum((center_self - center_other) ** 2)
+        # Calculate the sum of the radii squared
         sum_of_radii_squared = (radius_self + radius_other) ** 2
         
-        if distance_squared <= sum_of_radii_squared:
+        # Calculate the sum of the heights
+        sum_of_heights = height_self + height_other
+
+        print("height_self: ", height_self)
+        print("height_other: ", height_other)
+        
+        # Check for intersection in 2D XY plane and height
+        if distance_xy_squared <= sum_of_radii_squared and \
+           abs(center_self[2] - center_other[2]) <= sum_of_heights:
             return True  # Intersection detected
         else:
             return False  # No intersection
-

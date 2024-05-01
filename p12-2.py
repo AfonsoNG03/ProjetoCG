@@ -251,7 +251,6 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
-        print(self.camera.global_position)
         # Check for collisions
         self.check_collisions()
 
