@@ -7,7 +7,7 @@ class ModeloGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('modelo2.obj')
+        vertices, texture = my_obj_reader('modelo.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

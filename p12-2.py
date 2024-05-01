@@ -142,7 +142,7 @@ class Example(Base):
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)
 
-
+        #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         modelo = Mesh(modelo_geometry, modelo_material)
@@ -173,7 +173,7 @@ class Example(Base):
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
         oculos = Mesh(oculos_geometry, oculos_material)
-        oculos.set_position([0, 0, 1])
+        oculos.set_position([0, 0, -0.09])
         self.scene.add(oculos)
 
         # Criação da cadeira
