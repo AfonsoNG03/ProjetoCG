@@ -17,6 +17,7 @@ from geometry.cadeira import CadeiraGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.placa import placaGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
@@ -185,7 +186,6 @@ class Example(Base):
 
         # Criação das toalhas
         texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
-        texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         for i in range(30):
             toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
@@ -193,8 +193,22 @@ class Example(Base):
             toalha.scale(2.5)
             toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
             self.scene.add(toalha)
-        #
         
+        #placa das direções
+        placa_material = TextureMaterial(texture=Texture("images/p2.png"))
+        placa_geometry = placaGeometry()
+        placa = Mesh(placa_geometry, placa_material)
+        placa.set_position([-2, 0, 16])
+        self.scene.add(placa)
+
+        """texturas = [ "images/p1.png", "images/p2.png", "images/p3.png", "images/p4.png", "images/p5.png", "images/p6.png"]
+        placa_geometry = placaGeometry()
+        placa_material = TextureMaterial(texture=Texture(texturas))
+        placa = Mesh(placa_geometry, placa_material)
+        placa.set_position([0, 0, -10])
+        self.scene.add(placa)
+        """
+
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
         jetski_geometry = JetskiGeometry()
