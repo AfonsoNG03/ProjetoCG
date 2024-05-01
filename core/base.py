@@ -28,6 +28,8 @@ class Base:
         self._input = Input()
         # number of seconds application has been running
         self._time = 0
+
+        pygame.mouse.set_visible(False)
         # Print the system information
         Utils.print_system_info()
 
@@ -64,6 +66,8 @@ class Base:
             self._input.update()
             if self._input.quit:
                 self._running = False
+
+            pygame.mouse.set_pos(self._screen.get_width() // 2, self._screen.get_height() // 2)
             # seconds since iteration of run loop
             self._delta_time = self._clock.get_time() / 1000
             # Increment time application has been running

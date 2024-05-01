@@ -13,6 +13,8 @@ class Mesh(Object3D):
         super().__init__()
         self._geometry = geometry
         self._material = material
+        self._heightMesh = 1.0
+        self._radiusMesh = 1.0
         # Should this object be rendered?
         self._visible = True
         # Set up associations between attributes stored in geometry
@@ -23,6 +25,8 @@ class Mesh(Object3D):
             attribute_object.associate_variable(material.program_ref, variable_name)
         # Unbind this vertex array object
         GL.glBindVertexArray(0)
+        self.heightMesh()
+        self.radiusMesh()
 
     @property
     def geometry(self):
@@ -39,5 +43,43 @@ class Mesh(Object3D):
     @property
     def visible(self):
         return self._visible
+    
+    
+    def heightMesh(self):
+        position_data = self._geometry._attribute_dict["vertexPosition"].data
+        minY = 0
+        maxY = 0
+        for pos in position_data:
+            if pos[1] < minY:
+                minY = pos[1]
+            if pos[1] > maxY:
+                maxY = pos[1]
+        self._heightMesh = maxY - minY
+        return self._heightMesh
+    
+    
+    def radiusMesh(self):
+        position_data = self._geometry._attribute_dict["vertexPosition"].data
+        minX = 0
+        maxX = 0
+        for pos in position_data:
+            if pos[0] < minX:
+                minX = pos[0]
+            if pos[0] > maxX:
+                maxX = pos[0]
+        radiusMeshX = (maxX - minX) / 2
+        minZ = 0
+        maxZ = 0
+        for pos in position_data:
+            if pos[1] < minZ:
+                minZ = pos[1]
+            if pos[1] > maxZ:
+                maxZ = pos[1]
+        radiusMeshZ = (maxZ - minZ) / 2
+        if radiusMeshX > radiusMeshZ:
+            self._radiusMesh = radiusMeshX
+        else:
+            self._radiusMesh = radiusMeshZ
+        return self._radiusMesh
     
    

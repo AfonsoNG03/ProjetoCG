@@ -1,5 +1,6 @@
 import numpy as np
 from core.matrix import Matrix
+from core_ext import camera
 
 
 class Object3D:
@@ -23,6 +24,10 @@ class Object3D:
     def bounding_cylinder(self):
         """Returns the center, height, and radius of the bounding cylinder."""
         center = self.global_matrix @ np.array([self._center[0], self._center[1], self._center[2], 1])
+        if not isinstance(self, camera.Camera):
+           self._height = self._heightMesh
+        else:
+            self._height = center[1]
         return center[:3], self._height, self._radius
 
 
@@ -166,27 +171,21 @@ class Object3D:
         self.look_at(target_position)
 
     def intersects(self, other):
-        """
-        Checks if this object intersects with another object based on their bounding cylinders.
-        """
-        center_self, height_self, radius_self = self.bounding_cylinder
-        center_other, height_other, radius_other = other.bounding_cylinder
+        # Obter as propriedades dos cilindros
+        center1, height1, radius1 = self.bounding_cylinder
+        center2, height2, radius2 = other.bounding_cylinder
 
-        # Calculate the squared distance between the centers projected onto the XY plane
-        distance_xy_squared = np.sum((center_self[:2] - center_other[:2]) ** 2)
-        
-        # Calculate the sum of the radii squared
-        sum_of_radii_squared = (radius_self + radius_other) ** 2
-        
-        # Calculate the sum of the heights
-        sum_of_heights = height_self + height_other
+        # Verificar se os cilindros estão acima ou abaixo um do outro
+        if center1[1] + height1 < center2[1] or center2[1] + height2 < center1[1]:
+            return False  # Os cilindros não se interceptam em altura
 
-        print("height_self: ", height_self)
-        print("height_other: ", height_other)
-        
-        # Check for intersection in 2D XY plane and height
-        if distance_xy_squared <= sum_of_radii_squared and \
-           abs(center_self[2] - center_other[2]) <= sum_of_heights:
-            return True  # Intersection detected
-        else:
-            return False  # No intersection
+        # Verificar a interseção nos planos XY (ou XZ, dependendo da orientação)
+        distance_squared = ((center1[0] - center2[0]) ** 2) + ((center1[2] - center2[2]) ** 2)
+        sum_radius_squared = (radius1 + radius2) ** 2
+
+        if distance_squared > sum_radius_squared:
+            return False  # Os cilindros não se interceptam na projeção XY
+
+        # Neste ponto, os cilindros podem se interceptar. Você pode adicionar uma verificação mais precisa se necessário.
+
+        return True
