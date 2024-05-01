@@ -34,6 +34,10 @@ class MovementRig(Object3D):
         self.KEY_LOOK_UP = "t"
         self.KEY_LOOK_DOWN = "g"
         self.KEY_SPRINT = "left shift"  # New key for sprinting
+        self.mouse_sensitivity = 1.5
+        self.mouse_x = 0
+        self.mouse_y = 0
+
 
         # Flag to track if the player is currently jumping
         self.is_jumping = False
@@ -47,9 +51,51 @@ class MovementRig(Object3D):
     def remove(self, child):
         self._look_attachment.remove(child)
 
+    def restrict_movement(self, collision_direction):
+        """
+        Restrict movement based on the detected collision direction.
+        """
+        # Define as direções que você quer restringir
+        directions_to_restrict = {
+            "forward": ["w"],
+            "backward": ["s"],
+            "left": ["a"],
+            "right": ["d"],
+            "up": ["z"],
+            "down": ["left ctrl"]
+        }
+
+        # Remova as teclas correspondentes às direções que você quer restringir
+        if collision_direction == "x":
+            directions_to_restrict["left"].extend(["w", "s"])  # Restringe frente e trás quando colidir no eixo X
+        elif collision_direction == "y":
+            directions_to_restrict["down"].extend(["w", "s"])  # Restringe frente e trás quando colidir no eixo Y
+        elif collision_direction == "z":
+            directions_to_restrict["forward"].extend(["a", "d"])  # Restringe esquerda e direita quando colidir no eixo Z
+
+        # Remova as teclas correspondentes às direções restringidas
+        for direction, keys in directions_to_restrict.items():
+            if keys:
+                for key in keys:
+                    setattr(self, f"KEY_MOVE_{direction.upper()}", None)
+
+
+    def allow_movement(self):
+        """
+        Allow movement in all directions.
+        """
+        # Reset movement keys to default values
+        self.KEY_MOVE_FORWARDS = "w"
+        self.KEY_MOVE_BACKWARDS = "s"
+        self.KEY_MOVE_LEFT = "a"
+        self.KEY_MOVE_RIGHT = "d"
+        self.KEY_MOVE_UP = "z"
+        self.KEY_MOVE_DOWN = "left ctrl"
+
     def update(self, input_object, delta_time):
         move_amount = self._units_per_second * delta_time
         rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time
+        rotate_amount *= self.mouse_sensitivity  # Apply mouse sensitivity
         
         # Sprint mechanic
         if input_object.is_key_pressed(self.KEY_SPRINT):
@@ -84,11 +130,12 @@ class MovementRig(Object3D):
             self.translate(0, move_amount, 0)
         if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
             self.translate(0, -move_amount, 0)
-        if input_object.is_key_pressed(self.KEY_TURN_RIGHT):
+        if input_object.is_key_pressed(self.KEY_TURN_RIGHT) or input_object.mouse_x > 0:
             self.rotate_y(-rotate_amount)
-        if input_object.is_key_pressed(self.KEY_TURN_LEFT):
+        if input_object.is_key_pressed(self.KEY_TURN_LEFT) or input_object.mouse_x < 0:
             self.rotate_y(rotate_amount)
-        if input_object.is_key_pressed(self.KEY_LOOK_UP):
+        if input_object.is_key_pressed(self.KEY_LOOK_UP) or input_object.mouse_y < 0:
             self._look_attachment.rotate_x(rotate_amount)
-        if input_object.is_key_pressed(self.KEY_LOOK_DOWN):
+        if input_object.is_key_pressed(self.KEY_LOOK_DOWN) or input_object.mouse_y > 0:
             self._look_attachment.rotate_x(-rotate_amount)
+

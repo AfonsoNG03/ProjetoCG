@@ -42,6 +42,9 @@ class Input:
         # Reset discrete key states
         self._key_down_list = []
         self._key_up_list = []
+        # Reset mouse motion
+        self.mouse_x = 0
+        self.mouse_y = 0
         # Iterate over all user input events (such as keyboard or mouse)
         # that occurred since the last time events were checked
         for event in pygame.event.get():
@@ -58,3 +61,7 @@ class Input:
                 key_name = pygame.key.name(event.key)
                 self._key_pressed_list.remove(key_name)
                 self._key_up_list.append(key_name)
+            # Capture mouse motion events
+            if event.type == pygame.MOUSEMOTION:
+                self.mouse_x, self.mouse_y = event.rel
+

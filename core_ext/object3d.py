@@ -1,5 +1,6 @@
 import numpy as np
 from core.matrix import Matrix
+from core_ext import camera
 
 
 class Object3D:
@@ -9,20 +10,26 @@ class Object3D:
         self._matrix = Matrix.make_identity()
         self._parent = None
         self._children_list = []
-         # Initialize bounding box properties
-        self._min_bounds = np.array([-1, -1, -1])  # Minimum bounds of the bounding box
-        self._max_bounds = np.array([1, 1, 1])     # Maximum bounds of the bounding box
+        # Initialize bounding cylinder properties
+        self._center = np.array([0, 0, 0])  # Center of the bounding cylinder
+        self._height = 1.0                   # Height of the bounding cylinder
+        self._radius = 1.0                   # Radius of the bounding cylinder
+
 
     @property
     def children_list(self):
         return self._children_list
     
     @property
-    def bounding_box(self):
-        """Returns the bounding box of the object."""
-        min_point = self.global_matrix @ np.array([self._min_bounds[0], self._min_bounds[1], self._min_bounds[2], 1])
-        max_point = self.global_matrix @ np.array([self._max_bounds[0], self._max_bounds[1], self._max_bounds[2], 1])
-        return min_point[:3], max_point[:3]
+    def bounding_cylinder(self):
+        """Returns the center, height, and radius of the bounding cylinder."""
+        center = self.global_matrix @ np.array([self._center[0], self._center[1], self._center[2], 1])
+        if not isinstance(self, camera.Camera):
+           self._height = self._heightMesh
+        else:
+            self._height = center[1]
+        return center[:3], self._height, self._radius
+
 
     @children_list.setter
     def children_list(self, children_list):
@@ -164,16 +171,21 @@ class Object3D:
         self.look_at(target_position)
 
     def intersects(self, other):
-        """
-        Checks if this object intersects with another object based on their bounding boxes.
-        """
-        min_point_self, max_point_self = self.bounding_box
-        min_point_other, max_point_other = other.bounding_box
+        # Obter as propriedades dos cilindros
+        center1, height1, radius1 = self.bounding_cylinder
+        center2, height2, radius2 = other.bounding_cylinder
 
-        # Check for intersection along each axis
-        for i in range(3):
-            if max_point_self[i] < min_point_other[i] or min_point_self[i] > max_point_other[i]:
-                return False  # No intersection
+        # Verificar se os cilindros estão acima ou abaixo um do outro
+        if center1[1] + height1 < center2[1] or center2[1] + height2 < center1[1]:
+            return False  # Os cilindros não se interceptam em altura
 
-        return True  # Intersection detected
+        # Verificar a interseção nos planos XY (ou XZ, dependendo da orientação)
+        distance_squared = ((center1[0] - center2[0]) ** 2) + ((center1[2] - center2[2]) ** 2)
+        sum_radius_squared = (radius1 + radius2) ** 2
 
+        if distance_squared > sum_radius_squared:
+            return False  # Os cilindros não se interceptam na projeção XY
+
+        # Neste ponto, os cilindros podem se interceptar. Você pode adicionar uma verificação mais precisa se necessário.
+
+        return True

@@ -77,7 +77,7 @@ class Example(Base):
         #
 
         # Define grid properties
-        self.grid_size = 10  # Size of each grid cell
+        self.grid_size = 2  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
 
         # Criação da cena
@@ -117,8 +117,8 @@ class Example(Base):
         # Textura do céu
         sky_geometry = SphereGeometry(radius=50)
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
-        sky = Mesh(sky_geometry, sky_material)
-        self.scene.add(sky)
+        self.sky = Mesh(sky_geometry, sky_material)
+        self.scene.add(self.sky)
 
         # Textura da areia
         sand_geometry = RectangleGeometry(width=100, height=100)
@@ -185,6 +185,7 @@ class Example(Base):
 
         # Criação das toalhas
         texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
+        texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         for i in range(30):
             toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
@@ -238,7 +239,7 @@ class Example(Base):
 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0.65, 3, -2])
+        self.camera.set_position([0.65, 2.5, -2])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
@@ -262,7 +263,7 @@ class Example(Base):
         """
         self.grid = {}
         for obj in self.scene.children_list:
-            if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light:
+            if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light or obj == self.sky:
                 continue
             self.add_to_grid(obj)
 
@@ -291,18 +292,46 @@ class Example(Base):
         nearby_objects = self.get_nearby_objects(self.camera)
         for other_obj in nearby_objects:
             if self.camera != other_obj and self.camera.intersects(other_obj):
-                # Cant go into the same position as the object
+                # Collision detected, determine direction
+                collision_direction = self.determine_collision_direction(other_obj)
                 print("Collision detected!")
-                break
-                pass
+                return collision_direction
+        return None
+
+    def determine_collision_direction(self, other_obj):
+        """
+        Determine the direction of collision between the camera and another object.
+        """
+        # Get positions of camera and other object
+        cam_pos = np.array(self.camera.global_position)
+        obj_pos = np.array(other_obj.global_position)
+        # Calculate direction vector from other object to camera
+        direction = cam_pos - obj_pos
+        # Determine dominant axis of direction vectorw
+        max_index = np.argmax(np.abs(direction))
+        if max_index == 0:
+            # X-axis is dominant
+            return "x"
+        elif max_index == 1:
+            # Y-axis is dominant
+            return "y"
+        else:
+            # Z-axis is dominant
+            return "z"
+
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
         # Check for collisions
-        self.check_collisions()
-
+        collision_direction = self.check_collisions()  # Get collision direction
+        if collision_direction:
+            # If collision occurred, restrict movement in that direction
+            self.rig.restrict_movement(collision_direction)
+        else:
+            # No collision, allow movement in all directions
+            self.rig.allow_movement()
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
