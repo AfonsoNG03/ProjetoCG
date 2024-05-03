@@ -23,6 +23,7 @@ from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
 from geometry.warship import warshipGeometry
+from geometry.warship2 import warship2Geometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
@@ -110,7 +111,7 @@ class Example(Base):
         self.distort_material.locate_uniforms()
 
         # Textura do oceano
-        ocean_geometry = RectangleGeometry(width=100, height=100)
+        ocean_geometry = RectangleGeometry(width=200, height=100)
         #ocean_geometry = OceanoGeometry(width=50, height=50)
         self.ocean = Mesh(ocean_geometry, self.distort_material)
         self.ocean.rotate_x(-math.pi/2)
@@ -124,7 +125,7 @@ class Example(Base):
         self.scene.add(self.sky)
 
         # Textura da areia
-        sand_geometry = RectangleGeometry(width=100, height=100)
+        sand_geometry = RectangleGeometry(width=200, height=100)
         sand_material = TextureMaterial(
             texture=Texture(file_name="images/sand.jpg"),
             property_dict={"repeatUV": [20, 20]}
@@ -156,8 +157,10 @@ class Example(Base):
         #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
-        arvore_positions= [[4, -3, 20],
-                        [-40, -3, 35],[-30, -3, 35],[-20, -3, 35],[-14, -3, 35], [-7, -3, 40],[0, -3, 40], [4, -3, 32],[12, -3, 40],[20, -3, 32],[28, -3, 40],[37, -3, 41],]
+        arvore_positions= [
+                        [-60, -3, 35],[-50, -3, 35],[-40, -3, 32],[-30, -3, 35],[-20, -3, 35],[-14, -3, 35], 
+                        [-7, -3, 40],[0, -3, 40], [4, -3, 20], [4, -3, 32],[12, -3, 40],[20, -3, 32],
+                        [28, -3, 40],[37, -3, 41],[46, -3, 41],[55, -3, 41],[66, -3, 41],[75, -3, 41],]
         for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
             arvore.set_position(position)
@@ -166,7 +169,7 @@ class Example(Base):
         # Criação rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
-        rock_positions = [[-20, -3, 35],[-5, -3, 35],[10, -3, 35], [25, -3, 35],[40, -3, 35],
+        rock_positions = [[-50, -3, 35],[-35, -3, 35],[-20, -3, 35],[-5, -3, 35],[10, -3, 35], [25, -3, 35],[40, -3, 35],[55, -3, 35],[70, -3, 35],
                         [10, -3, 40],[25, -3, 40]]
         for position in rock_positions:
             rocks = Mesh(rocks_geometry, rocks_material)
@@ -262,9 +265,15 @@ class Example(Base):
         warship_material = TextureMaterial(texture=Texture("images/warship.png"))
         warship_geometry = warshipGeometry()
         warship = Mesh(warship_geometry, warship_material)
-        warship.set_position([0, 0, -85])
+        warship.set_position([-10, 0, -75])
         self.scene.add(warship)
 
+        warship2_material = TextureMaterial(texture=Texture("images/T (61).png"))
+        warship2_geometry = warship2Geometry()
+        warship2 = Mesh(warship2_geometry, warship2_material)
+        warship2.set_position([40, 0, -55])
+        self.scene.add(warship2)
+        
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0.65, 2.5, -2])
