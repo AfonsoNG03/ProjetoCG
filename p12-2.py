@@ -252,7 +252,8 @@ class Example(Base):
         #Passadiço
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
-        passa_positions = [[0.75, 0, 25],[0.75, 0, 32.5],[0.75, 0, 40],[0.75, 0, 47.5],[0.75, 0, 55]]
+        passa_positions = [[0.75, 0, 25],[0.75, 0, 32.5],[0.75, 0, 40],[0.75, 0, 47.5],[0.75, 0, 55],
+                           [0.75, 0, 62.5],[0.75, 0, 70],[0.75, 0, 72.5]]
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
             passa.set_position(position)
