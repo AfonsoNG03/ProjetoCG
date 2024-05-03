@@ -118,7 +118,7 @@ class Example(Base):
         self.scene.add(self.ocean)
     
         # Textura do céu
-        sky_geometry = SphereGeometry(radius=50)
+        sky_geometry = SphereGeometry(radius=100)
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
         self.sky = Mesh(sky_geometry, sky_material)
         self.scene.add(self.sky)
@@ -152,18 +152,26 @@ class Example(Base):
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
         
+        #criação das árvores
+        #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
-        arvore = Mesh(arvore_geometry, arvore_material)
-        arvore.scale(0.5)
-        arvore.set_position([0, 0, 2.5])
-        self.scene.add(arvore)
-
-        for i in range(30):
+        arvore_positions= [[4, -3, 20],
+                        [-40, -3, 35],[-30, -3, 35],[-20, -3, 35],[-14, -3, 35], [-7, -3, 40],[0, -3, 40], [4, -3, 32],[12, -3, 40],[20, -3, 32],[28, -3, 40],[37, -3, 41],]
+        for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
-            arvore.scale(0.5)
-            arvore.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
+            arvore.set_position(position)
             self.scene.add(arvore)
+  
+        # Criação rochas
+        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
+        rocks_geometry = rocksGeometry()
+        rock_positions = [[-20, -3, 35],[-5, -3, 35],[10, -3, 35], [25, -3, 35],[40, -3, 35],
+                        [10, -3, 40],[25, -3, 40]]
+        for position in rock_positions:
+            rocks = Mesh(rocks_geometry, rocks_material)
+            rocks.set_position(position)
+            self.scene.add(rocks)
 
         # Criação do bikini
         bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
@@ -237,13 +245,6 @@ class Example(Base):
         golfinho.set_position([-5, -0.25, -20])
         self.scene.add(golfinho)
 
-        # Criação rochas
-        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
-        rocks_geometry = rocksGeometry()
-        rocks = Mesh(rocks_geometry, rocks_material)
-        rocks.set_position([-10, -3, 20])
-        self.scene.add(rocks)
-
         # Criação bola
         bola_material = TextureMaterial(texture=Texture("images/volleyball.png"))
         bola_geometry = bolaGeometry()
@@ -261,7 +262,7 @@ class Example(Base):
         warship_material = TextureMaterial(texture=Texture("images/warship.png"))
         warship_geometry = warshipGeometry()
         warship = Mesh(warship_geometry, warship_material)
-        warship.set_position([0, 0, -40])
+        warship.set_position([0, 0, -85])
         self.scene.add(warship)
 
         # Criação da camera
