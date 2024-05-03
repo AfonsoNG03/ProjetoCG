@@ -19,7 +19,6 @@ class MovementRig(Object3D):
         # Control rate of movement
         self._units_per_second = units_per_second
         self._degrees_per_second = degrees_per_second
-        self.keys_pressed = []
 
         # Customizable key mappings.
         # Defaults: W, A, S, D, R, F (move), Q, E (turn), T, G (look)
@@ -52,29 +51,34 @@ class MovementRig(Object3D):
     def remove(self, child):
         self._look_attachment.remove(child)
 
-    def restrict_movement(self):
+    def restrict_movement(self, collision_direction):
         """
-        Restringe o movimento com base na lista de teclas pressionadas durante uma colisão.
+        Restrict movement based on the detected collision direction.
         """
-        keys_to_restrict = ["w", "s", "a", "d", "z", "left ctrl"]
-        # Restringir as teclas de movimento
-        for key in keys_to_restrict:
-            if key in self.keys_pressed:
-                if key == "w":
-                    self.KEY_MOVE_FORWARDS = ""
-                elif key == "s":
-                    self.KEY_MOVE_BACKWARDS = ""
-                elif key == "a":
-                    self.KEY_MOVE_LEFT = ""
-                elif key == "d":
-                    self.KEY_MOVE_RIGHT = ""
-                elif key == "z":
-                    self.KEY_MOVE_UP = ""
-                elif key == "left ctrl":
-                    self.KEY_MOVE_DOWN = ""
+        # Define as direções que você quer restringir
+        directions_to_restrict = {
+            "forward": ["w"],
+            "backward": ["s"],
+            "left": ["a"],
+            "right": ["d"],
+            "up": ["z"],
+            "down": ["left ctrl"]
+        }
 
-        # Restaurar as teclas permitidas
-        #self.allow_movement()
+        # Remova as teclas correspondentes às direções que você quer restringir
+        if collision_direction == "x":
+            directions_to_restrict["left"].extend(["w", "s"])  # Restringe frente e trás quando colidir no eixo X
+        elif collision_direction == "y":
+            directions_to_restrict["down"].extend(["w", "s"])  # Restringe frente e trás quando colidir no eixo Y
+        elif collision_direction == "z":
+            directions_to_restrict["forward"].extend(["a", "d"])  # Restringe esquerda e direita quando colidir no eixo Z
+
+        # Remova as teclas correspondentes às direções restringidas
+        for direction, keys in directions_to_restrict.items():
+            if keys:
+                for key in keys:
+                    setattr(self, f"KEY_MOVE_{direction.upper()}", None)
+
 
     def allow_movement(self):
         """
@@ -88,7 +92,7 @@ class MovementRig(Object3D):
         self.KEY_MOVE_UP = "z"
         self.KEY_MOVE_DOWN = "left ctrl"
 
-    def update(self, input_object, delta_time, collision=False):
+    def update(self, input_object, delta_time):
         move_amount = self._units_per_second * delta_time
         rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time
         rotate_amount *= self.mouse_sensitivity  # Apply mouse sensitivity
@@ -108,20 +112,11 @@ class MovementRig(Object3D):
             self.jump_speed -= 15 * delta_time  # Simulate gravity (adjust as needed)
 
             # Check if the object has reached the ground level
-            if collision:
-                self.is_jumping = False
-                self.jump_speed = 10
-            elif self.global_position[1] <= 0:
+            if self.global_position[1] <= 0:
                 self.global_position[1] = 0  # Ensure object rests on the ground
                 self.is_jumping = False
                 self.jump_speed = 10  # Reset jump speed
 
-        self.keys_pressed = [key for key in input_object.key_pressed_list]
-
-        if collision:
-            self.restrict_movement()
-        else:
-            self.allow_movement()
 
         if input_object.is_key_pressed(self.KEY_MOVE_FORWARDS):
             self.translate(0, 0, -move_amount)
@@ -143,3 +138,4 @@ class MovementRig(Object3D):
             self._look_attachment.rotate_x(rotate_amount)
         if input_object.is_key_pressed(self.KEY_LOOK_DOWN) or input_object.mouse_y > 0:
             self._look_attachment.rotate_x(-rotate_amount)
+
