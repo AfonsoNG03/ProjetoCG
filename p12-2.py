@@ -9,15 +9,23 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
+from geometry.animal import animalGeometry
+from geometry.bola import bolaGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.golfinho import golfinhoGeometry
+from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.placa import placaGeometry
+from geometry.pokeball import pokeballGeometry
+from geometry.rocks import rocksGeometry
+from geometry.yatch import YatchGeometry
+from geometry.warship import warshipGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
-from geometry.cubo import CuboGeometry
 from light.ambient import AmbientLight
 from light.directional import DirectionalLight
 from material.material import Material
@@ -137,23 +145,12 @@ class Example(Base):
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)
 
-
+        #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         modelo = Mesh(modelo_geometry, modelo_material)
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
-
-        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
-        cubo_geometry = CuboGeometry()
-        cubo = Mesh(cubo_geometry, cubo_material)
-        cubo.set_position([0, 2, -10])
-        self.scene.add(cubo)
-
-        for i in range(30):
-            cubo = Mesh(cubo_geometry, cubo_material)
-            cubo.set_position([0, 2 +i*2, -10-i*3])
-            self.scene.add(cubo)
         
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
@@ -179,7 +176,7 @@ class Example(Base):
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
         oculos = Mesh(oculos_geometry, oculos_material)
-        oculos.set_position([0, 0, 1])
+        oculos.set_position([0, 0, -0.09])
         self.scene.add(oculos)
 
         # Criação da cadeira
@@ -198,11 +195,78 @@ class Example(Base):
             toalha.scale(2.5)
             toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
             self.scene.add(toalha)
-        #
+        
+        #placa das direções
+        placa_material = TextureMaterial(texture=Texture("images/p2.png"))
+        placa_geometry = placaGeometry()
+        placa = Mesh(placa_geometry, placa_material)
+        placa.set_position([-2, 0, 16])
+        self.scene.add(placa)
+
+        """texturas = [ "images/p1.png", "images/p2.png", "images/p3.png", "images/p4.png", "images/p5.png", "images/p6.png"]
+        placa_geometry = placaGeometry()
+        placa_material = TextureMaterial(texture=Texture(texturas))
+        placa = Mesh(placa_geometry, placa_material)
+        placa.set_position([0, 0, -10])
+        self.scene.add(placa)
+        """
+
+        # Criação do jet ski
+        jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
+        jetski_geometry = JetskiGeometry()
+        jetski = Mesh(jetski_geometry, jetski_material)
+        jetski.set_position([0, 0, -10])
+        self.scene.add(jetski)
+
+        # Criação yate
+        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
+        yatch_geometry = YatchGeometry()
+        yatch = Mesh(yatch_geometry, yatch_material)
+        yatch.set_position([10, 0, -13])
+        self.scene.add(yatch)
+
+        # Criação dos animais
+        animal_material = TextureMaterial(texture=Texture("images/k2.png"))
+        animal_geometry = animalGeometry()
+        animal = Mesh(animal_geometry, animal_material)
+        animal.set_position([-10, -1, -25])
+        self.scene.add(animal)
+        golfinho_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
+        golfinho_geometry = golfinhoGeometry()
+        golfinho = Mesh(golfinho_geometry, golfinho_material)
+        golfinho.set_position([-5, -0.25, -20])
+        self.scene.add(golfinho)
+
+        # Criação rochas
+        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
+        rocks_geometry = rocksGeometry()
+        rocks = Mesh(rocks_geometry, rocks_material)
+        rocks.set_position([-10, -3, 20])
+        self.scene.add(rocks)
+
+        # Criação bola
+        bola_material = TextureMaterial(texture=Texture("images/volleyball.png"))
+        bola_geometry = bolaGeometry()
+        bola = Mesh(bola_geometry, bola_material)
+        bola.set_position([-5, 0.15, -3.5])
+        self.scene.add(bola)
+
+        #Easter Egg
+        pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
+        pokeball_geometry = pokeballGeometry()
+        pokeball = Mesh(pokeball_geometry, pokeball_material)
+        pokeball.set_position([0, -0.001, -12])
+        self.scene.add(pokeball)
+
+        warship_material = TextureMaterial(texture=Texture("images/warship.png"))
+        warship_geometry = warshipGeometry()
+        warship = Mesh(warship_geometry, warship_material)
+        warship.set_position([0, 0, -40])
+        self.scene.add(warship)
 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([1.3, 2.5, 4])
+        self.camera.set_position([0.65, 2.5, -2])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
@@ -256,11 +320,11 @@ class Example(Base):
         for other_obj in nearby_objects:
             if self.camera != other_obj and self.camera.intersects(other_obj):
                 # Collision detected, determine direction
+                collision_direction = self.determine_collision_direction(other_obj)
                 print("Collision detected!")
-                #self.determine_collision_direction(other_obj)
-                return True
-        return False
-    '''
+                return collision_direction
+        return None
+
     def determine_collision_direction(self, other_obj):
         """
         Determine the direction of collision between the camera and another object.
@@ -270,56 +334,31 @@ class Example(Base):
         obj_pos = np.array(other_obj.global_position)
         # Calculate direction vector from other object to camera
         direction = cam_pos - obj_pos
-
-        min_index = np.argmin(np.abs(direction))
-        if min_index == 0:
-            if direction[0] > 0:
-                self.rig.translate(0.1, 0, 0)
-            else:
-                self.rig.translate(-0.1, 0, 0)
-        elif min_index == 1:
-            if direction[1] > 0:
-                self.rig.translate(0, 0.1, 0)
-            else:
-                self.rig.translate(0, -0.1, 0)
-        else:
-            if direction[2] > 0:
-                self.rig.translate(0, 0, 0.1)
-            else:
-                self.rig.translate(0, 0, -0.1)
-
         # Determine dominant axis of direction vectorw
-        #direction = [direction[0], direction[2]]
-        #max_index = np.argmax(np.abs(direction))
-        #if max_index == 0:
-            #if direction[0] > 0:
-                #self.rig.translate(-0.1, 0, 0)
-            #else:
-                #self.rig.translate(0.1, 0, 0)
-        #else:
-            #if direction[1] > 0:
-                #self.rig.translate(0, 0, 0.1)
-            #else:
-                #self.rig.translate(0, 0, -0.1)
-        #elif max_index == 1:
-         #   if direction[1] > 0:
-          #      self.rig.translate(0, 0.1, 0)
-            #else:
-            #    self.rig.translate(0, -0.1, 0)
-        #else:
-         #   if direction[2] > 0:
-          #      self.rig.translate(0, 0, 0.1)
-           # else:
-            #    self.rig.translate(0, 0, -0.1)
-'''
+        max_index = np.argmax(np.abs(direction))
+        if max_index == 0:
+            # X-axis is dominant
+            return "x"
+        elif max_index == 1:
+            # Y-axis is dominant
+            return "y"
+        else:
+            # Z-axis is dominant
+            return "z"
+
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        collision = self.check_collisions()  # Get collision direction
-        self.rig.update(self.input, self.delta_time, collision)
+        self.rig.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.camera)
         # Check for collisions
-        
+        collision_direction = self.check_collisions()  # Get collision direction
+        if collision_direction:
+            # If collision occurred, restrict movement in that direction
+            self.rig.restrict_movement(collision_direction)
+        else:
+            # No collision, allow movement in all directions
+            self.rig.allow_movement()
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()

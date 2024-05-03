@@ -1,0 +1,12 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl Rocks
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd D:/Sunnncho/3ds_MAX/80_rocks_01/rocks_01_max_2008/rocks_01_dif.tga
+map_Ks D:/Sunnncho/3ds_MAX/80_rocks_01/rocks_01_max_2008/rocks_01_spec.tga
