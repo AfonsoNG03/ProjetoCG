@@ -257,10 +257,10 @@ class Example(Base):
             if self.camera != other_obj and self.camera.intersects(other_obj):
                 # Collision detected, determine direction
                 print("Collision detected!")
-                #self.determine_collision_direction(other_obj)
+                self.determine_collision_direction(other_obj)
                 return True
         return False
-    '''
+
     def determine_collision_direction(self, other_obj):
         """
         Determine the direction of collision between the camera and another object.
@@ -268,23 +268,25 @@ class Example(Base):
         # Get positions of camera and other object
         cam_pos = np.array(self.camera.global_position)
         obj_pos = np.array(other_obj.global_position)
+        obj_height = other_obj._heightMesh
+
+        if cam_pos[1] > obj_pos[1] + obj_height/2:
+            self.rig.translate(0, 0.2, 0)
+            return "up"
         # Calculate direction vector from other object to camera
         direction = cam_pos - obj_pos
 
+        direction = [direction[0], direction[2]]
         min_index = np.argmin(np.abs(direction))
+        
         if min_index == 0:
             if direction[0] > 0:
                 self.rig.translate(0.1, 0, 0)
             else:
                 self.rig.translate(-0.1, 0, 0)
-        elif min_index == 1:
-            if direction[1] > 0:
-                self.rig.translate(0, 0.1, 0)
-            else:
-                self.rig.translate(0, -0.1, 0)
         else:
-            if direction[2] > 0:
-                self.rig.translate(0, 0, 0.1)
+            if direction[1] > 0:
+                self.rig.translate(0,0 , 0.1)
             else:
                 self.rig.translate(0, 0, -0.1)
 
@@ -311,7 +313,7 @@ class Example(Base):
           #      self.rig.translate(0, 0, 0.1)
            # else:
             #    self.rig.translate(0, 0, -0.1)
-'''
+
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
