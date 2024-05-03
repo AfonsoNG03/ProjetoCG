@@ -120,7 +120,7 @@ class Example(Base):
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
         self.sky = Mesh(sky_geometry, sky_material)
         self.scene.add(self.sky)
-
+        
         # Textura da areia
         sand_geometry = RectangleGeometry(width=100, height=100)
         sand_material = TextureMaterial(
@@ -185,7 +185,7 @@ class Example(Base):
         #self.scene.add(cadeira)
 
         # Criação das toalhas
-        texturas = [ "images/whool.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
+        texturas = [ "images/slb.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         for i in range(30):
             toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
