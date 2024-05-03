@@ -10,17 +10,22 @@ from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
 from geometry.animal import animalGeometry
-from geometry.bola import bolaGeometry
 from geometry.arvore import ArvoreGeometry
+from geometry.arbusto import arbustoGeometry
+from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
+from geometry.warship import warshipGeometry
+from geometry.warship2 import warship2Geometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
@@ -108,7 +113,7 @@ class Example(Base):
         self.distort_material.locate_uniforms()
 
         # Textura do oceano
-        ocean_geometry = RectangleGeometry(width=100, height=100)
+        ocean_geometry = RectangleGeometry(width=200, height=100)
         #ocean_geometry = OceanoGeometry(width=50, height=50)
         self.ocean = Mesh(ocean_geometry, self.distort_material)
         self.ocean.rotate_x(-math.pi/2)
@@ -116,13 +121,13 @@ class Example(Base):
         self.scene.add(self.ocean)
     
         # Textura do céu
-        sky_geometry = SphereGeometry(radius=50)
+        sky_geometry = SphereGeometry(radius=100)
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
         self.sky = Mesh(sky_geometry, sky_material)
         self.scene.add(self.sky)
         
         # Textura da areia
-        sand_geometry = RectangleGeometry(width=100, height=100)
+        sand_geometry = RectangleGeometry(width=200, height=100)
         sand_material = TextureMaterial(
             texture=Texture(file_name="images/sand.jpg"),
             property_dict={"repeatUV": [20, 20]}
@@ -133,7 +138,7 @@ class Example(Base):
         self.scene.add(self.sand)
         #
 
-        # Testes
+        """# Testes
         phong_material = PhongMaterial(
             property_dict={"baseColor": [1, 0, 1]},
             number_of_light_sources=2
@@ -141,7 +146,7 @@ class Example(Base):
         sphere_geometry = SphereGeometry()
         sphere_right = Mesh(sphere_geometry, phong_material)
         sphere_right.set_position([2.5, 0, 0])
-        self.scene.add(sphere_right)
+        self.scene.add(sphere_right)"""
 
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
@@ -150,18 +155,35 @@ class Example(Base):
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
         
+        #criação das árvores
+        #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
-        arvore = Mesh(arvore_geometry, arvore_material)
-        arvore.scale(0.5)
-        arvore.set_position([0, 0, 2.5])
-        self.scene.add(arvore)
-
-        for i in range(30):
+        arvore_positions= [
+                        [-60, -3, 35],[-50, -3, 35],[-40, -3, 32],[-30, -3, 35],[-12, -3, 40], [-12, -3, 35],[-12, -3, 25],[12, -3, 20], [12, -3, 32],[12, -3, 40],[20, -3, 32],
+                        [28, -3, 40],[37, -3, 41],[46, -3, 41],[55, -3, 39],[66, -3, 41],[75, -3, 41],]
+        for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
-            arvore.scale(0.5)
-            arvore.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
+            arvore.set_position(position)
             self.scene.add(arvore)
+  
+        # Criação rochas
+        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
+        rocks_geometry = rocksGeometry()
+        rock_positions = [[-50, -3, 35],[-50, -3, 55],[-35, -3, 35],[-35, -3, 55],[-20, -3, 35],[-20, -3, 55], [25, -3, 35],[25, -3, 55],[40, -3, 35],[40, -3, 55],[55, -3, 35],[55, -3, 55],[70, -3, 35],[70, -3, 55]]
+        for position in rock_positions:
+            rocks = Mesh(rocks_geometry, rocks_material)
+            rocks.set_position(position)
+            self.scene.add(rocks)
+
+        """# Criação arbusto
+        arbusto_material = TextureMaterial(texture=Texture("images/arbusto.jpg"))
+        arbusto_geometry = arbustoGeometry()
+        rock_positions = [[-25, 0, 10]]
+        for position in rock_positions:
+            arbusto = Mesh(arbusto_geometry, arbusto_material)
+            arbusto.set_position(position)
+            self.scene.add(arbusto)"""
 
         # Criação do bikini
         bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
@@ -185,7 +207,7 @@ class Example(Base):
         #self.scene.add(cadeira)
 
         # Criação das toalhas
-        texturas = [ "images/slb.jpg", "images/stripes.jpg", "images/toalha.jpg", "images/master.jpg"]
+        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         for i in range(30):
             toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
@@ -201,14 +223,6 @@ class Example(Base):
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
 
-        """texturas = [ "images/p1.png", "images/p2.png", "images/p3.png", "images/p4.png", "images/p5.png", "images/p6.png"]
-        placa_geometry = placaGeometry()
-        placa_material = TextureMaterial(texture=Texture(texturas))
-        placa = Mesh(placa_geometry, placa_material)
-        placa.set_position([0, 0, -10])
-        self.scene.add(placa)
-        """
-
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
         jetski_geometry = JetskiGeometry()
@@ -216,26 +230,17 @@ class Example(Base):
         jetski.set_position([0, 0, -10])
         self.scene.add(jetski)
 
-        # Criação yate
-        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
-        yatch_geometry = YatchGeometry()
-        yatch = Mesh(yatch_geometry, yatch_material)
-        yatch.set_position([10, 0, -13])
-        self.scene.add(yatch)
-
-        # Criação animal
+        # Criação dos animais
         animal_material = TextureMaterial(texture=Texture("images/k2.png"))
         animal_geometry = animalGeometry()
         animal = Mesh(animal_geometry, animal_material)
         animal.set_position([-10, -1, -25])
         self.scene.add(animal)
-
-        # Criação rochas
-        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
-        rocks_geometry = rocksGeometry()
-        rocks = Mesh(rocks_geometry, rocks_material)
-        rocks.set_position([-10, -3, 20])
-        self.scene.add(rocks)
+        golfinho_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
+        golfinho_geometry = golfinhoGeometry()
+        golfinho = Mesh(golfinho_geometry, golfinho_material)
+        golfinho.set_position([-5, -0.25, -20])
+        self.scene.add(golfinho)
 
         # Criação bola
         bola_material = TextureMaterial(texture=Texture("images/volleyball.png"))
@@ -244,6 +249,16 @@ class Example(Base):
         bola.set_position([-5, 0.15, -3.5])
         self.scene.add(bola)
 
+        #Passadiço
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passaGeometry()
+        passa_positions = [[0.75, 0, 25],[0.75, 0, 32.5],[0.75, 0, 40],[0.75, 0, 47.5],[0.75, 0, 55],
+                           [0.75, 0, 62.5],[0.75, 0, 70],[0.75, 0, 72.5]]
+        for position in passa_positions:
+            passa = Mesh(passa_geometry, passa_material)
+            passa.set_position(position)
+            self.scene.add(passa)
+            
         #Easter Egg
         pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
         pokeball_geometry = pokeballGeometry()
@@ -251,6 +266,26 @@ class Example(Base):
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
 
+        """#Navios
+        warship_material = TextureMaterial(texture=Texture("images/warship.png"))
+        warship_geometry = warshipGeometry()
+        warship = Mesh(warship_geometry, warship_material)
+        warship.set_position([-10, 0, -75])
+        self.scene.add(warship)
+
+        warship2_material = TextureMaterial(texture=Texture("images/T (61).png"))
+        warship2_geometry = warship2Geometry()
+        warship2 = Mesh(warship2_geometry, warship2_material)
+        warship2.set_position([40, 0, -55])
+        self.scene.add(warship2)
+        
+        # Criação yate
+        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
+        yatch_geometry = YatchGeometry()
+        yatch = Mesh(yatch_geometry, yatch_material)
+        yatch.set_position([10, 0, -13])
+        self.scene.add(yatch)"""
+        
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0.65, 2.5, -2])
