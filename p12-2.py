@@ -19,6 +19,7 @@ from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
@@ -248,6 +249,15 @@ class Example(Base):
         bola.set_position([-5, 0.15, -3.5])
         self.scene.add(bola)
 
+        #Passadiço
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passaGeometry()
+        passa_positions = [[0.75, 0, 25],[0.75, 0, 32.5],[0.75, 0, 40],[0.75, 0, 47.5],[0.75, 0, 55]]
+        for position in passa_positions:
+            passa = Mesh(passa_geometry, passa_material)
+            passa.set_position(position)
+            self.scene.add(passa)
+            
         #Easter Egg
         pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
         pokeball_geometry = pokeballGeometry()
