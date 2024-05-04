@@ -17,6 +17,7 @@ from geometry.oculos import OculosGeometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
+from geometry.cubo import CuboGeometry
 from light.ambient import AmbientLight
 from light.directional import DirectionalLight
 from material.material import Material
@@ -142,6 +143,17 @@ class Example(Base):
         modelo = Mesh(modelo_geometry, modelo_material)
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
+
+        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_geometry = CuboGeometry()
+        cubo = Mesh(cubo_geometry, cubo_material)
+        cubo.set_position([0, 2, -10])
+        self.scene.add(cubo)
+
+        for i in range(30):
+            cubo = Mesh(cubo_geometry, cubo_material)
+            cubo.set_position([0, 2 +i*2, -10-i*3])
+            self.scene.add(cubo)
         
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
@@ -190,7 +202,7 @@ class Example(Base):
 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0.65, 2.5, 2])
+        self.camera.set_position([1.3, 2.5, 4])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
@@ -244,10 +256,10 @@ class Example(Base):
         for other_obj in nearby_objects:
             if self.camera != other_obj and self.camera.intersects(other_obj):
                 # Collision detected, determine direction
-                collision_direction = self.determine_collision_direction(other_obj)
                 print("Collision detected!")
-                return collision_direction
-        return None
+                self.determine_collision_direction(other_obj)
+                return True
+        return False
 
     def determine_collision_direction(self, other_obj):
         """
@@ -256,33 +268,60 @@ class Example(Base):
         # Get positions of camera and other object
         cam_pos = np.array(self.camera.global_position)
         obj_pos = np.array(other_obj.global_position)
+        obj_height = other_obj._heightMesh
+
+        if cam_pos[1] > obj_pos[1] + obj_height/2:
+            self.rig.translate(0, 0.2, 0)
+            return "up"
         # Calculate direction vector from other object to camera
         direction = cam_pos - obj_pos
-        # Determine dominant axis of direction vectorw
-        max_index = np.argmax(np.abs(direction))
-        if max_index == 0:
-            # X-axis is dominant
-            return "x"
-        elif max_index == 1:
-            # Y-axis is dominant
-            return "y"
+
+        direction = [direction[0], direction[2]]
+        min_index = np.argmin(np.abs(direction))
+        
+        if min_index == 0:
+            if direction[0] > 0:
+                self.rig.translate(0.1, 0, 0)
+            else:
+                self.rig.translate(-0.1, 0, 0)
         else:
-            # Z-axis is dominant
-            return "z"
+            if direction[1] > 0:
+                self.rig.translate(0,0 , 0.1)
+            else:
+                self.rig.translate(0, 0, -0.1)
+
+        # Determine dominant axis of direction vectorw
+        #direction = [direction[0], direction[2]]
+        #max_index = np.argmax(np.abs(direction))
+        #if max_index == 0:
+            #if direction[0] > 0:
+                #self.rig.translate(-0.1, 0, 0)
+            #else:
+                #self.rig.translate(0.1, 0, 0)
+        #else:
+            #if direction[1] > 0:
+                #self.rig.translate(0, 0, 0.1)
+            #else:
+                #self.rig.translate(0, 0, -0.1)
+        #elif max_index == 1:
+         #   if direction[1] > 0:
+          #      self.rig.translate(0, 0.1, 0)
+            #else:
+            #    self.rig.translate(0, -0.1, 0)
+        #else:
+         #   if direction[2] > 0:
+          #      self.rig.translate(0, 0, 0.1)
+           # else:
+            #    self.rig.translate(0, 0, -0.1)
 
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        self.rig.update(self.input, self.delta_time)
+        collision = self.check_collisions()  # Get collision direction
+        self.rig.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.camera)
         # Check for collisions
-        collision_direction = self.check_collisions()  # Get collision direction
-        if collision_direction:
-            # If collision occurred, restrict movement in that direction
-            self.rig.restrict_movement(collision_direction)
-        else:
-            # No collision, allow movement in all directions
-            self.rig.allow_movement()
+        
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
