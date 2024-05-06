@@ -15,6 +15,7 @@ from geometry.arbusto import arbustoGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.cubo import CuboGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
@@ -155,6 +156,17 @@ class Example(Base):
         modelo.set_position([0, 0, 0])
         self.scene.add(modelo)
         
+        #criação do cubo
+        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_geometry = CuboGeometry()
+        cubo = Mesh(cubo_geometry, cubo_material)
+        cubo.set_position([0, 2, -10])
+        self.scene.add(cubo)
+        for i in range(30):
+            cubo = Mesh(cubo_geometry, cubo_material)
+            cubo.set_position([0, 2 +i*2, -10-i*3])
+            self.scene.add(cubo)
+
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
