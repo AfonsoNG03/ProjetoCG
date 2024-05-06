@@ -172,7 +172,7 @@ class Example(Base):
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
         arvore_positions= [
-                        [-60, -3, 35],[-50, -3, 35],[-40, -3, 32],[-30, -3, 35],[-12, -3, 40], [-12, -3, 35],[-12, -3, 25],[12, -3, 20], [12, -3, 32],[12, -3, 40],[20, -3, 32],
+                        [-60, -3, 35],[-50, -3, 35],[-40, -3, 32],[-30, -3, 35],[-12, -3, 40], [-12, -3, 37],[-12, -3, 25],[12, -3, 20], [8, -3, 34],[12, -3, 40],[20, -3, 32],
                         [28, -3, 40],[37, -3, 41],[46, -3, 41],[55, -3, 39],[66, -3, 41],[75, -3, 41],]
         for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
