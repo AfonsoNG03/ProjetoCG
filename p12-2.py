@@ -342,7 +342,6 @@ class Example(Base):
         for other_obj in nearby_objects:
             if self.camera != other_obj and self.camera.intersects(other_obj):
                 # Collision detected, determine direction
-                collision_direction = self.determine_collision_direction(other_obj)
                 print("Collision detected!")
                 self.determine_collision_direction(other_obj)
                 return True
@@ -404,16 +403,11 @@ class Example(Base):
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        self.rig.update(self.input, self.delta_time)
+        collision = self.check_collisions()  # Get collision direction
+        self.rig.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.camera)
         # Check for collisions
-        collision_direction = self.check_collisions()  # Get collision direction
-        if collision_direction:
-            # If collision occurred, restrict movement in that direction
-            self.rig.restrict_movement(collision_direction)
-        else:
-            # No collision, allow movement in all directions
-            self.rig.allow_movement()
+        
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
