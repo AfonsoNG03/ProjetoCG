@@ -344,8 +344,9 @@ class Example(Base):
                 # Collision detected, determine direction
                 collision_direction = self.determine_collision_direction(other_obj)
                 print("Collision detected!")
-                return collision_direction
-        return None
+                self.determine_collision_direction(other_obj)
+                return True
+        return False
 
     def determine_collision_direction(self, other_obj):
         """
@@ -354,19 +355,51 @@ class Example(Base):
         # Get positions of camera and other object
         cam_pos = np.array(self.camera.global_position)
         obj_pos = np.array(other_obj.global_position)
+        obj_height = other_obj._heightMesh
+
+        if cam_pos[1] > obj_pos[1] + obj_height/2:
+            self.rig.translate(0, 0.2, 0)
+            return "up"
         # Calculate direction vector from other object to camera
         direction = cam_pos - obj_pos
-        # Determine dominant axis of direction vectorw
-        max_index = np.argmax(np.abs(direction))
-        if max_index == 0:
-            # X-axis is dominant
-            return "x"
-        elif max_index == 1:
-            # Y-axis is dominant
-            return "y"
+
+        direction = [direction[0], direction[2]]
+        min_index = np.argmin(np.abs(direction))
+        
+        if min_index == 0:
+            if direction[0] > 0:
+                self.rig.translate(0.1, 0, 0)
+            else:
+                self.rig.translate(-0.1, 0, 0)
         else:
-            # Z-axis is dominant
-            return "z"
+            if direction[1] > 0:
+                self.rig.translate(0,0 , 0.1)
+            else:
+                self.rig.translate(0, 0, -0.1)
+
+        # Determine dominant axis of direction vectorw
+        #direction = [direction[0], direction[2]]
+        #max_index = np.argmax(np.abs(direction))
+        #if max_index == 0:
+            #if direction[0] > 0:
+                #self.rig.translate(-0.1, 0, 0)
+            #else:
+                #self.rig.translate(0.1, 0, 0)
+        #else:
+            #if direction[1] > 0:
+                #self.rig.translate(0, 0, 0.1)
+            #else:
+                #self.rig.translate(0, 0, -0.1)
+        #elif max_index == 1:
+         #   if direction[1] > 0:
+          #      self.rig.translate(0, 0.1, 0)
+            #else:
+            #    self.rig.translate(0, -0.1, 0)
+        #else:
+         #   if direction[2] > 0:
+          #      self.rig.translate(0, 0, 0.1)
+           # else:
+            #    self.rig.translate(0, 0, -0.1)
 
         
     def update(self):
