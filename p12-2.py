@@ -148,13 +148,6 @@ class Example(Base):
         sphere_right = Mesh(sphere_geometry, phong_material)
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)"""
-
-        #modelo do boneco
-        modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
-        modelo_geometry = ModeloGeometry()
-        modelo = Mesh(modelo_geometry, modelo_material)
-        modelo.set_position([0, 0, 0])
-        self.scene.add(modelo)
         
         #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
@@ -297,13 +290,27 @@ class Example(Base):
         yatch = Mesh(yatch_geometry, yatch_material)
         yatch.set_position([10, 0, -13])
         self.scene.add(yatch)"""
-        
+
+        #modelo do boneco
+        modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
+        modelo_geometry = ModeloGeometry()
+        modelo = Mesh(modelo_geometry, modelo_material)
+        modelo.set_position([0, 0, 0])
+        self.scene.add(modelo)
+                
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0.65, 2.5, -2])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         #
+
+    def update(self):
+        self.distort_material.uniform_dict["time"].data += self.delta_time/5
+        collision = self.check_collisions()  # Get collision direction
+        self.rig.update(self.input, self.delta_time, collision)
+        self.renderer.render(self.scene, self.camera)
+        # Check for collisions
 
     def add_to_grid(self, obj):
         """
@@ -411,15 +418,6 @@ class Example(Base):
           #      self.rig.translate(0, 0, 0.1)
            # else:
             #    self.rig.translate(0, 0, -0.1)
-
-        
-    def update(self):
-        self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        collision = self.check_collisions()  # Get collision direction
-        self.rig.update(self.input, self.delta_time, collision)
-        self.renderer.render(self.scene, self.camera)
-        # Check for collisions
-        
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
