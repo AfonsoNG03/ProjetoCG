@@ -153,7 +153,8 @@ class Example(Base):
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
-        self.scene.add(self.modelo)
+        self.modelo.rotate_y(110)
+        self.rig.add(self.modelo)
         
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
@@ -196,8 +197,9 @@ class Example(Base):
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
         self.oculos = Mesh(oculos_geometry, oculos_material)
-        self.oculos.set_position([0, 0, -0.09])
-        self.scene.add(self.oculos)
+        self.oculos.set_position([0, 0, 0.09])
+        self.oculos.rotate_y(179.2)
+        self.rig.add(self.oculos)
 
         # Criação da cadeira
         #cadeira_material = TextureMaterial(texture=Texture("images/crate.jpg"))
@@ -290,8 +292,14 @@ class Example(Base):
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, -1])
         self.rig.add(self.camera)
+        self.rig.rotate_y(110)
         self.scene.add(self.rig)
         #
+
+        self.static_camera = Camera(aspect_ratio=800/600)
+        self.static_camera.set_position([10, 10, 10])
+        self.static_camera.look_at([0, 0, 0])
+        self.active_camera = self.camera  # Define a câmera principal como ativa inicialmente
 
     def add_to_grid(self, obj):
         """
@@ -373,16 +381,25 @@ class Example(Base):
         
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
+
+        if self.input.is_key_pressed('p'):  # Verifica se 'P' foi pressionado
+            if self.active_camera == self.camera:
+                self.active_camera = self.static_camera
+            else:
+                self.active_camera = self.camera
+
+        if self.input.is_key_pressed('u'):  # Verifica se 'P' foi pressionado
+            self.oculos.rotate_y(+1)
+
         self.rig.update(self.input, self.delta_time)
-        self.renderer.render(self.scene, self.camera)
-        # Check for collisions
-        collision_direction = self.check_collisions()  # Get collision direction
+        self.renderer.render(self.scene, self.active_camera)  # Use a câmera ativa
+
+        collision_direction = self.check_collisions()  # Verifica colisões
         if collision_direction:
-            # If collision occurred, restrict movement in that direction
             self.rig.restrict_movement(collision_direction)
         else:
-            # No collision, allow movement in all directions
             self.rig.allow_movement()
+            
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
