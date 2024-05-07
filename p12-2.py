@@ -296,10 +296,14 @@ class Example(Base):
         self.scene.add(self.rig)
         #
 
+        # Criaçao da camera alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([10, 10, 10])
+        self.static_camera.set_position([0, 10, -2])
         self.static_camera.look_at([0, 0, 0])
-        self.active_camera = self.camera  # Define a câmera principal como ativa inicialmente
+        self.rig.add(self.static_camera)
+        self.active_camera = self.camera
+
+        self.toggle_camera = False
 
     def add_to_grid(self, obj):
         """
@@ -382,19 +386,20 @@ class Example(Base):
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
 
-        if self.input.is_key_pressed('p'):  # Verifica se 'P' foi pressionado
-            if self.active_camera == self.camera:
-                self.active_camera = self.static_camera
-            else:
-                self.active_camera = self.camera
-
-        if self.input.is_key_pressed('u'):  # Verifica se 'P' foi pressionado
-            self.oculos.rotate_y(+1)
-
+        if self.input.is_key_pressed('p'):
+            if not self.toggle_camera:
+                self.toggle_camera = True
+                if self.active_camera == self.camera:
+                    self.active_camera = self.static_camera
+                else:
+                    self.active_camera = self.camera
+        else: 
+            self.toggle_camera = False
+        
         self.rig.update(self.input, self.delta_time)
-        self.renderer.render(self.scene, self.active_camera)  # Use a câmera ativa
+        self.renderer.render(self.scene, self.active_camera)
 
-        collision_direction = self.check_collisions()  # Verifica colisões
+        collision_direction = self.check_collisions()
         if collision_direction:
             self.rig.restrict_movement(collision_direction)
         else:
