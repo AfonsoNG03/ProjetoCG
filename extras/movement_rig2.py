@@ -37,10 +37,11 @@ class MovementRig2(Object3D):
         self.mouse_x = 0
         self.mouse_y = 0
 
-
         # Flag to track if the player is currently jumping
         self.is_jumping = False
         self.jump_speed = 10  # Adjust as needed
+
+        self._heightMesh = 0.0
 
     # Adding and removing objects applies to look attachment.
     # Override functions from the Object3D class.
