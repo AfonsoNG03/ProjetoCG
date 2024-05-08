@@ -9,6 +9,8 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
+from extras.movement_rig2 import MovementRig2
+from extras.movement_rig3 import MovementRig3
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.arbusto import arbustoGeometry
@@ -19,6 +21,7 @@ from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
 from geometry.pokeball import pokeballGeometry
@@ -90,6 +93,8 @@ class Example(Base):
         self.renderer = Renderer()
         self.scene = Scene()
         self.rig = MovementRig()
+        self.rig2 = MovementRig2()
+        self.rig3 = MovementRig3()
         #
 
         # Adiciona luzes
@@ -154,7 +159,7 @@ class Example(Base):
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
         self.modelo.rotate_y(110)
-        self.rig.add(self.modelo)
+        self.rig2.add(self.modelo)
         
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
@@ -167,6 +172,17 @@ class Example(Base):
             arvore = Mesh(arvore_geometry, arvore_material)
             arvore.set_position(position)
             self.scene.add(arvore)
+
+        #criação do cubo
+        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_geometry = CuboGeometry()
+        cubo = Mesh(cubo_geometry, cubo_material)
+        cubo.set_position([0, 2, -10])
+        self.scene.add(cubo)
+        for i in range(30):
+            cubo = Mesh(cubo_geometry, cubo_material)
+            cubo.set_position([0, 2 +i*2, -10-i*3])
+            self.scene.add(cubo)
   
         # Criação rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
@@ -199,7 +215,7 @@ class Example(Base):
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.2)
-        self.rig.add(self.oculos)
+        self.rig2.add(self.oculos)
 
         # Criação da cadeira
         #cadeira_material = TextureMaterial(texture=Texture("images/crate.jpg"))
@@ -292,15 +308,16 @@ class Example(Base):
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, -1])
         self.rig.add(self.camera)
-        self.rig.rotate_y(110)
         self.scene.add(self.rig)
+        self.scene.add(self.rig2)
+        self.scene.add(self.rig3)
         #
 
         # Criaçao da camera alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([0, 10, -2])
-        self.static_camera.look_at([0, 0, 0])
-        self.rig.add(self.static_camera)
+        self.static_camera.set_position([0, 7, 2])
+        self.static_camera.rotate_x(5.25)
+        self.rig3.add(self.static_camera)
         self.active_camera = self.camera
 
         self.toggle_camera = False
@@ -324,7 +341,7 @@ class Example(Base):
         """
         self.grid = {}
         for obj in self.scene.children_list:
-            if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light or obj == self.sky:
+            if obj == self.rig or obj == self.rig2 or obj == self.rig3 or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light or obj == self.sky:
                 continue
             self.add_to_grid(obj)
 
@@ -386,7 +403,7 @@ class Example(Base):
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
 
-        if self.input.is_key_pressed('p'):
+        if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
@@ -397,13 +414,12 @@ class Example(Base):
             self.toggle_camera = False
         
         self.rig.update(self.input, self.delta_time)
+        self.rig2.update(self.input, self.delta_time)
+        self.rig3.update(self.input, self.delta_time)
         self.renderer.render(self.scene, self.active_camera)
 
-        collision_direction = self.check_collisions()
-        if collision_direction:
-            self.rig.restrict_movement(collision_direction)
-        else:
-            self.rig.allow_movement()
+        collision = self.check_collisions()
+        # Check for collisions
             
 
 # Instantiate this class and run the program
