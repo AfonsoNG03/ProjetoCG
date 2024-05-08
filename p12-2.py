@@ -369,14 +369,23 @@ class Example(Base):
         self.update_grid()
         nearby_objects = self.get_nearby_objects(self.camera)
         for other_obj in nearby_objects:
-            if other_obj == self.oculos or other_obj == self.modelo:
-                continue  # Skip checking collisions with the glasses and the model
-            if self.camera != other_obj and self.camera.intersects(other_obj):
-                # Collision detected, determine direction
-                collision_direction = self.determine_collision_direction(other_obj)
-                print("Collision detected!")
-                return collision_direction
-        return None
+            if other_obj != self.camera and self.camera.intersects(other_obj):
+                print("Collision detected with camera!")
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.oculos and self.oculos.intersects(other_obj):
+                print("Collision detected with sunglasses!")
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.modelo and self.modelo.intersects(other_obj):
+                print("Collision detected with model!")
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.static_camera and self.static_camera.intersects(other_obj):
+                print("Collision detected with 3rd person camera!")
+                self.determine_collision_direction(other_obj)
+                return True
+        return False
 
     def determine_collision_direction(self, other_obj):
         """
