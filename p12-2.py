@@ -150,9 +150,9 @@ class Example(Base):
         cubo.set_position([0, 2, -10])
         self.scene.add(cubo)
 
-        for i in range(30):
+        for i in range(10):
             cubo = Mesh(cubo_geometry, cubo_material)
-            cubo.set_position([0, 2 +i*2, -10-i*3])
+            cubo.set_position([0, 2, -10-i*10])
             self.scene.add(cubo)
         
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
@@ -271,7 +271,7 @@ class Example(Base):
         obj_height = other_obj._heightMesh
 
         if cam_pos[1] > obj_pos[1] + obj_height/2:
-            self.rig.translate(0, 0.2, 0)
+            #self.rig.translate(0, 0.2, 0)
             return "up"
         # Calculate direction vector from other object to camera
         direction = cam_pos - obj_pos

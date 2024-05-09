@@ -116,6 +116,11 @@ class MovementRig(Object3D):
                 self.is_jumping = False
                 self.jump_speed = 10  # Reset jump speed
 
+        else:
+            if not collision and self.global_position[1] >= 0:
+                # Apply gravity to the object
+                self.translate(0, -10 * delta_time, 0)
+
         self.keys_pressed = [key for key in input_object.key_pressed_list]
 
         if collision:
