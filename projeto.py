@@ -29,7 +29,6 @@ from material.texture import TextureMaterial
 
 class Example(Base):
     """
-    ola
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
     Para mexer a camera usar up left right down  e as tecals p l n m
