@@ -312,7 +312,7 @@ class Example(Base):
         self.scene.add(self.rig3)
         #
 
-        # Criaçao da camera alternativa
+        # Criaçao da camara alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
         self.static_camera.set_position([0, 7, 2])
         self.static_camera.rotate_x(5.25)
