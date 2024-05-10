@@ -9,17 +9,19 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
+from extras.movement_rig2 import MovementRig2
+from extras.movement_rig3 import MovementRig3
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.arbusto import arbustoGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
-from geometry.cubo import CuboGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
+from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
 from geometry.pokeball import pokeballGeometry
@@ -37,7 +39,6 @@ from material.phong import PhongMaterial
 from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
 from material.texture import TextureMaterial
-
 
 class Example(Base):
     """
@@ -91,6 +92,8 @@ class Example(Base):
         self.renderer = Renderer()
         self.scene = Scene()
         self.rig = MovementRig()
+        self.rig2 = MovementRig2()
+        self.rig3 = MovementRig3()
         #
 
         # Adiciona luzes
@@ -200,9 +203,10 @@ class Example(Base):
         # Criação dos oculos
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
-        oculos = Mesh(oculos_geometry, oculos_material)
-        oculos.set_position([0, 0, -0.09])
-        self.scene.add(oculos)
+        self.oculos = Mesh(oculos_geometry, oculos_material)
+        self.oculos.set_position([0, 0, 0.09])
+        self.oculos.rotate_y(179.1)
+        self.rig2.add(self.oculos)
 
         # Criação da cadeira
         #cadeira_material = TextureMaterial(texture=Texture("images/crate.jpg"))
@@ -294,22 +298,45 @@ class Example(Base):
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
-        modelo = Mesh(modelo_geometry, modelo_material)
-        modelo.set_position([0, 0, 0])
-        self.scene.add(modelo)
+        self.modelo = Mesh(modelo_geometry, modelo_material)
+        self.modelo.set_position([0, 0, 0])
+        self.modelo.rotate_y(110)
+        self.rig2.add(self.modelo)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0.65, 2.5, -2])
+        self.camera.set_position([0, 2.93, -1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
+        self.scene.add(self.rig2)
+        self.scene.add(self.rig3)
         #
+
+        # Criaçao da camara alternativa
+        self.static_camera = Camera(aspect_ratio=800/600)
+        self.static_camera.set_position([0, 7, 2])
+        self.static_camera.rotate_x(5.25)
+        self.rig3.add(self.static_camera)
+        self.active_camera = self.camera
+
+        self.toggle_camera = False
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
+        if self.input.is_key_pressed('c'):
+            if not self.toggle_camera:
+                self.toggle_camera = True
+                if self.active_camera == self.camera:
+                    self.active_camera = self.static_camera
+                else:
+                    self.active_camera = self.camera
+        else: 
+            self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
         self.rig.update(self.input, self.delta_time, collision)
-        self.renderer.render(self.scene, self.camera)
+        self.rig2.update(self.input, self.delta_time, collision)
+        self.rig3.update(self.input, self.delta_time, collision)
+        self.renderer.render(self.scene, self.active_camera)
         # Check for collisions
 
     def add_to_grid(self, obj):
@@ -359,9 +386,17 @@ class Example(Base):
         self.update_grid()
         nearby_objects = self.get_nearby_objects(self.camera)
         for other_obj in nearby_objects:
-            if self.camera != other_obj and self.camera.intersects(other_obj):
-                # Collision detected, determine direction
+            if other_obj != self.camera and self.camera.intersects(other_obj):
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.oculos and self.oculos.intersects(other_obj):
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.modelo and self.modelo.intersects(other_obj):
                 print("Collision detected!")
+                self.determine_collision_direction(other_obj)
+                return True
+            elif other_obj != self.static_camera and self.static_camera.intersects(other_obj):
                 self.determine_collision_direction(other_obj)
                 return True
         return False
