@@ -118,6 +118,10 @@ class MovementRig3(Object3D):
                 self.is_jumping = False
                 self.jump_speed = 10  # Reset jump speed
 
+        # Restrict downward movement if the model is already on the ground
+        if self.global_position[1] <= 0:
+            move_amount = max(0, move_amount)  # Set move_amount to zero to restrict downward movement
+
         self.keys_pressed = [key for key in input_object.key_pressed_list]
 
         if collision:
