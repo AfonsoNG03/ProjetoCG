@@ -151,8 +151,21 @@ class Example(Base):
         sphere_right = Mesh(sphere_geometry, phong_material)
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)"""
+
+        #Passadiço
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passaGeometry()
+        passa_positions = [#[-1.75, 0, 25],[-1.75, 0, 32.5],
+                           #[-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
+                           [-1.75, 0, 72.5],[-1.75, 7, 72.5],[-1.75, 14, 72.5],[-1.75, 21, 72.5]
+                           ]
+        for position in passa_positions:
+            passa = Mesh(passa_geometry, passa_material)
+            passa.set_position(position)
+            #passa.scale(5)
+            self.scene.add(passa)
         
-        #criação do cubo
+        """#criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
@@ -161,6 +174,16 @@ class Example(Base):
         for i in range(30):
             cubo = Mesh(cubo_geometry, cubo_material)
             cubo.set_position([0, 2 +i*2, -10-i*3])
+            self.scene.add(cubo)"""
+        
+        #criação do cubo
+        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_geometry = CuboGeometry()
+        cubo = Mesh(cubo_geometry, cubo_material)
+        cubo_positions= [[-1.75,22,58],[-1.75,24,60]]
+        for position in cubo_positions:
+            cubo = Mesh(cubo_geometry, cubo_material)
+            cubo.set_position(position)
             self.scene.add(cubo)
 
         #criação das árvores
@@ -261,19 +284,6 @@ class Example(Base):
         bola = Mesh(bola_geometry, bola_material)
         bola.set_position([-5, 0.15, -3.5])
         self.scene.add(bola)
-
-        #Passadiço
-        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
-        passa_geometry = passaGeometry()
-        passa_positions = [#[-1.75, 0, 25],[-1.75, 0, 32.5],
-                           [-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
-                           #[-1.75, 0, 72.5]
-                           ]
-        for position in passa_positions:
-            passa = Mesh(passa_geometry, passa_material)
-            passa.set_position(position)
-            passa.scale(5)
-            self.scene.add(passa)
             
         #Easter Egg
         pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
