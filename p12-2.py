@@ -188,7 +188,7 @@ class Example(Base):
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
         toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 15],[-20, 0, 10],
-                            [-15, 0, 10],[-15, 0, 5],[-10, 0, 17],[-10, 0, 10],[-7, 0, 15],[-6, 0, 25],[-2, 0, 20],
+                            [-15, 0, 10],[-15, 0, 5],[-10, 0, 17],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
                             [0, 0, 10],[6, 0, 10],[10, 0, 5],[14, 0, 10],[16, 0, 15],[19, 0, 5],[22, 0, 10],
                             [25, 0, 5],[35, 0, 5],[40, 0, 15],[40, 0, 7],[55, 0, 10],[55, 0, 5],[70, 0, 10],[70, 0, 15]]
         for position in toalha_positions:
@@ -265,11 +265,14 @@ class Example(Base):
         #Passadiço
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
-        passa_positions = [[0.75, 0, 25],[0.75, 0, 32.5],[0.75, 0, 40],[0.75, 0, 47.5],[0.75, 0, 55],
-                           [0.75, 0, 62.5],[0.75, 0, 70],[0.75, 0, 72.5]]
+        passa_positions = [#[-1.75, 0, 25],[-1.75, 0, 32.5],
+                           [-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
+                           #[-1.75, 0, 72.5]
+                           ]
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
             passa.set_position(position)
+            passa.scale(5)
             self.scene.add(passa)
             
         #Easter Egg
