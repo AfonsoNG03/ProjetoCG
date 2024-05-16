@@ -184,6 +184,20 @@ class Example(Base):
             rocks.set_position(position)
             self.scene.add(rocks)
 
+        # Criação das toalhas
+        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
+        toalha_geometry = ToalhaGeometry()
+        toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 15],[-20, 0, 10],
+                            [-15, 0, 10],[-15, 0, 5],[-10, 0, 17],[-10, 0, 10],[-7, 0, 15],[-6, 0, 25],[-2, 0, 20],
+                            [0, 0, 10],[6, 0, 10],[10, 0, 5],[14, 0, 10],[16, 0, 15],[19, 0, 5],[22, 0, 10],
+                            [25, 0, 5],[35, 0, 5],[40, 0, 15],[40, 0, 7],[55, 0, 10],[55, 0, 5],[70, 0, 10],[70, 0, 15]]
+        for position in toalha_positions:
+            toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
+            toalha = Mesh(toalha_geometry, toalha_material)
+            toalha.set_position(position)
+            toalha.scale(2.5)
+            self.scene.add(toalha)
+
         """# Criação arbusto
         arbusto_material = TextureMaterial(texture=Texture("images/arbusto.jpg"))
         arbusto_geometry = arbustoGeometry()
@@ -214,16 +228,6 @@ class Example(Base):
         #cadeira = Mesh(cadeira_geometry, cadeira_material)
         #cadeira.set_position([0, 0, 0])
         #self.scene.add(cadeira)
-
-        # Criação das toalhas
-        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
-        toalha_geometry = ToalhaGeometry()
-        for i in range(30):
-            toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
-            toalha = Mesh(toalha_geometry, toalha_material)
-            toalha.scale(2.5)
-            toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
-            self.scene.add(toalha)
         
         #placa das direções
         placa_material = TextureMaterial(texture=Texture("images/p2.png"))
@@ -313,10 +317,10 @@ class Example(Base):
         #
 
         # Criaçao da camara alternativa
-        self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([0, 7, 2])
-        self.static_camera.rotate_x(5.25)
-        self.rig3.add(self.static_camera)
+        self.third_person_camera = Camera(aspect_ratio=800/600)
+        self.third_person_camera.set_position([0, 7, 2])
+        self.third_person_camera.rotate_x(5.25)
+        self.rig3.add(self.third_person_camera)
         self.active_camera = self.camera
 
         self.toggle_camera = False
@@ -327,7 +331,7 @@ class Example(Base):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
-                    self.active_camera = self.static_camera
+                    self.active_camera = self.third_person_camera
                 else:
                     self.active_camera = self.camera
         else: 
@@ -396,7 +400,7 @@ class Example(Base):
                 print("Collision detected!")
                 self.determine_collision_direction(other_obj)
                 return True
-            elif other_obj != self.static_camera and self.static_camera.intersects(other_obj):
+            elif other_obj != self.third_person_camera and self.third_person_camera.intersects(other_obj):
                 self.determine_collision_direction(other_obj)
                 return True
         return False
