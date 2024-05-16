@@ -151,19 +151,6 @@ class Example(Base):
         sphere_right = Mesh(sphere_geometry, phong_material)
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)"""
-
-        #Passadiço
-        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
-        passa_geometry = passaGeometry()
-        passa_positions = [#[-1.75, 0, 25],[-1.75, 0, 32.5],
-                           #[-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
-                           [-1.75, 0, 72.5],[-1.75, 7, 72.5],[-1.75, 14, 72.5],[-1.75, 21, 72.5]
-                           ]
-        for position in passa_positions:
-            passa = Mesh(passa_geometry, passa_material)
-            passa.set_position(position)
-            #passa.scale(5)
-            self.scene.add(passa)
         
         """#criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
@@ -176,11 +163,31 @@ class Example(Base):
             cubo.set_position([0, 2 +i*2, -10-i*3])
             self.scene.add(cubo)"""
         
+        #Passadiço
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passaGeometry()
+        passa_positions = [
+                           #[-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
+                           [-1.75, 0, 85],[-1.75, 7, 85],[-1.75, 14, 85],[-1.75, 21, 85],[-1.75, 28, 85],
+                           [-1.75, 0, 70],[-1.75, 7, 70],[-1.75, 14, 70],[-1.75, 21, 70],
+                           [-1.75, 0, 55],[-1.75, 7, 55],[-1.75, 14, 55],
+                           [-1.75, 0, 40],[-1.75, 7, 40],
+                           [-1.75, 0, 25]
+                           ]
+        for position in passa_positions:
+            passa = Mesh(passa_geometry, passa_material)
+            passa.set_position(position)
+            #passa.scale(5)
+            self.scene.add(passa)
+
         #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
-        cubo_positions= [[-1.75,22,58],[-1.75,24,60]]
+        cubo_positions= [[-1.75,25.5,75.5],[-1.75,27.5,77.5],[-1.75,29.5,79.5],
+                        [-1.75,18.5,60.5],[-1.75,20.5,62.5],[-1.75,22.5,64.5],
+                        [-1.75,11.5,45.5],[-1.75,13.5,47.5],[-1.75,15.5,49.5],
+                        [-1.75,4.5,30.5],[-1.75,6.5,32.5],[-1.75,8.5,34.5]]
         for position in cubo_positions:
             cubo = Mesh(cubo_geometry, cubo_material)
             cubo.set_position(position)
@@ -317,12 +324,14 @@ class Example(Base):
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
+        #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
         self.rig2.add(self.modelo)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, -1])
+        #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
         self.scene.add(self.rig2)
