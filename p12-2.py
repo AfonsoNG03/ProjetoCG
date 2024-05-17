@@ -214,8 +214,6 @@ class Example(Base):
             rocks.set_position(position)
             self.scene.add(rocks)
 
-<<<<<<< HEAD
-=======
         # Criação das toalhas
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
@@ -230,7 +228,6 @@ class Example(Base):
             toalha.scale(2.5)
             self.scene.add(toalha)
 
->>>>>>> Miguel
         """# Criação arbusto
         arbusto_material = TextureMaterial(texture=Texture("images/arbusto.jpg"))
         arbusto_geometry = arbustoGeometry()
