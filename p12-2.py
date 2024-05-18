@@ -48,8 +48,10 @@ class Example(Base):
     """
     def initialize(self):
         print("Initializing program...")
-        print("Para mexer os oculos usar as teclas wasd e q r f t g")
-        print("Para mexer a camera usar as setas (up left right down) e as teclas p l n m h b")
+        print("Para mexer o modelo usar as teclas w,a,s,d")
+        print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
+        print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
+        print("Para mudar ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """

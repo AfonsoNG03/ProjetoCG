@@ -29,7 +29,7 @@ class MovementRig(Object3D):
         self.KEY_MOVE_RIGHT = "d"
         self.KEY_JUMP = "space"  # New key for jumping
         self.KEY_MOVE_UP = "z"
-        #self.KEY_MOVE_DOWN = "left ctrl"
+        #self.KEY_MOVE_DOWN = "x"
         self.KEY_TURN_LEFT = "q"
         self.KEY_TURN_RIGHT = "e"
         self.KEY_LOOK_UP = "t"
@@ -56,7 +56,7 @@ class MovementRig(Object3D):
         """
         Restringe o movimento com base na lista de teclas pressionadas durante uma colisão.
         """
-        keys_to_restrict = ["w", "s", "a", "d", "z", "left ctrl"]
+        keys_to_restrict = ["w", "s", "a", "d", "z", "x"]
         # Restringir as teclas de movimento
         for key in keys_to_restrict:
             if key in self.keys_pressed:
@@ -70,7 +70,7 @@ class MovementRig(Object3D):
                     self.KEY_MOVE_RIGHT = ""
                 elif key == "z":
                     self.KEY_MOVE_UP = ""
-                #elif key == "left ctrl":
+                #elif key == "x":
                  #   self.KEY_MOVE_DOWN = ""
 
         # Restaurar as teclas permitidas
@@ -86,7 +86,7 @@ class MovementRig(Object3D):
         self.KEY_MOVE_LEFT = "a"
         self.KEY_MOVE_RIGHT = "d"
         self.KEY_MOVE_UP = "z"
-        #self.KEY_MOVE_DOWN = "left ctrl"
+        #self.KEY_MOVE_DOWN = "x"
 
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
