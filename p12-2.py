@@ -359,7 +359,7 @@ class Example(Base):
             "grupo1": 1.2,
             "grupo2": 2.4,
             "grupo3": 5.0,
-            "grupo4": 10.0  # Higher amplitude for Group 4
+            "grupo4": 10.0 
         }
         
         for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
