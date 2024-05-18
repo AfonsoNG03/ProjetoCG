@@ -133,8 +133,8 @@ class MovementRig(Object3D):
             self.translate(move_amount, 0, 0)
         if input_object.is_key_pressed(self.KEY_MOVE_UP):
             self.translate(0, move_amount, 0)
-        if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
-            self.translate(0, -move_amount, 0)
+        #if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
+           #self.translate(0, -move_amount, 0)
         if input_object.is_key_pressed(self.KEY_TURN_RIGHT) or input_object.mouse_x > 0:
             self.rotate_y(-rotate_amount)
         if input_object.is_key_pressed(self.KEY_TURN_LEFT) or input_object.mouse_x < 0:

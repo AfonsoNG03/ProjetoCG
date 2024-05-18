@@ -25,6 +25,7 @@ from geometry.oculos import OculosGeometry
 from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
+from geometry.stand import standGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
@@ -287,6 +288,13 @@ class Example(Base):
         placa = Mesh(placa_geometry, placa_material)
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
+
+        #placa das instruções
+        stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
+        stand_geometry = standGeometry()
+        stand = Mesh(stand_geometry, stand_material)
+        stand.set_position([-2, 0, 16])
+        self.scene.add(stand)
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
