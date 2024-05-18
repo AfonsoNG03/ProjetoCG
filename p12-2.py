@@ -181,7 +181,7 @@ class Example(Base):
             self.scene.add(passa)
 
         #criação do cubo
-        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
         cubo_positions= [[-1.75,25.5,75.5],[-1.75,27.5,77.5],[-1.75,29.5,79.5],
@@ -227,15 +227,6 @@ class Example(Base):
             toalha.set_position(position)
             toalha.scale(2.5)
             self.scene.add(toalha)
-
-        """# Criação arbusto
-        arbusto_material = TextureMaterial(texture=Texture("images/arbusto.jpg"))
-        arbusto_geometry = arbustoGeometry()
-        rock_positions = [[-25, 0, 10]]
-        for position in rock_positions:
-            arbusto = Mesh(arbusto_geometry, arbusto_material)
-            arbusto.set_position(position)
-            self.scene.add(arbusto)"""
 
         # Criação do bikini
         bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
