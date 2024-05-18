@@ -1,3 +1,4 @@
+# Importação de bibliotecas
 import numpy as np
 import math
 import pathlib
@@ -180,18 +181,28 @@ class Example(Base):
             #passa.scale(5)
             self.scene.add(passa)
 
-        #criação do cubo
+        #criação dos cubos
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
-        cubo_positions= [[-1.75,25.5,75.5],[-1.75,27.5,77.5],[-1.75,29.5,79.5],
-                        [-1.75,18.5,60.5],[-1.75,20.5,62.5],[-1.75,22.5,64.5],
-                        [-1.75,11.5,45.5],[-1.75,13.5,47.5],[-1.75,15.5,49.5],
-                        [-1.75,4.5,30.5],[-1.75,6.5,32.5],[-1.75,8.5,34.5]]
-        for position in cubo_positions:
-            cubo = Mesh(cubo_geometry, cubo_material)
-            cubo.set_position(position)
-            self.scene.add(cubo)
+
+        def create_cubos(cubo_geometry, cubo_material, start_height, start_pos, num_cubos, step=2):
+            for i in range(num_cubos):
+                cubo = Mesh(cubo_geometry, cubo_material)
+                cubo.set_position([start_pos[0], start_height + i * step, start_pos[2] + i * 2])
+                self.scene.add(cubo)
+
+        # Criando cubos que sobem
+        create_cubos(cubo_geometry, cubo_material, 25.5, [-1.75, 25.5, 75.5], 3)
+        create_cubos(cubo_geometry, cubo_material, 18.5, [-1.75, 18.5, 60.5], 3)
+        create_cubos(cubo_geometry, cubo_material, 11.5, [-1.75, 11.5, 45.5], 3)
+        create_cubos(cubo_geometry, cubo_material, 4.5, [-1.75, 4.5, 30.5], 3)
+
+        # Criando cubos que descem
+        create_cubos(cubo_geometry, cubo_material, 30.5, [-1.75, 30.5, 20.5], 3, -2)
+        create_cubos(cubo_geometry, cubo_material, 23.5, [-1.75, 23.5, 35.5], 3, -2)
+        create_cubos(cubo_geometry, cubo_material, 16.5, [-1.75, 16.5, 50.5], 3, -2)
+        create_cubos(cubo_geometry, cubo_material, 9.5, [-1.75, 9.5, 65.5], 3, -2)
 
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
