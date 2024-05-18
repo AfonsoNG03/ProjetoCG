@@ -49,8 +49,10 @@ class Example(Base):
     """
     def initialize(self):
         print("Initializing program...")
-        print("Para mexer os oculos usar as teclas wasd e q r f t g")
-        print("Para mexer a camera usar as setas (up left right down) e as teclas p l n m h b")
+        print("Para mexer o modelo usar as teclas w,a,s,d")
+        print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
+        print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
+        print("Para mudar ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -186,25 +188,31 @@ class Example(Base):
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
         self.cube_positions = {
-            "group1": [[-1.75, 25.5, 75.5], [-1.75, 27.5, 77.5], [-1.75, 29.5, 79.5]],
-            "group2": [[-1.75, 18.5, 60.5], [-1.75, 20.5, 62.5], [-1.75, 22.5, 64.5]],
-            "group3": [[-1.75, 11.5, 45.5], [-1.75, 13.5, 47.5], [-1.75, 15.5, 49.5]],
-            "group4": [[-1.75, 4.5, 30.5], [-1.75, 6.5, 32.5], [-1.75, 8.5, 34.5]]
+            "grupo1": [[-1.75, 4.5, 30.5], [-1.75, 6.5, 32.5], [-1.75, 8.5, 34.5]],
+            "grupo2_x": [[-1.75, 13.5, 47.5]],
+            "grupo2_y": [[-1.75, 11.5, 45.5], [-1.75, 15.5, 49.5]],
+            "grupo3_x": [[-1.75, 20.5, 62.5]],
+            "grupo3_y": [[-1.75, 18.5, 60.5], [-1.75, 22.5, 64.5]],
+            "grupo4_x": [[-1.75, 27.5, 77.5]],
+            "grupo4_y": [[-1.75, 25.5, 75.5], [-1.75, 29.5, 79.5]],
         }
         # Create and store the cube meshes in the same dictionary
         self.cube_meshes = {
-            "group1": [],
-            "group2": [],
-            "group3": [],
-            "group4": []
+            "grupo1": [],
+            "grupo2_x": [],
+            "grupo2_y": [],
+            "grupo3_x": [],
+            "grupo3_y": [],
+            "grupo4_x": [],
+            "grupo4_y": []
         }
         # Create the cubes and store the references in the dictionary
-        for group, positions in self.cube_positions.items():
+        for grupo, positions in self.cube_positions.items():
             for position in positions:
                 cubo = Mesh(cubo_geometry, cubo_material)
                 cubo.set_position(position)
                 self.scene.add(cubo)
-                self.cube_meshes[group].append(cubo)
+                self.cube_meshes[grupo].append(cubo)
 
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
@@ -350,7 +358,6 @@ class Example(Base):
         self.scene.add(self.rig)
         self.scene.add(self.rig2)
         self.scene.add(self.rig3)
-        #
 
         # Criaçao da camara alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
@@ -365,13 +372,33 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         # Time-based movement using sine function
         time = self.time * 0.5  # Adjust the speed of the movement
-        amplitude = 1.0  # Adjust the amplitude of the movement
+        # Define different amplitudes for each group
+        amplitudes = {
+            "grupo1": 1.2,
+            "grupo2_x": 2.4,
+            "grupo2_y": 2.4,
+            "grupo3_x": 5.0,
+            "grupo3_y": 5.0,
+            "grupo4_x": 10.0,
+            "grupo4_y": 10.0
+        }
         
-        for group, meshes in self.cube_meshes.items():
+        for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
+            amplitude = amplitudes[grupo]  # Get the amplitude for the current group
             for i, mesh in enumerate(meshes):
-                original_position = self.cube_positions[group][i]
-                new_y = original_position[1] + amplitude * math.sin(time + i)
-                mesh.set_position([original_position[0], new_y, original_position[2]])
+                original_position = self.cube_positions[grupo][i]
+                if '_y' in grupo:
+                    # Vertical 
+                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    mesh.set_position([original_position[0], new_y, original_position[2]])
+                elif '_x' in grupo:
+                    # Horizontal 
+                    new_x = original_position[0] + amplitude * math.sin(time + i)
+                    mesh.set_position([new_x, original_position[1], original_position[2]])
+                else:
+                    # grupo sem '_x' or '_y' adota o tradicional movimento em Y
+                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    mesh.set_position([original_position[0], new_y, original_position[2]])
 
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
