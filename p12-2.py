@@ -185,25 +185,25 @@ class Example(Base):
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
         self.cube_positions = {
-            "group1": [[-1.75, 25.5, 75.5], [-1.75, 27.5, 77.5], [-1.75, 29.5, 79.5]],
-            "group2": [[-1.75, 18.5, 60.5], [-1.75, 20.5, 62.5], [-1.75, 22.5, 64.5]],
-            "group3": [[-1.75, 11.5, 45.5], [-1.75, 13.5, 47.5], [-1.75, 15.5, 49.5]],
-            "group4": [[-1.75, 4.5, 30.5], [-1.75, 6.5, 32.5], [-1.75, 8.5, 34.5]]
+            "grupo4": [[-1.75, 25.5, 75.5], [-1.75, 27.5, 77.5], [-1.75, 29.5, 79.5]],
+            "grupo3": [[-1.75, 18.5, 60.5], [-1.75, 20.5, 62.5], [-1.75, 22.5, 64.5]],
+            "grupo2": [[-1.75, 11.5, 45.5], [-1.75, 13.5, 47.5], [-1.75, 15.5, 49.5]],
+            "grupo1": [[-1.75, 4.5, 30.5], [-1.75, 6.5, 32.5], [-1.75, 8.5, 34.5]]
         }
         # Create and store the cube meshes in the same dictionary
         self.cube_meshes = {
-            "group1": [],
-            "group2": [],
-            "group3": [],
-            "group4": []
+            "grupo1": [],
+            "grupo2": [],
+            "grupo3": [],
+            "grupo4": []
         }
         # Create the cubes and store the references in the dictionary
-        for group, positions in self.cube_positions.items():
+        for grupo, positions in self.cube_positions.items():
             for position in positions:
                 cubo = Mesh(cubo_geometry, cubo_material)
                 cubo.set_position(position)
                 self.scene.add(cubo)
-                self.cube_meshes[group].append(cubo)
+                self.cube_meshes[grupo].append(cubo)
 
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
@@ -354,11 +354,18 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         # Time-based movement using sine function
         time = self.time * 0.5  # Adjust the speed of the movement
-        amplitude = 1.0  # Adjust the amplitude of the movement
+        # Define different amplitudes for each group
+        amplitudes = {
+            "grupo1": 1.2,
+            "grupo2": 2.4,
+            "grupo3": 5.0,
+            "grupo4": 10.0  # Higher amplitude for Group 4
+        }
         
-        for group, meshes in self.cube_meshes.items():
+        for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
+            amplitude = amplitudes[grupo]  # Get the amplitude for the current group
             for i, mesh in enumerate(meshes):
-                original_position = self.cube_positions[group][i]
+                original_position = self.cube_positions[grupo][i]
                 new_y = original_position[1] + amplitude * math.sin(time + i)
                 mesh.set_position([original_position[0], new_y, original_position[2]])
 
