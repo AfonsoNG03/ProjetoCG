@@ -181,7 +181,7 @@ class Example(Base):
             self.scene.add(passa)
 
         #criação do cubo
-        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
+        cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
         cubo_positions= [[-1.75,25.5,75.5],[-1.75,27.5,77.5],[-1.75,29.5,79.5],
