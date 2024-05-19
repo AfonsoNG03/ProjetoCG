@@ -1,4 +1,3 @@
-# Importação de bibliotecas
 import numpy as np
 import math
 import pathlib
@@ -40,6 +39,7 @@ from material.material import Material
 from material.phong import PhongMaterial
 from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
+from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
 
 class Example(Base):
@@ -292,9 +292,23 @@ class Example(Base):
         #placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
         stand_geometry = standGeometry()
-        stand = Mesh(stand_geometry, stand_material)
-        stand.set_position([-2, 0, 16])
-        self.scene.add(stand)
+        self.stand = Mesh(stand_geometry, stand_material)
+        self.stand.set_position([8, 0, 14])
+        self.scene.add(self.stand)
+        #label_texture = TextTexture(text="Para mexer o modelo usar as teclas w,a,s,d\n Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor\n Para mudar a camera telca 'c', espaço para saltar e shift para sprintar\n Para mudar ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer.",
+                                    #system_font_name="Times New Roman",
+                                    #font_size=70, font_color=[0, 0, 0],
+                                    #background_color=[0, 0, 0, 0],
+                                    #image_width=1000, image_height=500,
+                                    #align_horizontal=0.5, align_vertical=0.5,
+                                    #image_border_width=4,
+                                    #image_border_color=[255, 255, 255, 0])
+        #label_material = TextureMaterial(label_texture)
+        #label_geometry = RectangleGeometry(width=1, height=0.5)
+        #self.label = Mesh(label_geometry, label_material)
+        #self.label.set_position([8, 3, 13])
+        #self.label.rotate_x(180)
+        #self.scene.add(self.label)
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
@@ -380,6 +394,14 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         # Time-based movement using sine function
         time = self.time * 0.5  # Adjust the speed of the movement
+        
+        # Atualizar a lógica de rotação para apenas no eixo X
+        modelo_position = self.modelo.global_position
+
+        look_at_modelo = [modelo_position[0], 0, modelo_position[2]]
+        self.stand.look_at(look_at_modelo)
+        #self.label.look_at(look_at_modelo)
+
         # Define different amplitudes for each group
         amplitudes = {
             "grupo1": 1.2,
@@ -514,30 +536,6 @@ class Example(Base):
                 self.rig.translate(0,0 , 0.1)
             else:
                 self.rig.translate(0, 0, -0.1)
-
-        # Determine dominant axis of direction vectorw
-        #direction = [direction[0], direction[2]]
-        #max_index = np.argmax(np.abs(direction))
-        #if max_index == 0:
-            #if direction[0] > 0:
-                #self.rig.translate(-0.1, 0, 0)
-            #else:
-                #self.rig.translate(0.1, 0, 0)
-        #else:
-            #if direction[1] > 0:
-                #self.rig.translate(0, 0, 0.1)
-            #else:
-                #self.rig.translate(0, 0, -0.1)
-        #elif max_index == 1:
-         #   if direction[1] > 0:
-          #      self.rig.translate(0, 0.1, 0)
-            #else:
-            #    self.rig.translate(0, -0.1, 0)
-        #else:
-         #   if direction[2] > 0:
-          #      self.rig.translate(0, 0, 0.1)
-           # else:
-            #    self.rig.translate(0, 0, -0.1)
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
