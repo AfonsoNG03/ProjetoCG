@@ -40,6 +40,10 @@ class MovementRig3(Object3D):
             "MODO_CRIATIVO": "u"
         }
 
+        """ self.velocity = [0, 0, 0]
+        self.acceleration = 20  # Acceleration rate
+        self.friction = 8  # Friction to slow down """
+
     def add(self, child):
         self._look_attachment.add(child)
 
@@ -61,6 +65,17 @@ class MovementRig3(Object3D):
             "MOVE_UP": "z",
             "MOVE_DOWN": "x"
         })
+
+    """ def apply_friction(self, delta_time):
+        for i in range(3):
+            if self.velocity[i] > 0:
+                self.velocity[i] -= self.friction * delta_time
+                if self.velocity[i] < 0:
+                    self.velocity[i] = 0
+            elif self.velocity[i] < 0:
+                self.velocity[i] += self.friction * delta_time
+                if self.velocity[i] > 0:
+                    self.velocity[i] = 0 """
 
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
@@ -98,6 +113,18 @@ class MovementRig3(Object3D):
             "MOVE_UP": (0, move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0),
             "MOVE_DOWN": (0, -move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0)
         }
+
+        """ for action, direction in movement_actions.items():
+            if input_object.is_key_pressed(self.keys[action]):
+                for i in range(3):
+                    self.velocity[i] += direction[i] * self.acceleration * delta_time
+
+        self.apply_friction(delta_time)
+#
+        for i in range(3):
+            self.velocity[i] = max(min(self.velocity[i], move_amount), -move_amount)
+
+        self.translate(*[v * delta_time for v in self.velocity]) """
 
         for action, translation in movement_actions.items():
             if input_object.is_key_pressed(self.keys[action]):
