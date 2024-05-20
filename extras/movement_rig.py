@@ -66,7 +66,7 @@ class MovementRig(Object3D):
         })
 
     """ def apply_friction(self, delta_time):
-        #for i in range(3):
+        for i in range(3):
             if self.velocity[i] > 0:
                 self.velocity[i] -= self.friction * delta_time
                 if self.velocity[i] < 0:

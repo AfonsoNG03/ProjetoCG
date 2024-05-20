@@ -38,7 +38,7 @@ class MovementRig2(Object3D):
             "MODO_CRIATIVO": "u"
         }
 
-        """ #self.velocity = [0, 0, 0]
+        """ self.velocity = [0, 0, 0]
         self.acceleration = 20  # Acceleration rate
         self.friction = 8  # Friction to slow down """
 
