@@ -271,16 +271,6 @@ class Example(Base):
         #cadeira = Mesh(cadeira_geometry, cadeira_material)
         #cadeira.set_position([0, 0, 0])
         #self.scene.add(cadeira)
-
-        # Criação das toalhas
-        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
-        toalha_geometry = ToalhaGeometry()
-        for i in range(30):
-            toalha_material = TextureMaterial(texture=Texture(np.random.choice(texturas)))
-            toalha = Mesh(toalha_geometry, toalha_material)
-            toalha.scale(2.5)
-            toalha.set_position([np.random.uniform(-50, 50), 0, np.random.uniform(0, 50)])
-            self.scene.add(toalha)
         
         #placa das direções
         placa_material = TextureMaterial(texture=Texture("images/p2.png"))
