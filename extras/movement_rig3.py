@@ -120,7 +120,7 @@ class MovementRig3(Object3D):
                     self.velocity[i] += direction[i] * self.acceleration * delta_time
 
         self.apply_friction(delta_time)
-#
+
         for i in range(3):
             self.velocity[i] = max(min(self.velocity[i], move_amount), -move_amount)
 
