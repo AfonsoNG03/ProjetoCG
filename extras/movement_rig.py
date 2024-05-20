@@ -27,14 +27,15 @@ class MovementRig(Object3D):
         self.KEY_MOVE_BACKWARDS = "s"
         self.KEY_MOVE_LEFT = "a"
         self.KEY_MOVE_RIGHT = "d"
-        self.KEY_JUMP = "space"  # New key for jumping
+        self.KEY_JUMP = "space"  
         self.KEY_MOVE_UP = "z"
-        #self.KEY_MOVE_DOWN = "x"
+        self.KEY_MOVE_DOWN = "x"
         self.KEY_TURN_LEFT = "q"
         self.KEY_TURN_RIGHT = "e"
         self.KEY_LOOK_UP = "t"
         self.KEY_LOOK_DOWN = "g"
-        self.KEY_SPRINT = "left shift"  # New key for sprinting
+        self.KEY_SPRINT = "left shift"  
+        self.KEY_MODO_CRIATIVO = "u"  
         self.mouse_sensitivity = 1.5
         self.mouse_x = 0
         self.mouse_y = 0
@@ -42,7 +43,9 @@ class MovementRig(Object3D):
 
         # Flag to track if the player is currently jumping
         self.is_jumping = False
-        self.jump_speed = 10  # Adjust as needed
+        self.jump_speed = 10 
+        # Flag to track if vertical movement is enabled
+        self.modo_criativo_enabled = False
 
     # Adding and removing objects applies to look attachment.
     # Override functions from the Object3D class.
@@ -70,8 +73,8 @@ class MovementRig(Object3D):
                     self.KEY_MOVE_RIGHT = ""
                 elif key == "z":
                     self.KEY_MOVE_UP = ""
-                #elif key == "x":
-                 #   self.KEY_MOVE_DOWN = ""
+                elif key == "x":
+                    self.KEY_MOVE_DOWN = ""
 
         # Restaurar as teclas permitidas
         #self.allow_movement()
@@ -86,7 +89,7 @@ class MovementRig(Object3D):
         self.KEY_MOVE_LEFT = "a"
         self.KEY_MOVE_RIGHT = "d"
         self.KEY_MOVE_UP = "z"
-        #self.KEY_MOVE_DOWN = "x"
+        self.KEY_MOVE_DOWN = "x"
 
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
@@ -100,6 +103,10 @@ class MovementRig(Object3D):
         # Jump mechanic
         if input_object.is_key_pressed(self.KEY_JUMP) and not self.is_jumping:
             self.is_jumping = True
+
+        # Modo Criativo
+        if input_object.is_key_pressed(self.KEY_MODO_CRIATIVO):
+            self.modo_criativo_enabled = not self.modo_criativo_enabled
 
         if self.is_jumping:
             # Move the object vertically (upwards) according to jump speed
@@ -116,6 +123,10 @@ class MovementRig(Object3D):
                 self.is_jumping = False
                 self.jump_speed = 10  # Reset jump speed
 
+        # Restrict downward movement if the model is already on the ground
+        if self.global_position[1] <= 0:
+            move_amount = max(0, move_amount)  # Set move_amount to zero to restrict downward movement
+
         self.keys_pressed = [key for key in input_object.key_pressed_list]
 
         if collision:
@@ -131,10 +142,13 @@ class MovementRig(Object3D):
             self.translate(-move_amount, 0, 0)
         if input_object.is_key_pressed(self.KEY_MOVE_RIGHT):
             self.translate(move_amount, 0, 0)
-        if input_object.is_key_pressed(self.KEY_MOVE_UP):
-            self.translate(0, move_amount, 0)
-        #if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
-           #self.translate(0, -move_amount, 0)
+        
+        if self.modo_criativo_enabled:
+            if input_object.is_key_pressed(self.KEY_MOVE_UP):
+                self.translate(0, move_amount, 0)
+            if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
+                self.translate(0, -move_amount, 0)
+
         if input_object.is_key_pressed(self.KEY_TURN_RIGHT) or input_object.mouse_x > 0:
             self.rotate_y(-rotate_amount)
         if input_object.is_key_pressed(self.KEY_TURN_LEFT) or input_object.mouse_x < 0:
