@@ -24,6 +24,7 @@ from geometry.oculos import OculosGeometry
 from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
+from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
@@ -171,12 +172,11 @@ class Example(Base):
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
         passa_positions = [
-                           #[-1.75, 0, 40],[-1.75, 0, 47.5],[-1.75, 0, 55],[-1.75, 0, 62.5],[-1.75, 0, 70],
-                           [-1.75, 0, 85],[-1.75, 7, 85],[-1.75, 14, 85],[-1.75, 21, 85],[-1.75, 28, 85],
-                           [-1.75, 0, 70],[-1.75, 7, 70],[-1.75, 14, 70],[-1.75, 21, 70],
-                           [-1.75, 0, 55],[-1.75, 7, 55],[-1.75, 14, 55],
-                           [-1.75, 0, 40],[-1.75, 7, 40],
-                           [-1.75, 0, 25]
+                           [-1.75, 0, 84],[-1.75, 7, 84],[-1.75, 14, 84],[-1.75, 21, 84],[-1.75, 28, 84],
+                           [-1.75, 0, 69],[-1.75, 7, 69],[-1.75, 14, 69],[-1.75, 21, 69],
+                           [-1.75, 0, 54],[-1.75, 7, 54],[-1.75, 14, 54],
+                           [-1.75, 0, 39],[-1.75, 7, 39],
+                           [-1.75, 0, 24]
                            ]
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
@@ -189,13 +189,13 @@ class Example(Base):
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
         self.cube_positions = {
-            "grupo1": [[-1.75, 4.5, 30.5], [-1.75, 6.5, 32.5], [-1.75, 8.5, 34.5]],
-            "grupo2_x": [[-1.75, 13.5, 47.5]],
-            "grupo2_y": [[-1.75, 11.5, 45.5], [-1.75, 15.5, 49.5]],
-            "grupo3_x": [[-1.75, 20.5, 62.5]],
-            "grupo3_y": [[-1.75, 18.5, 60.5], [-1.75, 22.5, 64.5]],
-            "grupo4_x": [[-1.75, 27.5, 77.5]],
-            "grupo4_y": [[-1.75, 25.5, 75.5], [-1.75, 29.5, 79.5]],
+            "grupo1": [[-1.75, 4.5, 29.5], [-1.75, 6.5, 31.5], [-1.75, 8.5, 33.5]],
+            "grupo2_x": [[-1.75, 13.5, 46.5]],
+            "grupo2_y": [[-1.75, 11.5, 44.5], [-1.75, 15.5, 48.5]],
+            "grupo3_x": [[-1.75, 20.5, 61.5]],
+            "grupo3_y": [[-1.75, 18.5, 59.5], [-1.75, 22.5, 63.5]],
+            "grupo4_x": [[-1.75, 27.5, 76.5]],
+            "grupo4_y": [[-1.75, 25.5, 74.5], [-1.75, 29.5, 78.5]],
         }
         # Create and store the cube meshes in the same dictionary
         self.cube_meshes = {
@@ -265,12 +265,12 @@ class Example(Base):
         self.oculos.rotate_y(179.1)
         self.rig2.add(self.oculos)
 
-        # Criação da cadeira
-        #cadeira_material = TextureMaterial(texture=Texture("images/crate.jpg"))
-        #cadeira_geometry = CadeiraGeometry()
-        #cadeira = Mesh(cadeira_geometry, cadeira_material)
-        #cadeira.set_position([0, 0, 0])
-        #self.scene.add(cadeira)
+        # Criação do portal
+        portal_material = TextureMaterial(texture=Texture("images/crate.jpg"))
+        portal_geometry = portalGeometry()
+        portal = Mesh(portal_geometry, portal_material)
+        portal.set_position([-1.75, 35, 90.5])
+        self.scene.add(portal)
         
         #placa das direções
         placa_material = TextureMaterial(texture=Texture("images/p2.png"))
