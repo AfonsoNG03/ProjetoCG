@@ -59,6 +59,14 @@ class MovementRig(Object3D):
             "MOVE_DOWN": "x"
         })
 
+    def set_rotation_x(self, angle):
+        self._look_attachment.rotate_x(angle - self.current_rotation_x)
+        self.current_rotation_x = angle
+
+    def set_rotation_y(self, angle):
+        self.rotate_y(angle - self.current_rotation_y)
+        self.current_rotation_y = angle
+
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
         rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time * self.mouse_sensitivity
@@ -108,6 +116,7 @@ class MovementRig(Object3D):
         for action, rotation in rotation_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "TURN_RIGHT" and input_object.mouse_x > 0) or (action == "TURN_LEFT" and input_object.mouse_x < 0):
                 self.rotate_y(rotation)
+                self.current_rotation_y += rotation
 
         look_actions = {
             "LOOK_UP": rotate_amount,
@@ -117,3 +126,4 @@ class MovementRig(Object3D):
         for action, rotation in look_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "LOOK_UP" and input_object.mouse_y < 0) or (action == "LOOK_DOWN" and input_object.mouse_y > 0):
                 self._look_attachment.rotate_x(rotation)
+                self.current_rotation_x += rotation

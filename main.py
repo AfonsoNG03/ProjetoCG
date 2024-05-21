@@ -436,9 +436,10 @@ class Example(Base):
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
                     self.active_camera = self.third_person_cam
+                    self.rig3.set_rotation_x(0)
                 else:
                     self.active_camera = self.camera
-                    self.rig.current_rotation_y -= self.rig3.current_rotation_y
+                    self.rig.set_rotation_x(0)
         else: 
             self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
