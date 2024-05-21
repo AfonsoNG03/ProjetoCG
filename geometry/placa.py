@@ -7,7 +7,7 @@ class placaGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('placa.obj')
+        vertices, texture = my_obj_reader('objetos/placa.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

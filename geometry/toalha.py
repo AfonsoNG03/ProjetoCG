@@ -6,7 +6,7 @@ class ToalhaGeometry(Geometry):
     def __init__(self):
         super().__init__()
 
-        vertices, texture = my_obj_reader('toalha.obj')
+        vertices, texture = my_obj_reader('objetos/toalha.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

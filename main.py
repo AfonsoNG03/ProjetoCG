@@ -13,7 +13,6 @@ from extras.movement_rig2 import MovementRig2
 from extras.movement_rig3 import MovementRig3
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
-from geometry.arbusto import arbustoGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
