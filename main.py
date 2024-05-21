@@ -496,14 +496,10 @@ class Example(Base):
         self.update_grid()
         nearby_objects = self.get_nearby_objects(self.camera)
         for other_obj in nearby_objects:
+            # Ignore collisions with oculos and modelo
+            if other_obj == self.oculos or other_obj == self.modelo:
+                continue
             if other_obj != self.camera and self.camera.intersects(other_obj):
-                self.determine_collision_direction(other_obj)
-                return True
-            elif other_obj != self.oculos and self.oculos.intersects(other_obj):
-                self.determine_collision_direction(other_obj)
-                return True
-            elif other_obj != self.modelo and self.modelo.intersects(other_obj):
-                print("Collision detected!")
                 self.determine_collision_direction(other_obj)
                 return True
             elif other_obj != self.third_person_cam and self.third_person_cam.intersects(other_obj):
