@@ -2,10 +2,6 @@ import math
 from core_ext.object3d import Object3D
 
 class MovementRig(Object3D):
-    """
-    Add moving forwards and backwards, left and right, up and down (all local translations),
-    as well as turning left and right, and looking up and down
-    """
     def __init__(self, units_per_second=3, degrees_per_second=60):
         super().__init__()
         self._look_attachment = Object3D()
@@ -22,7 +18,9 @@ class MovementRig(Object3D):
         self.jump_speed = 10
         self.modo_criativo_enabled = False
 
-        # Default key mappings
+        self.current_rotation_x = 0
+        self.current_rotation_y = 0
+
         self.keys = {
             "MOVE_FORWARDS": "w",
             "MOVE_BACKWARDS": "s",
@@ -38,10 +36,6 @@ class MovementRig(Object3D):
             "SPRINT": "left shift",
             "MODO_CRIATIVO": "u"
         }
-
-        """ self.velocity = [0, 0, 0]
-        self.acceleration = 20  # Acceleration rate
-        self.friction = 8  # Friction to slow down """
 
     def add(self, child):
         self._look_attachment.add(child)
@@ -64,17 +58,6 @@ class MovementRig(Object3D):
             "MOVE_UP": "z",
             "MOVE_DOWN": "x"
         })
-
-    """ def apply_friction(self, delta_time):
-        for i in range(3):
-            if self.velocity[i] > 0:
-                self.velocity[i] -= self.friction * delta_time
-                if self.velocity[i] < 0:
-                    self.velocity[i] = 0
-            elif self.velocity[i] < 0:
-                self.velocity[i] += self.friction * delta_time
-                if self.velocity[i] > 0:
-                    self.velocity[i] = 0 """
 
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
@@ -112,18 +95,6 @@ class MovementRig(Object3D):
             "MOVE_UP": (0, move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0),
             "MOVE_DOWN": (0, -move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0)
         }
-
-        """ for action, direction in movement_actions.items():
-            if input_object.is_key_pressed(self.keys[action]):
-                for i in range(3):
-                    self.velocity[i] += direction[i] * self.acceleration * delta_time
-
-        self.apply_friction(delta_time)
-
-        for i in range(3):
-            self.velocity[i] = max(min(self.velocity[i], move_amount), -move_amount)
-
-        self.translate(*[v * delta_time for v in self.velocity]) """
 
         for action, translation in movement_actions.items():
             if input_object.is_key_pressed(self.keys[action]):

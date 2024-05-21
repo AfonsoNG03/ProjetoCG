@@ -385,9 +385,9 @@ class Example(Base):
         self.scene.add(self.rig3)
 
         # Criaçao da camara alternativa
-        self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([0, 2.5, 4])
-        self.rig3.add(self.static_camera)
+        self.third_person_cam = Camera(aspect_ratio=800/600)
+        self.third_person_cam.set_position([0, 2.5, 4])
+        self.rig3.add(self.third_person_cam)
         self.active_camera = self.camera
 
         self.toggle_camera = False
@@ -431,14 +431,14 @@ class Example(Base):
                     # grupo sem '_x' or '_y' adota o tradicional movimento em Y
                     new_y = original_position[1] + amplitude * math.sin(time + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
-
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
-                    self.active_camera = self.static_camera
+                    self.active_camera = self.third_person_cam
                 else:
                     self.active_camera = self.camera
+                    self.rig.current_rotation_y = 0
         else: 
             self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
@@ -505,7 +505,7 @@ class Example(Base):
                 print("Collision detected!")
                 self.determine_collision_direction(other_obj)
                 return True
-            elif other_obj != self.static_camera and self.static_camera.intersects(other_obj):
+            elif other_obj != self.third_person_cam and self.third_person_cam.intersects(other_obj):
                 self.determine_collision_direction(other_obj)
                 return True
         return False
