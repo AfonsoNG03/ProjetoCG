@@ -13,7 +13,6 @@ from extras.movement_rig2 import MovementRig2
 from extras.movement_rig3 import MovementRig3
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
-from geometry.arbusto import arbustoGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
@@ -220,8 +219,11 @@ class Example(Base):
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
         arvore_positions= [
-                        [-60, -3, 35],[-50, -3, 35],[-40, -3, 32],[-30, -3, 35],[-12, -3, 40], [-12, -3, 37],[-12, -3, 25],[12, -3, 20], [8, -3, 34],[12, -3, 40],[20, -3, 32],
-                        [28, -3, 40],[37, -3, 41],[46, -3, 41],[55, -3, 39],[66, -3, 41],[75, -3, 41],]
+                        [-71, -3, 35],[-56, -3, 35],[-40, -3, 32],
+                        [-28, -3, 35],[-12, -3, 40], [-12, -3, 37],[-12, -3, 25],
+                        [12, -3, 20], [8, -3, 34],[12, -3, 40],[20, -3, 32],
+                        [28, -3, 40],[37, -3, 41],[46, -3, 41],
+                        [55, -3, 39],[66, -3, 41],[75, -3, 41],]
         for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
             arvore.set_position(position)
@@ -230,7 +232,18 @@ class Example(Base):
         # Criação rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
-        rock_positions = [[-50, -3, 35],[-50, -3, 55],[-35, -3, 35],[-35, -3, 55],[-20, -3, 35],[-20, -3, 55], [25, -3, 35],[25, -3, 55],[40, -3, 35],[40, -3, 55],[55, -3, 35],[55, -3, 55],[70, -3, 35],[70, -3, 55]]
+        rock_positions = [
+                          [-80, -1, 35],[-78, -1, 45],
+                          [-65, -1, 35],[-65, -1, 45],[-65, -1, 55],[-65, -1, 65],
+                          [-50, -1, 35],[-50, -1, 45],[-50, -1, 55],[-50, -1, 65],[-50, -1, 75],
+                          [-35, -1, 35],[-35, -1, 45],[-35, -1, 55],[-35, -1, 65],[-35, -1, 75],
+                          [-20, -1, 35],[-20, -1, 45],[-20, -1, 55],[-20, -1, 65],[-20, -1, 75],
+                          [25, -1, 35],[25, -1, 45],[25, -1, 55],[25, -1, 65],[25, -1, 75],
+                          [40, -1, 35],[40, -1, 45],[40, -1, 55],[40, -1, 65],[40, -1, 75],
+                          [55, -1, 35],[55, -1, 45],[55, -1, 55],[55, -1, 65],[55, -1, 75],
+                          [70, -1, 35],[70, -1, 45],[70, -1, 55],[70, -1, 65],
+                          [85, -1, 35],[83, -1, 45],
+                          ]
         for position in rock_positions:
             rocks = Mesh(rocks_geometry, rocks_material)
             rocks.set_position(position)

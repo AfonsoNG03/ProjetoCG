@@ -7,7 +7,7 @@ class warship2Geometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('warship2.obj')
+        vertices, texture = my_obj_reader('objetos/warship2.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

@@ -6,7 +6,7 @@ class CadeiraGeometry(Geometry):
     def __init__(self):  # Por padrão, estamos configurando a cor para branco
         super().__init__()
 
-        vertices, texture = my_obj_reader('cadeira.obj')
+        vertices, texture = my_obj_reader('objetos/cadeira.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)
