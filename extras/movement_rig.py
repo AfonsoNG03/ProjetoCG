@@ -89,6 +89,11 @@ class MovementRig(Object3D):
         if input_object.is_key_pressed(self.keys["MODO_CRIATIVO"]):
             self.modo_criativo_enabled = not self.modo_criativo_enabled
 
+        if self.global_position[1] > 0 and not self.is_jumping and not collision:
+            self.translate(0, -delta_time*10, 0)
+            if self.global_position[1] <= 0:
+                self.global_position[1] = 0
+
         if self.is_jumping:
             self.translate(0, self.jump_speed * delta_time, 0)
             self.jump_speed -= 15 * delta_time
@@ -99,10 +104,6 @@ class MovementRig(Object3D):
                     self.global_position[1] = 0
 
         self.keys_pressed = input_object.key_pressed_list
-        if collision:
-            self.restrict_movement()
-        else:
-            self.allow_movement()
 
         movement_actions = {
             "MOVE_FORWARDS": (0, 0, -move_amount),
