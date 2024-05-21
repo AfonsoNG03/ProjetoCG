@@ -168,6 +168,7 @@ class Example(Base):
             cubo.set_position([0, 2 +i*2, -10-i*3])
             self.scene.add(cubo)"""
         
+        '''
         #Passadiço
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -256,7 +257,7 @@ class Example(Base):
         bikini = Mesh(bikini_geometry, bikini_material)
         bikini.set_position([-1, 0, 0])
         self.scene.add(bikini)
-
+        '''
         # Criação dos oculos
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
@@ -264,7 +265,7 @@ class Example(Base):
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
         self.rig2.add(self.oculos)
-
+        '''
         # Criação do portal
         portal_material = TextureMaterial(texture=Texture("images/crate.jpg"))
         portal_geometry = portalGeometry()
@@ -353,6 +354,7 @@ class Example(Base):
         yatch.set_position([10, 0, -13])
         self.scene.add(yatch)"""
 
+        '''
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
@@ -388,7 +390,7 @@ class Example(Base):
         modelo_position = self.modelo.global_position
 
         look_at_modelo = [modelo_position[0], 0, modelo_position[2]]
-        self.stand.look_at(look_at_modelo)
+        #self.stand.look_at(look_at_modelo)
         #self.label.look_at(look_at_modelo)
 
         # Define different amplitudes for each group
@@ -402,6 +404,7 @@ class Example(Base):
             "grupo4_y": 10.0
         }
         
+        '''
         for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
             amplitude = amplitudes[grupo]  # Get the amplitude for the current group
             for i, mesh in enumerate(meshes):
@@ -418,7 +421,7 @@ class Example(Base):
                     # grupo sem '_x' or '_y' adota o tradicional movimento em Y
                     new_y = original_position[1] + amplitude * math.sin(time + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
-
+        '''
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
@@ -434,6 +437,7 @@ class Example(Base):
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
         # Check for collisions
+
 
     def add_to_grid(self, obj):
         """
