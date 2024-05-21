@@ -279,10 +279,11 @@ class Example(Base):
         self.rig2.add(self.oculos)
 
         # Criação do portal
-        portal_material = TextureMaterial(texture=Texture("images/crate.jpg"))
+        portal_material = TextureMaterial(texture=Texture("images/portal.png"))
         portal_geometry = portalGeometry()
         portal = Mesh(portal_geometry, portal_material)
-        portal.set_position([-1.75, 35, 90.5])
+        #portal.set_position([-1.75, 35, 90.5])
+        portal.set_position([0.75, 32, 89])
         self.scene.add(portal)
         
         #placa das direções
