@@ -1,68 +1,138 @@
 import math
-
 from core_ext.object3d import Object3D
-
 
 class MovementRig2(Object3D):
     """
-    Add moving forwards and backwards, left and right, 
-    up and down (all local translations), as well as 
-    turning left and right, and looking up and down
+    Add moving forwards and backwards, left and right, up and down (all local translations),
+    as well as turning left and right
     """
-    def __init__(self, units_per_second=1, degrees_per_second=60):
-        # Initialize base Object3D.
-        # Controls movement and turn left/right.
+    def __init__(self, units_per_second=3, degrees_per_second=60):
         super().__init__()
-        # Initialize attached Object3D; controls look up/down
         self._look_attachment = Object3D()
         self.children_list = [self._look_attachment]
         self._look_attachment.parent = self
-        # Control rate of movement
+
         self._units_per_second = units_per_second
         self._degrees_per_second = degrees_per_second
+        self.keys_pressed = []
+        self.mouse_sensitivity = 1.5
+        self.mouse_x = 0
+        self.mouse_y = 0
+        self.is_jumping = False
+        self.jump_speed = 10
+        self.modo_criativo_enabled = False
+        self._heightMesh = 0.0  # Atribuição do valor de heightMesh
 
-        # Customizable key mappings.
-        # Defaults: W, A, S, D, R, F (move), Q, E (turn), T, G (look)
-        #  key move forwards seta para cima
-        self.KEY_MOVE_FORWARDS = "up"
-        self.KEY_MOVE_BACKWARDS = "down"
-        self.KEY_MOVE_LEFT = "left"
-        self.KEY_MOVE_RIGHT = "right"
-        self.KEY_MOVE_UP = "p"
-        self.KEY_MOVE_DOWN = "l"
-        self.KEY_TURN_LEFT = "n"
-        self.KEY_TURN_RIGHT = "m"
-        self.KEY_LOOK_UP = "h"
-        self.KEY_LOOK_DOWN = "b"
+        # Default key mappings
+        self.keys = {
+            "MOVE_FORWARDS": "w",
+            "MOVE_BACKWARDS": "s",
+            "MOVE_LEFT": "a",
+            "MOVE_RIGHT": "d",
+            "JUMP": "space",
+            "MOVE_UP": "z",
+            "MOVE_DOWN": "x",
+            "TURN_LEFT": "q",
+            "TURN_RIGHT": "e",
+            "SPRINT": "left shift",
+            "MODO_CRIATIVO": "u"
+        }
 
-    # Adding and removing objects applies to look attachment.
-    # Override functions from the Object3D class.
+        """ self.velocity = [0, 0, 0]
+        self.acceleration = 20  # Acceleration rate
+        self.friction = 8  # Friction to slow down """
+
     def add(self, child):
         self._look_attachment.add(child)
 
     def remove(self, child):
         self._look_attachment.remove(child)
 
-    def update(self, input_object, delta_time):
+    def restrict_movement(self):
+        restricted_keys = ["MOVE_FORWARDS", "MOVE_BACKWARDS", "MOVE_LEFT", "MOVE_RIGHT", "MOVE_UP", "MOVE_DOWN"]
+        for key in restricted_keys:
+            if self.keys[key] in self.keys_pressed:
+                self.keys[key] = ""
+
+    def allow_movement(self):
+        self.keys.update({
+            "MOVE_FORWARDS": "w",
+            "MOVE_BACKWARDS": "s",
+            "MOVE_LEFT": "a",
+            "MOVE_RIGHT": "d",
+            "MOVE_UP": "z",
+            "MOVE_DOWN": "x"
+        })
+
+    """ def apply_friction(self, delta_time):
+        for i in range(3):
+            if self.velocity[i] > 0:
+                self.velocity[i] -= self.friction * delta_time
+                if self.velocity[i] < 0:
+                    self.velocity[i] = 0
+            elif self.velocity[i] < 0:
+                self.velocity[i] += self.friction * delta_time
+                if self.velocity[i] > 0:
+                    self.velocity[i] = 0 """
+
+    def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
-        rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time
-        if input_object.is_key_pressed(self.KEY_MOVE_FORWARDS):
-            self.translate(0, 0, -move_amount)
-        if input_object.is_key_pressed(self.KEY_MOVE_BACKWARDS):
-            self.translate(0, 0, move_amount)
-        if input_object.is_key_pressed(self.KEY_MOVE_LEFT):
-            self.translate(-move_amount, 0, 0)
-        if input_object.is_key_pressed(self.KEY_MOVE_RIGHT):
-            self.translate(move_amount, 0, 0)
-        if input_object.is_key_pressed(self.KEY_MOVE_UP):
-            self.translate(0, move_amount, 0)
-        if input_object.is_key_pressed(self.KEY_MOVE_DOWN):
-            self.translate(0, -move_amount, 0)
-        if input_object.is_key_pressed(self.KEY_TURN_RIGHT):
-            self.rotate_y(-rotate_amount)
-        if input_object.is_key_pressed(self.KEY_TURN_LEFT):
-            self.rotate_y(rotate_amount)
-        if input_object.is_key_pressed(self.KEY_LOOK_UP):
-            self._look_attachment.rotate_x(rotate_amount)
-        if input_object.is_key_pressed(self.KEY_LOOK_DOWN):
-            self._look_attachment.rotate_x(-rotate_amount)
+        rotate_amount = self._degrees_per_second * (math.pi / 180) * delta_time * self.mouse_sensitivity
+        
+        if input_object.is_key_pressed(self.keys["SPRINT"]):
+            move_amount *= 2
+
+        if input_object.is_key_pressed(self.keys["JUMP"]) and not self.is_jumping:
+            self.is_jumping = True
+
+        if input_object.is_key_pressed(self.keys["MODO_CRIATIVO"]):
+            self.modo_criativo_enabled = not self.modo_criativo_enabled
+
+        if self.is_jumping:
+            self.translate(0, self.jump_speed * delta_time, 0)
+            self.jump_speed -= 15 * delta_time
+            if collision or self.global_position[1] <= 0:
+                self.is_jumping = False
+                self.jump_speed = 10
+                if self.global_position[1] <= 0:
+                    self.global_position[1] = 0
+
+        self.keys_pressed = input_object.key_pressed_list
+        if collision:
+            self.restrict_movement()
+        else:
+            self.allow_movement()
+
+        movement_actions = {
+            "MOVE_FORWARDS": (0, 0, -move_amount),
+            "MOVE_BACKWARDS": (0, 0, move_amount),
+            "MOVE_LEFT": (-move_amount, 0, 0),
+            "MOVE_RIGHT": (move_amount, 0, 0),
+            "MOVE_UP": (0, move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0),
+            "MOVE_DOWN": (0, -move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0)
+        }
+
+        """ for action, direction in movement_actions.items():
+            if input_object.is_key_pressed(self.keys[action]):
+                for i in range(3):
+                    self.velocity[i] += direction[i] * self.acceleration * delta_time
+
+        self.apply_friction(delta_time)
+
+        for i in range(3):
+            self.velocity[i] = max(min(self.velocity[i], move_amount), -move_amount)
+
+        self.translate(*[v * delta_time for v in self.velocity]) """
+
+        for action, translation in movement_actions.items():
+            if input_object.is_key_pressed(self.keys[action]):
+                self.translate(*translation)
+
+        rotation_actions = {
+            "TURN_RIGHT": -rotate_amount,
+            "TURN_LEFT": rotate_amount
+        }
+
+        for action, rotation in rotation_actions.items():
+            if input_object.is_key_pressed(self.keys[action]) or (action == "TURN_RIGHT" and input_object.mouse_x > 0) or (action == "TURN_LEFT" and input_object.mouse_x < 0):
+                self.rotate_y(rotation)
