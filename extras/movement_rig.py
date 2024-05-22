@@ -150,7 +150,8 @@ class MovementRig(Object3D):
         for action, rotation in rotation_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "TURN_RIGHT" and input_object.mouse_x > 0) or (action == "TURN_LEFT" and input_object.mouse_x < 0):
                 self.rotate_y(rotation)
-
+        '''
+        
         look_actions = {
             "LOOK_UP": rotate_amount,
             "LOOK_DOWN": -rotate_amount
@@ -159,3 +160,4 @@ class MovementRig(Object3D):
         for action, rotation in look_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "LOOK_UP" and input_object.mouse_y < 0) or (action == "LOOK_DOWN" and input_object.mouse_y > 0):
                 self._look_attachment.rotate_x(rotation)
+        '''

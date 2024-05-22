@@ -156,7 +156,6 @@ class Example(Base):
         self.modelo.rotate_y(110)
         self.rig.add(self.modelo)
 
-
         # Percurso
         # Distancias Maximas ->
         # 0,0,0 -> 0,0,12
@@ -217,8 +216,17 @@ class Example(Base):
 
         # Criaçao da camara alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([0, 2.5, 4])
+        self.static_camera.set_position([0, 4, 4])
+        model_position = self.modelo.global_position
+        self.static_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
         self.rig3.add(self.static_camera)
+
+        # Criacao da camara cinemática
+        self.cinematic_camera = Camera(aspect_ratio=800/600)
+        self.cinematic_camera.set_position([10, 10, 10])
+        model_position = self.modelo.global_position
+        self.cinematic_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
+
         self.active_camera = self.camera
 
         self.toggle_camera = False
@@ -281,6 +289,8 @@ class Example(Base):
         """
         # Get positions of camera and other object
         cam_pos = np.array(self.camera.global_position)
+        if self.camera == self.static_camera:
+            cam_pos = cam_pos 
         obj_pos = np.array(other_obj.global_position)
 
         # Calculate the vector from the camera to the object
@@ -298,13 +308,16 @@ class Example(Base):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
+                    self.rig3.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
+                    self.rig3.translate(0.1, 0, 0, False)
             elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1]) > abs(collision_direction[2]):
                 if collision_direction[1] > 0:
                     #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
+                    self.rig3.translate(0, -0.1, 0, False)
                 else:
                     #direction = 'above'
                     return True
@@ -312,36 +325,54 @@ class Example(Base):
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
+                    self.rig3.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
+                    self.rig3.translate(0, 0, 0.1, False)
         else:
             if abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
+                    self.rig3.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
+                    self.rig3.translate(0.1, 0, 0, False)
             else:
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
+                    self.rig3.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
+                    self.rig3.translate(0, 0, 0.1, False)
         
         return False
 
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        
+
+        if self.active_camera == self.cinematic_camera:
+            modelo_position = self.modelo.global_position
+            self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
+
+
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
                     self.active_camera = self.static_camera
+                else:
+                    self.active_camera = self.camera
+        elif self.input.is_key_pressed('v'):
+            if not self.toggle_camera:
+                self.toggle_camera = True
+                if self.active_camera == self.camera:
+                    self.active_camera = self.cinematic_camera
                 else:
                     self.active_camera = self.camera
         else: 
@@ -351,6 +382,7 @@ class Example(Base):
         self.rig2.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
+        self.static_camera 
         # Check for collisions
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
