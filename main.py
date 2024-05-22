@@ -16,6 +16,7 @@ from geometry.arvore import ArvoreGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
 from geometry.cadeira import CadeiraGeometry
+from geometry.casa import casaGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
@@ -151,17 +152,6 @@ class Example(Base):
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)"""
         
-        """#criação do cubo
-        cubo_material = TextureMaterial(texture=Texture("images/master.jpg"))
-        cubo_geometry = CuboGeometry()
-        cubo = Mesh(cubo_geometry, cubo_material)
-        cubo.set_position([0, 2, -10])
-        self.scene.add(cubo)
-        for i in range(30):
-            cubo = Mesh(cubo_geometry, cubo_material)
-            cubo.set_position([0, 2 +i*2, -10-i*3])
-            self.scene.add(cubo)"""
-        
         #Passadiço
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -255,8 +245,8 @@ class Example(Base):
         # Criação das toalhas
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
-        toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 15],[-20, 0, 10],
-                            [-15, 0, 10],[-15, 0, 5],[-10, 0, 17],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
+        toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 2],[-20, 0, 10],
+                            [-15, 0, 10],[-15, 0, 5],[-10, 0, 5],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
                             [0, 0, 10],[6, 0, 10],[10, 0, 5],[14, 0, 10],[16, 0, 15],[19, 0, 5],[22, 0, 10],
                             [25, 0, 5],[35, 0, 5],[40, 0, 15],[40, 0, 7],[55, 0, 10],[55, 0, 5],[70, 0, 10],[70, 0, 15]]
         for position in toalha_positions:
@@ -265,6 +255,13 @@ class Example(Base):
             toalha.set_position(position)
             toalha.scale(2.5)
             self.scene.add(toalha)
+
+        #criação da casa
+        casa_material = TextureMaterial(texture=Texture("images/casa.png"))
+        casa_geometry = casaGeometry()
+        casa = Mesh(casa_geometry, casa_material)
+        casa.set_position([-30, 0, 30])
+        self.scene.add(casa)
 
         # Criação do bikini
         bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
