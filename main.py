@@ -46,14 +46,14 @@ class Example(Base):
     """
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
-    Para mexer a camera usar up left right down  e as tecals p l n m
+    Para mexer a camera usar up left right down e as teclas p l n m
     """
     def initialize(self):
         print("Initializing program...")
         print("Para mexer o modelo usar as teclas w,a,s,d")
         print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
         print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-        print("Para mudar ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer")
+        print("Para ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -86,7 +86,6 @@ class Example(Base):
                 fragColor = texture2D(image, uvNoise);
             }
         """
-        #
 
         # Define grid properties
         self.grid_size = 2  # Size of each grid cell
@@ -98,7 +97,6 @@ class Example(Base):
         self.rig = MovementRig()
         self.rig2 = MovementRig2()
         self.rig3 = MovementRig3()
-        #
 
         # Adiciona luzes
         # Luz ambiente
@@ -108,7 +106,6 @@ class Example(Base):
         # Luz direcional
         self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
         self.scene.add(self.directional_light)
-        #
 
         # Texturas
         rgb_noise_texture = Texture("images/rgb-noise.jpg")
@@ -122,7 +119,6 @@ class Example(Base):
 
         # Textura do oceano
         ocean_geometry = RectangleGeometry(width=200, height=100)
-        #ocean_geometry = OceanoGeometry(width=50, height=50)
         self.ocean = Mesh(ocean_geometry, self.distort_material)
         self.ocean.rotate_x(-math.pi/2)
         self.ocean.set_position([0, 0, -55])
@@ -144,7 +140,6 @@ class Example(Base):
         self.sand.rotate_x(-math.pi/2)
         self.sand.set_position([0, 0, 45])
         self.scene.add(self.sand)
-        #
 
         """# Testes
         phong_material = PhongMaterial(
@@ -276,7 +271,6 @@ class Example(Base):
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
-        self.rig2.add(self.oculos)
 
         # Criação do portal
         portal_material = TextureMaterial(texture=Texture("images/portal.png"))
@@ -374,11 +368,10 @@ class Example(Base):
         self.modelo.set_position([0, 0, 0])
         #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
-        self.rig2.add(self.modelo)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0, 2.93, -1])
+        self.camera.set_position([0, 2.93, 0])
         #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
@@ -399,12 +392,15 @@ class Example(Base):
         time = self.time * 0.5  # Adjust the speed of the movement
         
         # Atualizar a lógica de rotação para apenas no eixo X
-        modelo_position = self.modelo.global_position
-
-        look_at_modelo = [modelo_position[0], 0, modelo_position[2]]
-        self.stand.look_at(look_at_modelo)
-        #self.label.look_at(look_at_modelo)
-
+        if self.active_camera == self.camera:
+            camera_position = self.camera.global_position
+            look_at_position = [camera_position[0], 0, camera_position[2]]
+        else:
+            modelo_position = self.modelo.global_position
+            look_at_position = [modelo_position[0], 0, modelo_position[2]]
+        
+        self.stand.look_at(look_at_position)
+        
         # Define different amplitudes for each group
         amplitudes = {
             "grupo1": 1.2,
@@ -432,15 +428,22 @@ class Example(Base):
                     # grupo sem '_x' or '_y' adota o tradicional movimento em Y
                     new_y = original_position[1] + amplitude * math.sin(time + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
+        
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
                     self.active_camera = self.third_person_cam
                     self.rig3.set_rotation_x(0)
+                    # Adicionar o modelo e os óculos à cena
+                    self.rig2.add(self.modelo)
+                    self.rig2.add(self.oculos)
                 else:
                     self.active_camera = self.camera
                     self.rig.set_rotation_x(0)
+                    # Remover o modelo e os óculos da cena
+                    self.rig2.remove(self.modelo)
+                    self.rig2.remove(self.oculos)
         else: 
             self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
