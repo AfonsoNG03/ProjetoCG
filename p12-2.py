@@ -90,7 +90,7 @@ class Example(Base):
         #
 
         # Define grid properties
-        self.grid_size = 2  # Size of each grid cell
+        self.grid_size = 5  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
 
         # Criação da cena
@@ -167,6 +167,25 @@ class Example(Base):
         self.cubo = Mesh(cubo_geometry, cubo_material)
         self.cubo.set_position([0,6, 13])
         self.scene.add(self.cubo)
+        for i in range(0, 10):
+            self.cubo = Mesh(cubo_geometry, cubo_material)
+            self.cubo.set_position([0,6, 13+2*i])
+            self.scene.add(self.cubo)
+
+        # Arvores
+        arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
+        arvore_geometry = ArvoreGeometry()
+        self.arvore = Mesh(arvore_geometry, arvore_material)
+        self.arvore.set_position([10, 0, 0])
+        self.scene.add(self.arvore)
+
+        # Yatch
+
+        yatch_material = TextureMaterial(texture=Texture("images/red.jpg"))
+        yatch_geometry = YatchGeometry()
+        self.yatch = Mesh(yatch_geometry, yatch_material, True, 5)
+        self.yatch.set_position([20, 0, 20])
+        self.scene.add(self.yatch)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
@@ -174,8 +193,8 @@ class Example(Base):
         #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
-        self.scene.add(self.rig2)
-        self.scene.add(self.rig3)
+        #self.scene.add(self.rig2)
+        #self.scene.add(self.rig3)
 
         # Criaçao da camara alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
@@ -244,39 +263,57 @@ class Example(Base):
         # Get positions of camera and other object
         cam_pos = np.array(self.camera.global_position)
         obj_pos = np.array(other_obj.global_position)
-        
+
         # Calculate the vector from the camera to the object
         collision_vector = obj_pos - cam_pos
+
+        collision_vector[1] -= 0.12
 
         # Normalize the vector to get the direction
         collision_direction = collision_vector / np.linalg.norm(collision_vector)
         
         # Determine the direction
         direction = ''
-        
-        if abs(collision_direction[0]) > abs(collision_direction[1]) and abs(collision_direction[0]) > abs(collision_direction[2]):
-            if collision_direction[0] > 0:
-                direction = 'right'
-                self.rig.translate(-0.1, 0, 0, False)
+        if other_obj._height <= self.rig.global_position[1] + 0.5:
+            if abs(collision_direction[0]) > abs(collision_direction[1]) and abs(collision_direction[0]) > abs(collision_direction[2]):
+                if collision_direction[0] > 0:
+                    direction = 'right'
+                    self.rig.translate(-0.1, 0, 0, False)
+                else:
+                    direction = 'left'
+                    self.rig.translate(0.1, 0, 0, False)
+            elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1]) > abs(collision_direction[2]):
+                if collision_direction[1] > 0:
+                    direction = 'below'
+                    self.rig.translate(0, -0.1, 0, False)
+                else:
+                    direction = 'above'
+                    #print("Above")
+                    return True
             else:
-                direction = 'left'
-                self.rig.translate(0.1, 0, 0, False)
-        elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1]) > abs(collision_direction[2]):
-            if collision_direction[1] > 0:
-                direction = 'below'
-                self.rig.translate(0, -0.1, 0, False)
-            else:
-                direction = 'above'
-                return True
+                if collision_direction[2] > 0:
+                    direction = 'front'
+                    self.rig.translate(0, 0, -0.1, False)
+                else:
+                    direction = 'back'
+                    self.rig.translate(0, 0, 0.1, False)
         else:
-            if collision_direction[2] > 0:
-                direction = 'front'
-                self.rig.translate(0, 0, -0.1, False)
+            if abs(collision_direction[0]) > abs(collision_direction[2]):
+                if collision_direction[0] > 0:
+                    direction = 'right'
+                    self.rig.translate(-0.1, 0, 0, False)
+                else:
+                    direction = 'left'
+                    self.rig.translate(0.1, 0, 0, False)
             else:
-                direction = 'back'
-                self.rig.translate(0, 0, 0.1, False)
+                if collision_direction[2] > 0:
+                    direction = 'front'
+                    self.rig.translate(0, 0, -0.1, False)
+                else:
+                    direction = 'back'
+                    self.rig.translate(0, 0, 0.1, False)
         
-        print("Collision direction:", direction)
+        #print("Collision direction:", direction)
         return False
 
 

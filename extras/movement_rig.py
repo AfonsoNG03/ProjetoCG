@@ -20,6 +20,8 @@ class MovementRig(Object3D):
         self.mouse_y = 0
         self.is_jumping = False
         self.jump_speed = 10
+        self.fall_speed = 0.0
+        self.gravity = 15.0
         self.modo_criativo_enabled = False
 
         # Default key mappings
@@ -90,9 +92,11 @@ class MovementRig(Object3D):
             self.modo_criativo_enabled = not self.modo_criativo_enabled
 
         if self.global_position[1] > 0 and not self.is_jumping and not collision:
-            self.translate(0, -delta_time*10, 0)
+            self.fall_speed += self.gravity * delta_time
+            self.translate(0, -self.fall_speed * delta_time, 0)
             if self.global_position[1] <= 0:
                 self.global_position[1] = 0
+                self.fall_speed = 0.0
 
         if self.is_jumping:
             self.translate(0, self.jump_speed * delta_time, 0)

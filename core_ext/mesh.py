@@ -9,12 +9,14 @@ class Mesh(Object3D):
     Contains geometric data that specifies vertex-related properties and material data
     that specifies the general appearance of the object
     """
-    def __init__(self, geometry, material):
+    def __init__(self, geometry, material, radiusTrue = False, radiusValue = 1.0):
         super().__init__()
         self._geometry = geometry
         self._material = material
         self._heightMesh = 1.0
-        self._radiusMesh = 1.0
+        self._radiusMesh = radiusValue
+        self._centerMesh = np.array([0, 0, 0])
+        self.radiusTrue = radiusTrue
         # Should this object be rendered?
         self._visible = True
         # Set up associations between attributes stored in geometry
@@ -59,6 +61,10 @@ class Mesh(Object3D):
     
     
     def radiusMesh(self):
+        return self._radiusMesh
+
+        '''
+            
         position_data = self._geometry._attribute_dict["vertexPosition"].data
         minX = 0
         maxX = 0
@@ -81,5 +87,26 @@ class Mesh(Object3D):
         else:
             self._radiusMesh = radiusMeshZ
         return self._radiusMesh
+        '''
     
+    def CenterMesh(self):
+        position_data = self._geometry._attribute_dict["vertexPosition"].data
+        minX = 0
+        maxX = 0
+        for pos in position_data:
+            if pos[0] < minX:
+                minX = pos[0]
+            if pos[0] > maxX:
+                maxX = pos[0]
+        centerX = (maxX + minX) / 2
+        minZ = 0
+        maxZ = 0
+        for pos in position_data:
+            if pos[1] < minZ:
+                minZ = pos[1]
+            if pos[1] > maxZ:
+                maxZ = pos[1]
+        centerZ = (maxZ + minZ) / 2
+        self._centerMesh = np.array([centerX, 0, centerZ])
+        return self._centerMesh
    

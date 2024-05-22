@@ -5,7 +5,7 @@ from core_ext import camera
 
 class Object3D:
     """ Represent a node in the scene graph tree structure """
-    def __init__(self):
+    def __init__(self, radiusTrue = False):
         # local transform matrix with respect to the parent of the object
         self._matrix = Matrix.make_identity()
         self._parent = None
@@ -14,7 +14,7 @@ class Object3D:
         self._center = np.array([0, 0, 0])  # Center of the bounding cylinder
         self._height = 1.0                   # Height of the bounding cylinder
         self._radius = 1.0                   # Radius of the bounding cylinder
-
+        self.radiusTrue = radiusTrue
 
     @property
     def children_list(self):
@@ -26,6 +26,8 @@ class Object3D:
         center = self.global_matrix @ np.array([self._center[0], self._center[1], self._center[2], 1])
         if not isinstance(self, camera.Camera):
            self._height = self._heightMesh
+           if self.radiusTrue:
+            self._radius = self._radiusMesh
         else:
             self._height = center[1]
         return center[:3], self._height, self._radius
