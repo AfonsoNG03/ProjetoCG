@@ -157,21 +157,32 @@ class Example(Base):
         self.rig.add(self.modelo)
 
 
-        # Cubos
+        # Percurso
+        # Distancias Maximas ->
+        # 0,0,0 -> 0,0,12
+        # 0,0,0 -> 0,4,0
+        # 0,0,0 -> 0,3,9
+        # 0,0,0 -> 0,2,10
+        # 0,0,0 -> 0,2,11 (Possivel mas complicado)
+        # 0,0,0 -> 0,1,11
+        # 0,0,0 -> 9,0,9 (Possivel mas complicado)
+        # 0,0,0 -> 9,0,8 / 8,0,9
+        # 0,0,0 -> 9,1,8 / 8,1,9
+        # 0,0,0 -> 8,2,8 (Possivel mas complicado)
+        # 0,0,0 -> 8,2,7 / 7,2,8
+        # 0,0,0 -> 7,3,7 (Possivel mas complicado)
+        # 0,0,0 -> 4,4,8 (Possivel mas complicado)
+        # 0,0,0 -> 0,4,4
+
 
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,3, 10])
+        self.cubo.set_position([0,4, 10])
         self.scene.add(self.cubo)
         self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,6, 13])
+        self.cubo.set_position([0,8, 14])
         self.scene.add(self.cubo)
-        for i in range(0, 10):
-            self.cubo = Mesh(cubo_geometry, cubo_material)
-            self.cubo.set_position([0,6, 13+2*i])
-            self.scene.add(self.cubo)
-
         # Arvores
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
@@ -179,19 +190,20 @@ class Example(Base):
         self.arvore.set_position([10, 0, 0])
         self.scene.add(self.arvore)
 
-        # Yatch
+        # Passa
 
-        yatch_material = TextureMaterial(texture=Texture("images/red.jpg"))
-        yatch_geometry = YatchGeometry()
-        self.yatch = Mesh(yatch_geometry, yatch_material, True, 5)
-        self.yatch.set_position([20, 0, 20])
-        self.scene.add(self.yatch)
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passaGeometry()
+        self.passa = Mesh(passa_geometry, passa_material, True, 2)
+        self.passa.set_position([30, -2, 10])
+        self.scene.add(self.passa)
+        
 
         #pedra
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
-        self.rocks = Mesh(rocks_geometry, rocks_material)
-        self.rocks.set_position([20, 0, 20])
+        self.rocks = Mesh(rocks_geometry, rocks_material, True, 5)
+        self.rocks.set_position([20, -2, 20])
         self.scene.add(self.rocks)
                 
         # Criação da camera
@@ -274,59 +286,56 @@ class Example(Base):
         # Calculate the vector from the camera to the object
         collision_vector = obj_pos - cam_pos
 
-        collision_vector[1] -= 0.12
+        collision_vector[1] -= 0.15
 
         # Normalize the vector to get the direction
         collision_direction = collision_vector / np.linalg.norm(collision_vector)
         
         # Determine the direction
-        direction = ''
-        if other_obj._height <= self.rig.global_position[1] + 0.5:
+        #direction = ''
+        if other_obj._height/2 <= self.rig.global_position[1]:
             if abs(collision_direction[0]) > abs(collision_direction[1]) and abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
-                    direction = 'right'
+                    #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
                 else:
-                    direction = 'left'
+                    #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
             elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1]) > abs(collision_direction[2]):
                 if collision_direction[1] > 0:
-                    direction = 'below'
+                    #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
                 else:
-                    direction = 'above'
-                    #print("Above")
+                    #direction = 'above'
                     return True
             else:
                 if collision_direction[2] > 0:
-                    direction = 'front'
+                    #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
                 else:
-                    direction = 'back'
+                    #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
         else:
             if abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
-                    direction = 'right'
+                    #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
                 else:
-                    direction = 'left'
+                    #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
             else:
                 if collision_direction[2] > 0:
-                    direction = 'front'
+                    #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
                 else:
-                    direction = 'back'
+                    #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
         
-        #print("Collision direction:", direction)
         return False
 
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-
         
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
