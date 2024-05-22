@@ -382,6 +382,8 @@ class Example(Base):
         self.camera.set_position([0, 2.93, 0])
         #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
+
+        #Atribuição das rigs
         self.scene.add(self.rig)
         self.scene.add(self.rig2)
         self.scene.add(self.rig3)
