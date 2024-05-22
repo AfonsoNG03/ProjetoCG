@@ -186,6 +186,13 @@ class Example(Base):
         self.yatch = Mesh(yatch_geometry, yatch_material, True, 5)
         self.yatch.set_position([20, 0, 20])
         self.scene.add(self.yatch)
+
+        #pedra
+        rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
+        rocks_geometry = rocksGeometry()
+        self.rocks = Mesh(rocks_geometry, rocks_material)
+        self.rocks.set_position([20, 0, 20])
+        self.scene.add(self.rocks)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
