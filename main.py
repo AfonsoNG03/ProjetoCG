@@ -15,7 +15,7 @@ from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.bola import bolaGeometry
 from geometry.bikini import BikiniGeometry
-from geometry.cadeira import CadeiraGeometry
+from geometry.cadeira import cadeiraGeometry
 from geometry.casa import casaGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
@@ -29,6 +29,7 @@ from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
+from geometry.sombrinha import sombrinhaGeometry
 from geometry.yatch import YatchGeometry
 from geometry.warship import warshipGeometry
 from geometry.warship2 import warship2Geometry
@@ -55,7 +56,7 @@ class Example(Base):
         print("Para mexer o modelo usar as teclas w,a,s,d")
         print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
         print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-        print("Para ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer")
+        print("Para ativar o modo criativo pressionar a tecla 'u' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -235,6 +236,30 @@ class Example(Base):
             toalha.scale(2.5)
             self.scene.add(toalha)
 
+        #criação das sombrinhas
+        sombrinha_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
+        sombrinha_geometry = sombrinhaGeometry()
+        sombrinha_positions= [
+                        [-60, 0, 7],[-40, 0, 2],[-30, 0, 4.5],[-20, 0, 2],[-10, 0, 8],
+                        [10, 0, 8],[20, 0, 2],[30, 0, 4.5],[40, 0, 2],[60, 0, 7]
+                        ]
+        for position in sombrinha_positions:
+            sombrinha = Mesh(sombrinha_geometry, sombrinha_material)
+            sombrinha.set_position(position)
+            self.scene.add(sombrinha)
+
+        #criação da cadeira
+        cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        cadeira_geometry = cadeiraGeometry()
+        cadeira_positions= [
+                        [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
+                        [9, 0, 10],[19, 0, 4],[29, 0, 6.5],[39, 0, 4],[59, 0, 9],
+                        ]
+        for position in cadeira_positions:
+            cadeira = Mesh(cadeira_geometry, cadeira_material)
+            cadeira.set_position(position)
+            self.scene.add(cadeira)
+
         #criação da casa
         casa_material = TextureMaterial(texture=Texture("images/casa.png"))
         casa_geometry = casaGeometry()
@@ -277,20 +302,6 @@ class Example(Base):
         self.stand = Mesh(stand_geometry, stand_material)
         self.stand.set_position([8, 0, 14])
         self.scene.add(self.stand)
-        #label_texture = TextTexture(text="Para mexer o modelo usar as teclas w,a,s,d\n Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor\n Para mudar a camera telca 'c', espaço para saltar e shift para sprintar\n Para mudar ativar o modo criativo pressionar a tecla '' e usar 'z' para subir e 'x' para descer.",
-                                    #system_font_name="Times New Roman",
-                                    #font_size=70, font_color=[0, 0, 0],
-                                    #background_color=[0, 0, 0, 0],
-                                    #image_width=1000, image_height=500,
-                                    #align_horizontal=0.5, align_vertical=0.5,
-                                    #image_border_width=4,
-                                    #image_border_color=[255, 255, 255, 0])
-        #label_material = TextureMaterial(label_texture)
-        #label_geometry = RectangleGeometry(width=1, height=0.5)
-        #self.label = Mesh(label_geometry, label_material)
-        #self.label.set_position([8, 3, 13])
-        #self.label.rotate_x(180)
-        #self.scene.add(self.label)
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
