@@ -175,19 +175,46 @@ class Example(Base):
         # 0,0,0 -> 0,4,4
 
 
+#criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
-        self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,1, 10])
-        self.scene.add(self.cubo)
-        self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,3, 14])
-        self.scene.add(self.cubo)
-        for i in range(0, 10):
-            self.cubo = Mesh(cubo_geometry, cubo_material)
-            self.cubo.set_position([0,2+i*3, i*4])
-            self.scene.add(self.cubo)
+        cubo = Mesh(cubo_geometry, cubo_material)
+        self.cube_positions = {
+    "grupo1": [[-1.75, 2.0, 19.5], [-1.75, 4.0, 27.5], [-1.75, 6.0, 35.5]],
+    "grupo2_x": [[-1.75, 8.0, 43.5], [-1.75, 10.0, 51.5], [-1.75, 12.0, 59.5]],
+    "grupo3_x": [[-1.75, 14.0, 67.5]],
+    "grupo3_y": [[-1.75, 16.0, 75.5], [-1.75, 18.0, 83.5], [-1.75, 20.0, 90]],
+    "grupo4_x": [[-5, 22.0, 82.0]],
+    "grupo4_y": [[-5, 24.0, 74.0], [-5, 26.0, 66.0], [-5, 28.0, 58.0]],
+    "grupo5_x": [[-5, 30.0, 50.0]],
+    "grupo5_y": [[-5, 32.0, 42.0], [-5, 34.0, 34.0], [-5, 36.0, 26.0]],
+    "grupo6_x": [[-9, 38.0, 18.0]],
+    "grupo6_y": [[-9, 40.0, 26.0], [-9, 42.0, 34.0], [-9, 44.0, 42.0]],
+}
 
+
+
+
+        # Create and store the cube meshes in the same dictionary
+        self.cube_meshes = {
+            "grupo1": [],
+            "grupo2_x": [],
+            "grupo3_x": [],
+            "grupo3_y": [],
+            "grupo4_x": [],
+            "grupo4_y": [],
+            "grupo5_x": [],
+            "grupo5_y": [],
+            "grupo6_x": [],
+            "grupo6_y": [],
+        }
+        # Create the cubes and store the references in the dictionary
+        for grupo, positions in self.cube_positions.items():
+            for position in positions:
+                cubo = Mesh(cubo_geometry, cubo_material)
+                cubo.set_position(position)
+                self.scene.add(cubo)
+                self.cube_meshes[grupo].append(cubo)
 
         # Arvores
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
@@ -321,12 +348,15 @@ class Example(Base):
                     self.rig.translate(0.1, 0, 0, False)
                     self.rig3.translate(0.1, 0, 0, False)
             elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1])  > abs(collision_direction[2]):
-                if collision_direction[1] > 0:
+                if collision_direction[1] > -0.1:
                     #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
                     self.rig3.translate(0, -0.1, 0, False)
                 else:
                     #direction = 'above'
+                    if self.camera.global_position[1] - other_obj.global_position[1] <= 3.8:
+                        self.rig.translate(0, self._delta_time*2.7, 0, False)
+                        self.rig3.translate(0, self._delta_time*2.7, 0, False)
                     return True
             else:
                 if collision_direction[2] > 0:
@@ -365,6 +395,8 @@ class Example(Base):
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
+        time = self.time * 0.5  # Adjust the speed of the movement
+
 
         if self.active_camera == self.cinematic_camera:
             self.tempo += self.delta_time
@@ -374,6 +406,35 @@ class Example(Base):
             modelo_position = self.modelo.global_position
             self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
 
+        amplitudes = {
+            "grupo1": 1.2,
+            "grupo2_x": 2.4,
+            "grupo3_x": 5.0,
+            "grupo3_y": 3,
+            "grupo4_x": 5,
+            "grupo4_y": 4,
+            "grupo5_x": 5,
+            "grupo5_y": 3.6,
+            "grupo6_x": 5,
+            "grupo6_y": 1.6,
+        }
+        
+        for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
+            amplitude = amplitudes[grupo]  # Get the amplitude for the current group
+            for i, mesh in enumerate(meshes):
+                original_position = self.cube_positions[grupo][i]
+                if '_y' in grupo:
+                    # Vertical 
+                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    mesh.set_position([original_position[0], new_y, original_position[2]])
+                elif '_x' in grupo:
+                    # Horizontal 
+                    new_x = original_position[0] + amplitude * math.sin(time + i)
+                    mesh.set_position([new_x, original_position[1], original_position[2]])
+                else:
+                    # grupo sem '_x' or '_y' adota o tradicional movimento em Y
+                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    mesh.set_position([original_position[0], new_y, original_position[2]])
 
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:

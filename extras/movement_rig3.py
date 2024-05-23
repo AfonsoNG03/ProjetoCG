@@ -94,6 +94,9 @@ class MovementRig3(Object3D):
         if self.global_position[1] < 0:
             self.translate(0, -self.global_position[1], 0)
             self.fall_speed = 0.0
+        
+        if collision:
+            self.fall_speed = 0.0
 
         if self.global_position[1] > 0 and not self.is_jumping and not collision:
             self.fall_speed += self.gravity * delta_time
