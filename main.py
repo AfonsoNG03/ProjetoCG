@@ -11,6 +11,7 @@ from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
 from extras.movement_rig2 import MovementRig2
 from extras.movement_rig3 import MovementRig3
+from geometry.esperguica import espreguicaGeometry 
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
 from geometry.bola import bolaGeometry
@@ -241,7 +242,7 @@ class Example(Base):
         sombrinha_geometry = sombrinhaGeometry()
         sombrinha_positions= [
                         [-60, 0, 7],[-40, 0, 2],[-30, 0, 4.5],[-20, 0, 2],[-10, 0, 8],
-                        [10, 0, 8],[20, 0, 2],[30, 0, 4.5],[40, 0, 2],[60, 0, 7]
+                        [10, 0, 3],[20, 0, 2],[30, 0, 4.5],[40, 0, 2],[60, 0, 7]
                         ]
         for position in sombrinha_positions:
             sombrinha = Mesh(sombrinha_geometry, sombrinha_material)
@@ -253,12 +254,24 @@ class Example(Base):
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
-                        [9, 0, 10],[19, 0, 4],[29, 0, 6.5],[39, 0, 4],[59, 0, 9],
+                        [9, 0, 5],[19, 0, 4],[29, 0, 6.5],[39, 0, 4],[59, 0, 9],
                         ]
         for position in cadeira_positions:
             cadeira = Mesh(cadeira_geometry, cadeira_material)
             cadeira.set_position(position)
             self.scene.add(cadeira)
+
+        #criação da espreguiçadeira
+        espreguica_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        espreguica_geometry = espreguicaGeometry()
+        espreguica_positions= [
+                        [-59, 0, 24],[-39, 0, 19],[-29, 0, 21.5],[-19, 0, 19],[-9, 0, 25],
+                        [9, 0, 20],[19, 0, 19],[29, 0, 21.5],[39, 0, 19],[59, 0, 24],
+                        ]
+        for position in espreguica_positions:
+            espreguica = Mesh(espreguica_geometry, espreguica_material)
+            espreguica.set_position(position)
+            self.scene.add(espreguica)
 
         #criação da casa
         casa_material = TextureMaterial(texture=Texture("images/casa.png"))
