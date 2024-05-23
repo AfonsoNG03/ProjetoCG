@@ -176,6 +176,7 @@ class Object3D:
         # Obter as propriedades dos cilindros
         center1, height1, radius1 = self.bounding_cylinder
         center2, height2, radius2 = other.bounding_cylinder
+        height2 += 2
 
         # Verificar se os cilindros estão acima ou abaixo um do outro
         if center1[1] + height1 < center2[1] or center2[1] + height2 < center1[1]:

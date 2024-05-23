@@ -177,11 +177,17 @@ class Example(Base):
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,4, 10])
+        self.cubo.set_position([0,1, 10])
         self.scene.add(self.cubo)
         self.cubo = Mesh(cubo_geometry, cubo_material)
-        self.cubo.set_position([0,8, 14])
+        self.cubo.set_position([0,3, 14])
         self.scene.add(self.cubo)
+        for i in range(0, 10):
+            self.cubo = Mesh(cubo_geometry, cubo_material)
+            self.cubo.set_position([0,2+i*3, i*4])
+            self.scene.add(self.cubo)
+
+
         # Arvores
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
@@ -303,7 +309,7 @@ class Example(Base):
         
         # Determine the direction
         #direction = ''
-        if other_obj._height/2 <= self.rig.global_position[1]:
+        if  other_obj.global_position[1] + other_obj._height/2 +2.45 <= self.camera.global_position[1]:
             if abs(collision_direction[0]) > abs(collision_direction[1]) and abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
                     #direction = 'right'
@@ -313,7 +319,7 @@ class Example(Base):
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
                     self.rig3.translate(0.1, 0, 0, False)
-            elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1]) > abs(collision_direction[2]):
+            elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1])  > abs(collision_direction[2]):
                 if collision_direction[1] > 0:
                     #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
