@@ -23,6 +23,7 @@ from geometry.modelo import ModeloGeometry
 from geometry.oculos import OculosGeometry
 from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
+from geometry.passa2 import passa2Geometry
 from geometry.placa import placaGeometry
 from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
@@ -152,65 +153,51 @@ class Example(Base):
         sphere_right.set_position([2.5, 0, 0])
         self.scene.add(sphere_right)"""
         
-        #Passadiço
+        #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
         passa_positions = [
-                           [-1.75, 0, 84],[-1.75, 7, 84],[-1.75, 14, 84],[-1.75, 21, 84],[-1.75, 28, 84],
-                           [-1.75, 0, 69],[-1.75, 7, 69],[-1.75, 14, 69],[-1.75, 21, 69],
-                           [-1.75, 0, 54],[-1.75, 7, 54],[-1.75, 14, 54],
-                           [-1.75, 0, 39],[-1.75, 7, 39],
-                           [-1.75, 0, 24]
+                           [30,-2,55.5],[30,-2,64],[30,-2,72.5],[30,-2,81],[30,-2,89.5]
                            ]
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
             passa.set_position(position)
-            #passa.scale(5)
-            self.scene.add(passa)
+            self.scene.add(passa) 
 
-        #criação do cubo
-        cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
-        cubo_geometry = CuboGeometry()
-        cubo = Mesh(cubo_geometry, cubo_material)
-        self.cube_positions = {
-            "grupo1": [[-1.75, 4.5, 29.5], [-1.75, 6.5, 31.5], [-1.75, 8.5, 33.5]],
-            "grupo2_x": [[-1.75, 13.5, 46.5]],
-            "grupo2_y": [[-1.75, 11.5, 44.5], [-1.75, 15.5, 48.5]],
-            "grupo3_x": [[-1.75, 20.5, 61.5]],
-            "grupo3_y": [[-1.75, 18.5, 59.5], [-1.75, 22.5, 63.5]],
-            "grupo4_x": [[-1.75, 27.5, 76.5]],
-            "grupo4_y": [[-1.75, 25.5, 74.5], [-1.75, 29.5, 78.5]],
-        }
-        # Create and store the cube meshes in the same dictionary
-        self.cube_meshes = {
-            "grupo1": [],
-            "grupo2_x": [],
-            "grupo2_y": [],
-            "grupo3_x": [],
-            "grupo3_y": [],
-            "grupo4_x": [],
-            "grupo4_y": []
-        }
-        # Create the cubes and store the references in the dictionary
-        for grupo, positions in self.cube_positions.items():
-            for position in positions:
-                cubo = Mesh(cubo_geometry, cubo_material)
-                cubo.set_position(position)
-                self.scene.add(cubo)
-                self.cube_meshes[grupo].append(cubo)
+        #Passadiço horizontal
+        passa_material = TextureMaterial(texture=Texture("images/passa.png"))
+        passa_geometry = passa2Geometry()
+        passa_positions = [
+                           [-80.5,-2,53.5],[-72,-2,53.5],[-63.5,-2,53.5], [-55,-2,53.5],[-46.5,-2,53.5],
+                           [-38,-2,53.5], [-29.5,-2,53.5],[-21,-2,53.5],[-12.5,-2,53.5],[-4,-2,53.5],
+                           [4.5,-2,53.5],[13,-2,53.5],[21.5,-2,53.5],[30,-2,53.5],[38.5,-2,53.5],
+                           [30,-2,53.5],[38.5,-2,53.5],[47,-2,53.5],[55.5,-2,53.5],[64,-2,53.5],[72.5,-2,53.5],[81,-2,53.5]
+                           ]
+        for position in passa_positions:
+            passa = Mesh(passa_geometry, passa_material)
+            passa.set_position(position)
+            self.scene.add(passa) 
 
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
         arvore_geometry = ArvoreGeometry()
         arvore_positions= [
-                        [-70, -3, 35],[-65, -3, 32],[-60, -3, 35],[-55, -3, 35],[-50, -3, 32],
-                        [-45, -3, 32],[-40, -3, 32],[-35, -3, 32],[-30, -3, 32],
-                        [-25, -3, 32],[-20, -3, 32],[-15, -3, 32],[-10, -3, 40],
-                        [12, -3, 20], [8, -3, 34],[12, -3, 40],[15, -3, 32],[20, -3, 32], 
-                        [25, -3, 32],[28, -3, 40],[30, -3, 32],[35, -3, 32],[37, -3, 41],
-                        [40, -3, 32],[45, -3, 32],[50, -3, 32],[55, -3, 32],[60, -3, 32],
-                        [65, -3, 32],[70, -3, 32],[65, -3, 32],[66, -3, 41],[75, -3, 41]]
+                        [-70, -3, 60],[-60, -3, 60],[-50, -3, 60],[-40, -3, 60],[-30, -3, 60],
+                        [-20, -3, 60],[-10, -3, 60],[10, -3, 60],
+                        [20, -3, 60],[25, -3, 60],[35, -3, 60],[40, -3, 60],
+                        [50, -3, 60],[60, -3, 60],[70, -3, 60],
+                        
+                        [-70, -3, 70],[-60, -3, 70],[-50, -3, 70],[-40, -3, 70],[-30, -3, 70],
+                        [-20, -3, 70],[-10, -3, 70],[10, -3, 70],
+                        [20, -3, 70],[25, -3, 70],[35, -3, 70],[40, -3, 70],
+                        [50, -3, 70],[60, -3, 70],[70, -3, 70],
+
+                        [-70, -3, 80],[-60, -3, 80],[-50, -3, 80],[-40, -3, 80],[-30, -3, 80],
+                        [-20, -3, 80],[-10, -3, 80],[10, -3, 80],
+                        [20, -3, 80],[25, -3, 80],[35, -3, 80],[40, -3, 80],
+                        [50, -3, 80],[60, -3, 80],[70, -3, 80],
+                        ]
         for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
             arvore.set_position(position)
@@ -224,14 +211,6 @@ class Example(Base):
                           [-80, -1, -20],[-80, -1, -15],[-80, -1, -10],[-80, -1, -5],[-80, -1, 0],
                           [-80, -1, 5],[-80, -1, 10],[-80, -1, 15],[-80, -1, 20],[-80, -1, 25],
                           [-80, -1, 30],[-80, -1, 35],[-80, -1, 40],[-78, -1, 45],
-                          [-65, -1, 45],[-65, -1, 55],[-65, -1, 65],
-                          [-50, -1, 45],[-50, -1, 55],[-50, -1, 65],[-50, -1, 75],
-                          [-35, -1, 45],[-35, -1, 55],[-35, -1, 65],[-35, -1, 75],
-                          [-20, -1, 45],[-20, -1, 55],[-20, -1, 65],[-20, -1, 75],
-                          [25, -1, 45],[25, -1, 55],[25, -1, 65],[25, -1, 75],
-                          [40, -1, 45],[40, -1, 55],[40, -1, 65],[40, -1, 75],
-                          [55, -1, 45],[55, -1, 55],[55, -1, 65],[55, -1, 75],
-                          [70, -1, 45],[70, -1, 55],[70, -1, 65],
                           [85, -1, -50],[85, -1, -45],[85, -1, -40],[85, -1, -35],[85, -1, -30],
                           [85, -1, -25],[85, -1, -20],[85, -1, -15],[85, -1, -10],[85, -1, -5],
                           [85, -1, 0],[85, -1, 5],[85, -1, 10],[85, -1, 15],[85, -1, 20],[85, -1, 25],
@@ -373,6 +352,43 @@ class Example(Base):
         self.modelo.set_position([0, 0, 0])
         #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
+
+        #criação do cubo
+        cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
+        cubo_geometry = CuboGeometry()
+        cubo = Mesh(cubo_geometry, cubo_material)
+        self.cube_positions = {
+            "grupo1": [[-1.75, 4.5, 19.5], [-1.75, 6.5, 21.5], [-1.75, 8.5, 23.5]],
+            "grupo2_x": [[-1.75, 9.5, 31.5],[-1.75, 9.5, 33.5],[-1.75, 9.5, 35.5]],
+            "grupo3_x": [[-1.75, 14.5, 45.5]],
+            "grupo3_y": [[-1.75, 14.5, 43.5], [-1.75, 14.5, 47.5]],
+            "grupo4_x": [[-1.75, 19.5, 55.5]],
+            "grupo4_y": [[-1.75, 19.5, 57.5], [-1.75, 19.5, 59.5]],
+            "grupo5_x": [[-1.75, 24.5, 65.5]],
+            "grupo5_y": [[-1.75, 24.5, 67.5], [-1.75, 24.5, 69.5]],
+            "grupo6_x": [[-1.75, 29.5, 77.5]],
+            "grupo6_y": [[-1.75, 29.5, 79.5], [-1.75, 29.5, 81.5]],
+        }
+        # Create and store the cube meshes in the same dictionary
+        self.cube_meshes = {
+            "grupo1": [],
+            "grupo2_x": [],
+            "grupo3_x": [],
+            "grupo3_y": [],
+            "grupo4_x": [],
+            "grupo4_y": [],
+            "grupo5_x": [],
+            "grupo5_y": [],
+            "grupo6_x": [],
+            "grupo6_y": [],
+        }
+        # Create the cubes and store the references in the dictionary
+        for grupo, positions in self.cube_positions.items():
+            for position in positions:
+                cubo = Mesh(cubo_geometry, cubo_material)
+                cubo.set_position(position)
+                self.scene.add(cubo)
+                self.cube_meshes[grupo].append(cubo)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
@@ -410,11 +426,14 @@ class Example(Base):
         amplitudes = {
             "grupo1": 1.2,
             "grupo2_x": 2.4,
-            "grupo2_y": 2.4,
             "grupo3_x": 5.0,
             "grupo3_y": 5.0,
             "grupo4_x": 10.0,
-            "grupo4_y": 10.0
+            "grupo4_y": 10.0,
+            "grupo5_x": 10.0,
+            "grupo5_y": 10.0,
+            "grupo6_x": 10.0,
+            "grupo6_y": 10.0,
         }
         
         for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
