@@ -262,11 +262,11 @@ class Example(Base):
             self.scene.add(cadeira)
 
         #criação da espreguiçadeira
-        espreguica_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        espreguica_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
         espreguica_geometry = espreguicaGeometry()
         espreguica_positions= [
-                        [-59, 0, 24],[-39, 0, 19],[-29, 0, 21.5],[-19, 0, 19],[-9, 0, 25],
-                        [9, 0, 20],[19, 0, 19],[29, 0, 21.5],[39, 0, 19],[59, 0, 24],
+                        [-59, 0, 40],[-39, 0, 40],[-29, 0, 40],[-19, 0, 40],[-9, 0, 40],
+                        [9, 0, 40],[19, 0, 40],[29, 0, 40],[39, 0, 40],[59, 0, 40],
                         ]
         for position in espreguica_positions:
             espreguica = Mesh(espreguica_geometry, espreguica_material)
