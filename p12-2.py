@@ -92,6 +92,7 @@ class Example(Base):
         # Define grid properties
         self.grid_size = 5  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
+        self.tempo = 0
 
         # Criação da cena
         self.renderer = Renderer()
@@ -357,12 +358,19 @@ class Example(Base):
                     self.rig3.translate(0, 0, 0.1, False)
         
         return False
+    
 
+    #Diferentes posicoes para a camera cinematogra
+    posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
 
         if self.active_camera == self.cinematic_camera:
+            self.tempo += self.delta_time
+            if self.tempo > 4:
+                self.cinematic_camera.set_position(self.posicoes[np.random.randint(0,len(self.posicoes))])
+                self.tempo = 0
             modelo_position = self.modelo.global_position
             self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
 
