@@ -21,7 +21,6 @@ from geometry.casa import casaGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
-from geometry.modelopul import ModeloPulGeometry
 from geometry.oculos import OculosGeometry
 from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
@@ -292,7 +291,7 @@ class Example(Base):
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
         self.oculos = Mesh(oculos_geometry, oculos_material)
-        self.oculos.set_position([0, -0.16, 0.09])
+        self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
 
         # Criação do portal
@@ -370,11 +369,12 @@ class Example(Base):
         yatch.set_position([10, 0, -13])
         self.scene.add(yatch)"""
 
-        # Inicialização dos modelos
+        #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
+        #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
 
         #criação do cubo
@@ -417,9 +417,8 @@ class Example(Base):
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, 0])
+        #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
-
-        #Atribuição das rigs
         self.scene.add(self.rig)
         self.scene.add(self.rig2)
         self.scene.add(self.rig3)
@@ -485,48 +484,16 @@ class Example(Base):
                     self.active_camera = self.third_person_cam
                     self.rig3.set_rotation_x(0)
                     # Adicionar o modelo e os óculos à cena
-                    if self.modelo not in self.rig2.children_list:
-                        self.rig2.add(self.modelo)
-                    if self.oculos not in self.rig2.children_list:
-                        self.rig2.add(self.oculos)
+                    self.rig2.add(self.modelo)
+                    self.rig2.add(self.oculos)
                 else:
                     self.active_camera = self.camera
                     self.rig.set_rotation_x(0)
                     # Remover o modelo e os óculos da cena
-                    if self.modelo in self.rig2.children_list:
-                        self.rig2.remove(self.modelo)
-                    if self.oculos in self.rig2.children_list:
-                        self.rig2.remove(self.oculos)
+                    self.rig2.remove(self.modelo)
+                    self.rig2.remove(self.oculos)
         else: 
             self.toggle_camera = False
-
-        # Verificar se o personagem está pulando
-        if self.rig2.is_jumping:
-            if self.modelopul not in self.rig2.children_list:
-                self.rig2.add(self.modelopul)
-            if self.modelo in self.rig2.children_list:
-                self.rig2.remove(self.modelo)
-            self.oculos.set_position([0, -0.16, 0.09])
-        else:
-            if self.modelopul in self.rig2.children_list:
-                self.rig2.remove(self.modelopul)
-            if self.active_camera == self.third_person_cam and not self.rig2.is_jumping:
-                if self.modelo not in self.rig2.children_list:
-                    self.rig2.add(self.modelo)
-            self.oculos.set_position([0, 0, 0.09])
-
-        # Certificar-se de que apenas o modelo correto está visível na câmera ativa
-        if self.active_camera == self.camera:
-            if self.modelo in self.rig2.children_list:
-                self.rig2.remove(self.modelo)
-            if self.modelopul in self.rig2.children_list:
-                self.rig2.remove(self.modelopul)
-        else:
-            if not self.rig2.is_jumping and self.modelo not in self.rig2.children_list:
-                self.rig2.add(self.modelo)
-            elif self.rig2.is_jumping and self.modelopul not in self.rig2.children_list:
-                self.rig2.add(self.modelopul)
-
         collision = self.check_collisions()  # Get collision direction
         self.rig.update(self.input, self.delta_time, collision)
         self.rig2.update(self.input, self.delta_time, collision)
@@ -582,7 +549,7 @@ class Example(Base):
         nearby_objects = self.get_nearby_objects(self.camera)
         for other_obj in nearby_objects:
             # Ignore collisions with oculos and modelo
-            if other_obj == self.oculos or other_obj == self.modelo or other_obj == self.modelopul:
+            if other_obj == self.oculos or other_obj == self.modelo:
                 continue
             if other_obj != self.camera and self.camera.intersects(other_obj):
                 self.determine_collision_direction(other_obj)
