@@ -238,7 +238,7 @@ class Example(Base):
             self.scene.add(toalha)
 
         #criação das sombrinhas
-        sombrinha_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
+        sombrinha_material = TextureMaterial(texture=Texture("images/parasol.jpg"))
         sombrinha_geometry = sombrinhaGeometry()
         sombrinha_positions= [
                         [-60, 0, 7],[-40, 0, 2],[-30, 0, 4.5],[-20, 0, 2],[-10, 0, 8],
