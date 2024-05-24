@@ -1,4 +1,4 @@
-# Blender 4.0.2 MTL File: 'Beach life-guard place.blend'
+# Blender 4.0.2 MTL File: 'None'
 # www.blender.org
 
 newmtl Material.001
@@ -141,36 +141,6 @@ d 1.000000
 illum 2
 map_Kd D:/LEI/3_ano/Computação Gráfica/Projeto-Final/BLENDER/blender projects/Pine Tree 3D model/textures/Trank_basecolor.tga.png
 
-newmtl Material.015
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.265348 0.108524
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
-newmtl Material.016
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd D:/LEI/3_ano/Computação Gráfica/Projeto-Final/textures/White_and_blue_striped.png
-
-newmtl Material.017
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
 newmtl Material.018
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
@@ -280,26 +250,6 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd D:/LEI/3_ano/Computação Gráfica/Projeto-Final/BLENDER/blender projects/Pine Tree 3D model/textures/Trank_basecolor.tga.png
-
-newmtl Material.029
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
-newmtl Material.030
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.054684 0.013391
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
 
 newmtl Material.031
 Ns 250.000000
