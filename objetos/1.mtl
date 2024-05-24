@@ -1,0 +1,24 @@
+# Blender 4.0.2 MTL File: 'uploads_files_3688773_SESLONG+blend.blend'
+# www.blender.org
+
+newmtl Wood_1
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:/Wood08_4K_Roughness.png
+map_Bump -bm 1.000000 C:/Wood08_4K_Normal.png
+
+newmtl fabric_1
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Rag01_4K_BaseColor.png
+map_Ns C:/Rag01_4K_Roughness.png
+map_Bump -bm 7.100000 C:/Rag01_4K_Normal.png

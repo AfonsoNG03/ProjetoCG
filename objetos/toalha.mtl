@@ -1,0 +1,13 @@
+# Blender 4.0.2 MTL File: 'untitled.blend'
+# www.blender.org
+
+newmtl Beach_Towels_1
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.054000 0.054000 0.054000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/Utilizador/3D Objects/C:/Users/Utilizador/Downloads/P8src/C:/Users/Utilizador/Downloads/Beach_Towels_v2_L2.123cfdc7c58d-ab2d-4ff1-90bd-042d1339b7cb/Beach_Towels_diffuse.jpg
+map_Bump C:/Users/Utilizador/3D Objects/C:/Users/Utilizador/Downloads/P8src/C:/Users/Utilizador/Downloads/Beach_Towels_v2_L2.123cfdc7c58d-ab2d-4ff1-90bd-042d1339b7cb/Beach_Towels_bump.jpg
