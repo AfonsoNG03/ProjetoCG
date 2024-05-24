@@ -32,9 +32,6 @@ from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.salva import salvaGeometry
 from geometry.sombrinha import sombrinhaGeometry
-from geometry.yatch import YatchGeometry
-from geometry.warship import warshipGeometry
-from geometry.warship2 import warship2Geometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
@@ -145,16 +142,6 @@ class Example(Base):
         self.sand.rotate_x(-math.pi/2)
         self.sand.set_position([0, 0, 45])
         self.scene.add(self.sand)
-
-        """# Testes
-        phong_material = PhongMaterial(
-            property_dict={"baseColor": [1, 0, 1]},
-            number_of_light_sources=2
-        )
-        sphere_geometry = SphereGeometry()
-        sphere_right = Mesh(sphere_geometry, phong_material)
-        sphere_right.set_position([2.5, 0, 0])
-        self.scene.add(sphere_right)"""
         
         #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
@@ -350,32 +337,11 @@ class Example(Base):
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
 
-        """#Navios
-        warship_material = TextureMaterial(texture=Texture("images/warship.png"))
-        warship_geometry = warshipGeometry()
-        warship = Mesh(warship_geometry, warship_material)
-        warship.set_position([-10, 0, -75])
-        self.scene.add(warship)
-
-        warship2_material = TextureMaterial(texture=Texture("images/T (61).png"))
-        warship2_geometry = warship2Geometry()
-        warship2 = Mesh(warship2_geometry, warship2_material)
-        warship2.set_position([40, 0, -55])
-        self.scene.add(warship2)
-        
-        # Criação yate
-        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
-        yatch_geometry = YatchGeometry()
-        yatch = Mesh(yatch_geometry, yatch_material)
-        yatch.set_position([10, 0, -13])
-        self.scene.add(yatch)"""
-
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
-        #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
 
         #modelo do nadador salvador
