@@ -30,6 +30,7 @@ from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
+from geometry.salva import salvaGeometry
 from geometry.sombrinha import sombrinhaGeometry
 from geometry.yatch import YatchGeometry
 from geometry.warship import warshipGeometry
@@ -376,6 +377,13 @@ class Example(Base):
         self.modelo.set_position([0, 0, 0])
         #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
+
+        #modelo do nadador salvador
+        salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
+        salva_geometry = salvaGeometry()
+        salva = Mesh(salva_geometry, salva_material)
+        salva.set_position([-10, 0, 20])
+        self.scene.add(salva)
 
         #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
