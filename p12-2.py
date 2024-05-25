@@ -26,6 +26,7 @@ from geometry.passa import passaGeometry
 from geometry.placa import placaGeometry
 from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
+from geometry.portal import portalGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
 from geometry.yatch import YatchGeometry
@@ -184,13 +185,15 @@ class Example(Base):
     "grupo2_x": [[-1.75, 8.0, 43.5], [-1.75, 10.0, 51.5], [-1.75, 12.0, 59.5]],
     "grupo3_x": [[-1.75, 14.0, 67.5]],
     "grupo3_y": [[-1.75, 16.0, 75.5], [-1.75, 18.0, 83.5], [-1.75, 20.0, 90]],
-    "grupo4_x": [[-5, 22.0, 82.0]],
-    "grupo4_y": [[-5, 24.0, 74.0], [-5, 26.0, 66.0], [-5, 28.0, 58.0]],
-    "grupo5_x": [[-5, 30.0, 50.0]],
-    "grupo5_y": [[-5, 32.0, 42.0], [-5, 34.0, 34.0], [-5, 36.0, 26.0]],
-    "grupo6_x": [[-9, 38.0, 18.0]],
-    "grupo6_y": [[-9, 40.0, 26.0], [-9, 42.0, 34.0], [-9, 44.0, 42.0]],
-}
+    "grupo4_x": [[-9, 22.0, 82.0], [-9, 24.0, 74.0], [-9, 26.0, 66.0], [-9, 28.0, 58.0]],
+    "grupo5_x": [[-9, 30.0, 50.0]],
+    "grupo5_y": [[-9, 32.0, 42.0], [-9, 34.0, 34.0], [-9, 36.0, 26.0]],
+    "grupo6_x": [[-18, 38.0, 18.0] , [-18, 40.0, 26.0], [-18, 42.0, 34.0], [-18, 44.0, 42.0]],
+    "Plataform": [[-18, 46.0, 50.0], [-16, 46, 50], [-16, 46, 48], [-18, 46, 48], [-20, 46, 48], [-20, 46, 50], [-20, 46, 52] , [-18, 46, 52], [-16, 46, 52]
+                  ,[-14, 46, 52], [-14, 46, 50], [-14, 46, 48], [-22, 46, 48], [-22, 46, 50], [-22, 46, 52]],
+    "Plataform2": [[-18, 46.0, 50.0], [-16, 46, 50], [-16, 46, 48], [-18, 46, 48], [-20, 46, 48], [-20, 46, 50], [-20, 46, 52] , [-18, 46, 52], [-16, 46, 52]
+                  ,[-14, 46, 52], [-14, 46, 50], [-14, 46, 48], [-22, 46, 48], [-22, 46, 50], [-22, 46, 52]]
+    }
 
 
 
@@ -202,11 +205,10 @@ class Example(Base):
             "grupo3_x": [],
             "grupo3_y": [],
             "grupo4_x": [],
-            "grupo4_y": [],
             "grupo5_x": [],
             "grupo5_y": [],
             "grupo6_x": [],
-            "grupo6_y": [],
+            "Plataform": []
         }
         # Create the cubes and store the references in the dictionary
         for grupo, positions in self.cube_positions.items():
@@ -238,6 +240,14 @@ class Example(Base):
         self.rocks = Mesh(rocks_geometry, rocks_material, True, 5)
         self.rocks.set_position([20, -2, 20])
         self.scene.add(self.rocks)
+
+        # Criação do portal
+        portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
+        portal_geometry = portalGeometry()
+        portal = Mesh(portal_geometry, portal_material)
+        #portal.set_position([-1.75, 35, 90.5])
+        portal.set_position([-18, 52.0, 48.0])
+        self.scene.add(portal)
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
@@ -412,11 +422,10 @@ class Example(Base):
             "grupo3_x": 5.0,
             "grupo3_y": 3,
             "grupo4_x": 5,
-            "grupo4_y": 4,
             "grupo5_x": 5,
             "grupo5_y": 3.6,
             "grupo6_x": 5,
-            "grupo6_y": 1.6,
+            "Plataform": 0
         }
         
         for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
@@ -435,6 +444,13 @@ class Example(Base):
                     # grupo sem '_x' or '_y' adota o tradicional movimento em Y
                     new_y = original_position[1] + amplitude * math.sin(time + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
+        
+        # [-18, 52.0, 48.0]
+        if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 48 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
+            #self.rig.set_position([0, 0, 0])
+            self.rig.translate(10, 10, 10, False)
+            self.rig3.translate(10, 10, 10, False)
+            #self.active_camera = self.camera
 
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
