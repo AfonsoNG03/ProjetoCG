@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import pygame
+import os
 import pathlib
 import sys
 
@@ -88,6 +90,24 @@ class Example(Base):
                 fragColor = texture2D(image, uvNoise);
             }
         """
+
+        # Initialize Pygame mixer
+        pygame.mixer.init()
+        # Print current working directory to debug
+        print("Current working directory:", os.getcwd())
+        # Define the path to the music file
+        music_file = 'music/Megaman_X.mp3'
+        # Check if the music file exists
+        if not os.path.isfile(music_file):
+            print(f"Music file not found: {music_file}")
+        else:
+            try:
+                pygame.mixer.music.load(music_file)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)  # musica em loop infinito
+                print(f"Playing music: {music_file}")
+            except pygame.error as e:
+                print(f"Failed to load music file: {music_file}, error: {e}")
 
         # Define grid properties
         self.grid_size = 2  # Size of each grid cell
