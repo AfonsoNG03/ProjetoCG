@@ -20,6 +20,8 @@ class MovementRig(Object3D):
         self.mouse_y = 0
         self.is_jumping = False
         self.jump_speed = 10
+        self.fall_speed = 0.0
+        self.gravity = 15.0
         self.modo_criativo_enabled = False
 
         # Default key mappings
@@ -89,20 +91,34 @@ class MovementRig(Object3D):
         if input_object.is_key_pressed(self.keys["MODO_CRIATIVO"]):
             self.modo_criativo_enabled = not self.modo_criativo_enabled
 
+        if self.global_position[1] < 0:
+            self.translate(0, -self.global_position[1], 0)
+            self.fall_speed = 0.0
+
+        if collision:
+            self.fall_speed = 0.0
+
+        if self.global_position[1] > 0 and not self.is_jumping and not collision:
+            self.fall_speed += self.gravity * delta_time
+            self.translate(0, -self.fall_speed * delta_time, 0)
+            if self.global_position[1] <= 0:
+                self.global_position[1] = 0
+                self.fall_speed = 0.0
+
         if self.is_jumping:
             self.translate(0, self.jump_speed * delta_time, 0)
             self.jump_speed -= 15 * delta_time
-            if collision or self.global_position[1] <= 0:
+            if collision:
                 self.is_jumping = False
                 self.jump_speed = 10
-                if self.global_position[1] <= 0:
-                    self.global_position[1] = 0
+                self.translate(0, 16 * delta_time, 0)
+                #self.translate(0, 0.5, 0)
+            if self.global_position[1] <= 0:
+                self.is_jumping = False
+                self.jump_speed = 10
+                self.global_position[1] = 0
 
         self.keys_pressed = input_object.key_pressed_list
-        if collision:
-            self.restrict_movement()
-        else:
-            self.allow_movement()
 
         movement_actions = {
             "MOVE_FORWARDS": (0, 0, -move_amount),
@@ -137,7 +153,8 @@ class MovementRig(Object3D):
         for action, rotation in rotation_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "TURN_RIGHT" and input_object.mouse_x > 0) or (action == "TURN_LEFT" and input_object.mouse_x < 0):
                 self.rotate_y(rotation)
-
+        '''
+        
         look_actions = {
             "LOOK_UP": rotate_amount,
             "LOOK_DOWN": -rotate_amount
@@ -146,3 +163,4 @@ class MovementRig(Object3D):
         for action, rotation in look_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "LOOK_UP" and input_object.mouse_y < 0) or (action == "LOOK_DOWN" and input_object.mouse_y > 0):
                 self._look_attachment.rotate_x(rotation)
+        '''
