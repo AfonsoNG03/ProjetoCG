@@ -90,8 +90,10 @@ class Example(Base):
         """
 
         # Define grid properties
-        self.grid_size = 2  # Size of each grid cell
+        self.grid_size = 5  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
+        self.tempo = 0
+        self.objects_to_ignore = []
 
         # Criação da cena
         self.renderer = Renderer()
@@ -99,15 +101,20 @@ class Example(Base):
         self.rig = MovementRig()
         self.rig2 = MovementRig2()
         self.rig3 = MovementRig3()
+        self.objects_to_ignore.append(self.rig)
+        self.objects_to_ignore.append(self.rig2)
+        self.objects_to_ignore.append(self.rig3)
 
         # Adiciona luzes
         # Luz ambiente
         self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
         self.scene.add(self.ambient_light)
+        self.objects_to_ignore.append(self.ambient_light)
 
         # Luz direcional
         self.directional_light = DirectionalLight(color=[0.8, 0.8, 0.8], direction=[-1, -1, 0])
         self.scene.add(self.directional_light)
+        self.objects_to_ignore.append(self.directional_light)
 
         # Texturas
         rgb_noise_texture = Texture("images/rgb-noise.jpg")
@@ -119,18 +126,21 @@ class Example(Base):
         self.distort_material.add_uniform("vec2", "repeatUV", [10, 10])
         self.distort_material.locate_uniforms()
 
+
         # Textura do oceano
         ocean_geometry = RectangleGeometry(width=200, height=100)
         self.ocean = Mesh(ocean_geometry, self.distort_material)
         self.ocean.rotate_x(-math.pi/2)
         self.ocean.set_position([0, 0, -55])
         self.scene.add(self.ocean)
+        self.objects_to_ignore.append(self.ocean)
     
         # Textura do céu
         sky_geometry = SphereGeometry(radius=100)
         sky_material = TextureMaterial(texture=Texture(file_name="images/sky.jpg"))
         self.sky = Mesh(sky_geometry, sky_material)
         self.scene.add(self.sky)
+        self.objects_to_ignore.append(self.sky)
 
         # Textura da areia
         sand_geometry = RectangleGeometry(width=200, height=100)
@@ -142,7 +152,9 @@ class Example(Base):
         self.sand.rotate_x(-math.pi/2)
         self.sand.set_position([0, 0, 45])
         self.scene.add(self.sand)
-        
+        self.objects_to_ignore.append(self.sand)
+
+        '''
         #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -152,7 +164,8 @@ class Example(Base):
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
             passa.set_position(position)
-            self.scene.add(passa) 
+            self.scene.add(passa)
+            self.objects_to_ignore.append(passa)
 
         #Passadiço horizontal
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
@@ -166,8 +179,10 @@ class Example(Base):
         for position in passa_positions:
             passa = Mesh(passa_geometry, passa_material)
             passa.set_position(position)
-            self.scene.add(passa) 
-
+            self.scene.add(passa)
+            self.objects_to_ignore.append(passa)
+        '''
+        '''
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
@@ -192,7 +207,9 @@ class Example(Base):
             arvore = Mesh(arvore_geometry, arvore_material)
             arvore.set_position(position)
             self.scene.add(arvore)
-  
+            self.objects_to_ignore.append(arvore)
+            ''' 
+        '''
         # Criação rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
@@ -210,7 +227,9 @@ class Example(Base):
             rocks = Mesh(rocks_geometry, rocks_material)
             rocks.set_position(position)
             self.scene.add(rocks)
-
+            self.objects_to_ignore.append(rocks)
+        '''
+        '''
         # Criação das toalhas
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
@@ -224,6 +243,7 @@ class Example(Base):
             toalha.set_position(position)
             toalha.scale(2.5)
             self.scene.add(toalha)
+            self.objects_to_ignore.append(toalha)
 
         #criação das sombrinhas
         sombrinha_material = TextureMaterial(texture=Texture("images/parasol.jpg"))
@@ -236,7 +256,9 @@ class Example(Base):
             sombrinha = Mesh(sombrinha_geometry, sombrinha_material)
             sombrinha.set_position(position)
             self.scene.add(sombrinha)
-
+            self.objects_to_ignore.append(sombrinha)
+            '''
+        '''
         #criação da cadeira
         cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
         cadeira_geometry = cadeiraGeometry()
@@ -248,6 +270,7 @@ class Example(Base):
             cadeira = Mesh(cadeira_geometry, cadeira_material)
             cadeira.set_position(position)
             self.scene.add(cadeira)
+            self.objects_to_ignore.append(cadeira)
 
         #criação da espreguiçadeira
         espreguica_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
@@ -260,6 +283,7 @@ class Example(Base):
             espreguica = Mesh(espreguica_geometry, espreguica_material)
             espreguica.set_position(position)
             self.scene.add(espreguica)
+            self.objects_to_ignore.append(espreguica)
 
         #criação da casa
         casa_material = TextureMaterial(texture=Texture("images/casa.png"))
@@ -267,13 +291,8 @@ class Example(Base):
         casa = Mesh(casa_geometry, casa_material)
         casa.set_position([-30, 0, 30])
         self.scene.add(casa)
+        self.objects_to_ignore.append(casa)
 
-        # Criação do bikini
-        bikini_material = TextureMaterial(texture=Texture("images/rgb-noise.jpg"))
-        bikini_geometry = BikiniGeometry()
-        bikini = Mesh(bikini_geometry, bikini_material)
-        bikini.set_position([-1, 0, 0])
-        self.scene.add(bikini)
 
         # Criação dos oculos
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
@@ -281,6 +300,7 @@ class Example(Base):
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
+        self.objects_to_ignore.append(self.oculos)
 
         # Criação do portal
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
@@ -289,7 +309,10 @@ class Example(Base):
         #portal.set_position([-1.75, 35, 90.5])
         portal.set_position([-1.75, 36, 86])
         self.scene.add(portal)
+        self.objects_to_ignore.append(portal)
+        '''
         
+        '''
         #placa das direções
         placa_material = TextureMaterial(texture=Texture("images/p2.png"))
         placa_geometry = placaGeometry()
@@ -297,12 +320,14 @@ class Example(Base):
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
 
+
         #placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
         stand_geometry = standGeometry()
         self.stand = Mesh(stand_geometry, stand_material)
         self.stand.set_position([8, 0, 14])
         self.scene.add(self.stand)
+
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
@@ -336,13 +361,31 @@ class Example(Base):
         pokeball = Mesh(pokeball_geometry, pokeball_material)
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
-
+        '''
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
         self.modelo.rotate_y(110)
+        self.rig.add(self.modelo)
+        self.objects_to_ignore.append(self.modelo)
+
+         # Distancias Maximas ->
+        # 0,0,0 -> 0,0,12
+        # 0,0,0 -> 0,4,0
+        # 0,0,0 -> 0,3,9
+        # 0,0,0 -> 0,2,10
+        # 0,0,0 -> 0,2,11 (Possivel mas complicado)
+        # 0,0,0 -> 0,1,11
+        # 0,0,0 -> 9,0,9 (Possivel mas complicado)
+        # 0,0,0 -> 9,0,8 / 8,0,9
+        # 0,0,0 -> 9,1,8 / 8,1,9
+        # 0,0,0 -> 8,2,8 (Possivel mas complicado)
+        # 0,0,0 -> 8,2,7 / 7,2,8
+        # 0,0,0 -> 7,3,7 (Possivel mas complicado)
+        # 0,0,0 -> 4,4,8 (Possivel mas complicado)
+        # 0,0,0 -> 0,4,4
 
         #modelo do nadador salvador
         salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
@@ -350,6 +393,7 @@ class Example(Base):
         salva = Mesh(salva_geometry, salva_material)
         salva.set_position([-10, 0, 20])
         self.scene.add(salva)
+        self.objects_to_ignore.append(salva)
 
         #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
@@ -391,20 +435,162 @@ class Example(Base):
                 
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0, 2.93, 0])
+        self.camera.set_position([0, 2.93, -1])
         #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
-        self.scene.add(self.rig2)
-        self.scene.add(self.rig3)
 
         # Criaçao da camara alternativa
-        self.third_person_cam = Camera(aspect_ratio=800/600)
-        self.third_person_cam.set_position([0, 2.5, 4])
-        self.rig3.add(self.third_person_cam)
+        self.static_camera = Camera(aspect_ratio=800/600)
+        self.static_camera.set_position([0, 4, 4])
+        model_position = self.modelo.global_position
+        self.static_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
+        self.rig3.add(self.static_camera)
+
+        # Criacao da camara cinemática
+        self.cinematic_camera = Camera(aspect_ratio=800/600)
+        self.cinematic_camera.set_position([10, 10, 10])
+        model_position = self.modelo.global_position
+        self.cinematic_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
+
         self.active_camera = self.camera
 
         self.toggle_camera = False
+
+        self.update_grid()
+
+
+        #self.objects_To_Ignore = [self.rig, self.rig2, self.rig3, self.ambient_light, self.directional_light, self.sky, self.sand, self.ocean, self.modelo, self.oculos]
+
+
+    def add_to_grid(self, obj):
+        """
+        Add an object to the grid based on its position.
+        """
+        position = obj.global_position
+        grid_x = int(position[0] / self.grid_size)
+        grid_y = int(position[1] / self.grid_size)
+        grid_z = int(position[2] / self.grid_size)
+        key = (grid_x, grid_y, grid_z)
+        if key not in self.grid:
+            self.grid[key] = []
+        self.grid[key].append(obj)
+
+    def update_grid(self):
+        """
+        Update the grid by reassigning objects to appropriate grid cells.
+        """
+        self.grid = {}
+        for obj in self.scene.children_list:
+            #if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light or obj == self.sky:
+            if obj in self.objects_to_ignore:
+                continue
+            self.add_to_grid(obj)
+        print(len(self.grid))
+
+    def get_nearby_objects(self, obj):
+        """
+        Get objects in the same or adjacent grid cells as the given object.
+        """
+        position = obj.global_position
+        grid_x = int(position[0] / self.grid_size)
+        grid_y = int(position[1] / self.grid_size)
+        grid_z = int(position[2] / self.grid_size)
+        nearby_objects = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                for dz in [-1, 0, 1]:
+                    key = (grid_x + dx, grid_y + dy, grid_z + dz)
+                    if key in self.grid:
+                        nearby_objects.extend(self.grid[key])
+        return nearby_objects
+
+    def check_collisions(self):
+        """
+        Check for collisions between objects in the scene.
+        """
+        nearby_objects = self.get_nearby_objects(self.camera)
+        for other_obj in nearby_objects:
+            if other_obj != self.camera and self.camera.intersects(other_obj):
+                return self.determine_collision_direction(other_obj)
+                #return True
+        return False
+
+    def determine_collision_direction(self, other_obj):
+        """
+        Determine the direction of collision between the camera and another object.
+        """
+        # Get positions of camera and other object
+        cam_pos = np.array(self.camera.global_position)
+        if self.camera == self.static_camera:
+            cam_pos = cam_pos 
+        obj_pos = np.array(other_obj.global_position)
+
+        # Calculate the vector from the camera to the object
+        collision_vector = obj_pos - cam_pos
+
+        collision_vector[1] -= 0.15
+
+        # Normalize the vector to get the direction
+        collision_direction = collision_vector / np.linalg.norm(collision_vector)
+        
+        # Determine the direction
+        #direction = ''
+        if  other_obj.global_position[1] + other_obj._height/2 +2.45 <= self.camera.global_position[1]:
+            if abs(collision_direction[0]) > abs(collision_direction[1]) and abs(collision_direction[0]) > abs(collision_direction[2]):
+                if collision_direction[0] > 0:
+                    #direction = 'right'
+                    self.rig.translate(-0.1, 0, 0, False)
+                    self.rig3.translate(-0.1, 0, 0, False)
+                else:
+                    #direction = 'left'
+                    self.rig.translate(0.1, 0, 0, False)
+                    self.rig3.translate(0.1, 0, 0, False)
+            elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1])  > abs(collision_direction[2]):
+                if collision_direction[1] > -0.1:
+                    #direction = 'below'
+                    self.rig.translate(0, -0.1, 0, False)
+                    self.rig3.translate(0, -0.1, 0, False)
+                else:
+                    #direction = 'above'
+                    if self.camera.global_position[1] - other_obj.global_position[1] <= 3.9:
+                        self.rig.translate(0, self._delta_time*2.7, 0, False)
+                        self.rig3.translate(0, self._delta_time*2.7, 0, False)
+                    return True
+            else:
+                if collision_direction[2] > 0:
+                    #direction = 'front'
+                    self.rig.translate(0, 0, -0.1, False)
+                    self.rig3.translate(0, 0, -0.1, False)
+                else:
+                    #direction = 'back'
+                    self.rig.translate(0, 0, 0.1, False)
+                    self.rig3.translate(0, 0, 0.1, False)
+        else:
+            if abs(collision_direction[0]) > abs(collision_direction[2]):
+                if collision_direction[0] > 0:
+                    #direction = 'right'
+                    self.rig.translate(-0.1, 0, 0, False)
+                    self.rig3.translate(-0.1, 0, 0, False)
+                else:
+                    #direction = 'left'
+                    self.rig.translate(0.1, 0, 0, False)
+                    self.rig3.translate(0.1, 0, 0, False)
+            else:
+                if collision_direction[2] > 0:
+                    #direction = 'front'
+                    self.rig.translate(0, 0, -0.1, False)
+                    self.rig3.translate(0, 0, -0.1, False)
+                else:
+                    #direction = 'back'
+                    self.rig.translate(0, 0, 0.1, False)
+                    self.rig3.translate(0, 0, 0.1, False)
+        
+        return False
+    
+    #Diferentes posicoes para a camera cinematogra
+    posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
+
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
@@ -412,14 +598,26 @@ class Example(Base):
         time = self.time * 0.5  # Adjust the speed of the movement
         
         # Atualizar a lógica de rotação para apenas no eixo X
+        '''
         if self.active_camera == self.camera:
             camera_position = self.camera.global_position
             look_at_position = [camera_position[0], 0, camera_position[2]]
         else:
             modelo_position = self.modelo.global_position
             look_at_position = [modelo_position[0], 0, modelo_position[2]]
+            '''
         
-        self.stand.look_at(look_at_position)
+
+        if self.active_camera == self.cinematic_camera:
+            self.tempo += self.delta_time
+            if self.tempo > 4:
+                self.cinematic_camera.set_position(self.posicoes[np.random.randint(0,len(self.posicoes))])
+                self.tempo = 0
+            modelo_position = self.modelo.global_position
+            self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
+
+
+        #self.stand.look_at(look_at_position)
         
         # Define different amplitudes for each group
         amplitudes = {
@@ -456,17 +654,16 @@ class Example(Base):
             if not self.toggle_camera:
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
-                    self.active_camera = self.third_person_cam
-                    self.rig3.set_rotation_x(0)
-                    # Adicionar o modelo e os óculos à cena
-                    self.rig2.add(self.modelo)
-                    self.rig2.add(self.oculos)
+                    self.active_camera = self.static_camera
                 else:
                     self.active_camera = self.camera
-                    self.rig.set_rotation_x(0)
-                    # Remover o modelo e os óculos da cena
-                    self.rig2.remove(self.modelo)
-                    self.rig2.remove(self.oculos)
+        elif self.input.is_key_pressed('v'):
+            if not self.toggle_camera:
+                self.toggle_camera = True
+                if self.active_camera == self.camera:
+                    self.active_camera = self.cinematic_camera
+                else:
+                    self.active_camera = self.camera
         else: 
             self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
@@ -474,94 +671,8 @@ class Example(Base):
         self.rig2.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
+        self.static_camera 
         # Check for collisions
-
-    def add_to_grid(self, obj):
-        """
-        Add an object to the grid based on its position.
-        """
-        position = obj.global_position
-        grid_x = int(position[0] / self.grid_size)
-        grid_y = int(position[1] / self.grid_size)
-        grid_z = int(position[2] / self.grid_size)
-        key = (grid_x, grid_y, grid_z)
-        if key not in self.grid:
-            self.grid[key] = []
-        self.grid[key].append(obj)
-
-    def update_grid(self):
-        """
-        Update the grid by reassigning objects to appropriate grid cells.
-        """
-        self.grid = {}
-        for obj in self.scene.children_list:
-            if obj == self.rig or obj == self.ambient_light or obj == self.ocean or obj == self.sand or obj == self.directional_light or obj == self.sky:
-                continue
-            self.add_to_grid(obj)
-
-    def get_nearby_objects(self, obj):
-        """
-        Get objects in the same or adjacent grid cells as the given object.
-        """
-        position = obj.global_position
-        grid_x = int(position[0] / self.grid_size)
-        grid_y = int(position[1] / self.grid_size)
-        grid_z = int(position[2] / self.grid_size)
-        nearby_objects = []
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                for dz in [-1, 0, 1]:
-                    key = (grid_x + dx, grid_y + dy, grid_z + dz)
-                    if key in self.grid:
-                        nearby_objects.extend(self.grid[key])
-        return nearby_objects
-
-    def check_collisions(self):
-        """
-        Check for collisions between objects in the scene.
-        """
-        self.update_grid()
-        nearby_objects = self.get_nearby_objects(self.camera)
-        for other_obj in nearby_objects:
-            # Ignore collisions with oculos and modelo
-            if other_obj == self.oculos or other_obj == self.modelo:
-                continue
-            if other_obj != self.camera and self.camera.intersects(other_obj):
-                self.determine_collision_direction(other_obj)
-                return True
-            elif other_obj != self.third_person_cam and self.third_person_cam.intersects(other_obj):
-                self.determine_collision_direction(other_obj)
-                return True
-        return False
-
-    def determine_collision_direction(self, other_obj):
-        """
-        Determine the direction of collision between the camera and another object.
-        """
-        # Get positions of camera and other object
-        cam_pos = np.array(self.camera.global_position)
-        obj_pos = np.array(other_obj.global_position)
-        obj_height = other_obj._heightMesh
-
-        if cam_pos[1] > obj_pos[1] + obj_height/2:
-            self.rig.translate(0, 0.2, 0)
-            return "up"
-        # Calculate direction vector from other object to camera
-        direction = cam_pos - obj_pos
-
-        direction = [direction[0], direction[2]]
-        min_index = np.argmin(np.abs(direction))
-        
-        if min_index == 0:
-            if direction[0] > 0:
-                self.rig.translate(0.1, 0, 0)
-            else:
-                self.rig.translate(-0.1, 0, 0)
-        else:
-            if direction[1] > 0:
-                self.rig.translate(0,0 , 0.1)
-            else:
-                self.rig.translate(0, 0, -0.1)
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
