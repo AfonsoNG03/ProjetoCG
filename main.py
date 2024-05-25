@@ -1,8 +1,11 @@
 import numpy as np
 import math
+import pygame
+import os
 import pathlib
 import sys
 
+from core.menu import GameMenu
 from core.base import Base
 from core_ext.camera import Camera
 from core_ext.mesh import Mesh
@@ -31,10 +34,8 @@ from geometry.portal import portalGeometry
 from geometry.stand import standGeometry
 from geometry.pokeball import pokeballGeometry
 from geometry.rocks import rocksGeometry
+from geometry.salva import salvaGeometry
 from geometry.sombrinha import sombrinhaGeometry
-from geometry.yatch import YatchGeometry
-from geometry.warship import warshipGeometry
-from geometry.warship2 import warship2Geometry
 from geometry.rectangle import RectangleGeometry
 from geometry.sphere import SphereGeometry
 from geometry.toalha import ToalhaGeometry
@@ -92,6 +93,25 @@ class Example(Base):
             }
         """
 
+        # Initialize Pygame mixer
+        pygame.mixer.init()
+        # Print current working directory to debug
+        print("Current working directory:", os.getcwd())
+        # Define the path to the music file
+        #music_file = 'music/Megaman_X.mp3'
+        music_file = 'music/troll.mp3'
+        # Check if the music file exists
+        if not os.path.isfile(music_file):
+            print(f"Music file not found: {music_file}")
+        else:
+            try:
+                pygame.mixer.music.load(music_file)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)  # musica em loop infinito
+                print(f"Playing music: {music_file}")
+            except pygame.error as e:
+                print(f"Failed to load music file: {music_file}, error: {e}")
+
         # Define grid properties
         self.grid_size = 2  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell
@@ -145,16 +165,6 @@ class Example(Base):
         self.sand.rotate_x(-math.pi/2)
         self.sand.set_position([0, 0, 45])
         self.scene.add(self.sand)
-
-        """# Testes
-        phong_material = PhongMaterial(
-            property_dict={"baseColor": [1, 0, 1]},
-            number_of_light_sources=2
-        )
-        sphere_geometry = SphereGeometry()
-        sphere_right = Mesh(sphere_geometry, phong_material)
-        sphere_right.set_position([2.5, 0, 0])
-        self.scene.add(sphere_right)"""
         
         #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
@@ -191,15 +201,15 @@ class Example(Base):
                         [20, -3, 60],[25, -3, 60],[35, -3, 60],[40, -3, 60],
                         [50, -3, 60],[60, -3, 60],[70, -3, 60],
                         
-                        [-70, -3, 70],[-60, -3, 70],[-50, -3, 70],[-40, -3, 70],[-30, -3, 70],
+                        [-60, -3, 70],[-50, -3, 70],[-40, -3, 70],[-30, -3, 70],
                         [-20, -3, 70],[-10, -3, 70],[10, -3, 70],
                         [20, -3, 70],[25, -3, 70],[35, -3, 70],[40, -3, 70],
-                        [50, -3, 70],[60, -3, 70],[70, -3, 70],
+                        [50, -3, 70],[60, -3, 70],
 
-                        [-70, -3, 80],[-60, -3, 80],[-50, -3, 80],[-40, -3, 80],[-30, -3, 80],
+                        [-50, -3, 80],[-40, -3, 80],[-30, -3, 80],
                         [-20, -3, 80],[-10, -3, 80],[10, -3, 80],
                         [20, -3, 80],[25, -3, 80],[35, -3, 80],[40, -3, 80],
-                        [50, -3, 80],[60, -3, 80],[70, -3, 80],
+                        [50, -3, 80],
                         ]
         for position in arvore_positions:
             arvore = Mesh(arvore_geometry, arvore_material)
@@ -350,33 +360,19 @@ class Example(Base):
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
 
-        """#Navios
-        warship_material = TextureMaterial(texture=Texture("images/warship.png"))
-        warship_geometry = warshipGeometry()
-        warship = Mesh(warship_geometry, warship_material)
-        warship.set_position([-10, 0, -75])
-        self.scene.add(warship)
-
-        warship2_material = TextureMaterial(texture=Texture("images/T (61).png"))
-        warship2_geometry = warship2Geometry()
-        warship2 = Mesh(warship2_geometry, warship2_material)
-        warship2.set_position([40, 0, -55])
-        self.scene.add(warship2)
-        
-        # Criação yate
-        yatch_material = TextureMaterial(texture=Texture("images/red2.jpg"))
-        yatch_geometry = YatchGeometry()
-        yatch = Mesh(yatch_geometry, yatch_material)
-        yatch.set_position([10, 0, -13])
-        self.scene.add(yatch)"""
-
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
-        #self.modelo.set_position([-1.75,29.5,79.5])
         self.modelo.rotate_y(110)
+
+        #modelo do nadador salvador
+        salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
+        salva_geometry = salvaGeometry()
+        salva = Mesh(salva_geometry, salva_material)
+        salva.set_position([-10, 0, 20])
+        self.scene.add(salva)
 
         #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
@@ -589,6 +585,38 @@ class Example(Base):
                 self.rig.translate(0,0 , 0.1)
             else:
                 self.rig.translate(0, 0, -0.1)
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Beach Rush")
+
+    menu = GameMenu(screen)
+    while True:
+        choice = menu.run()
+        if choice == "start_game":
+            break
+        elif choice == "options":
+            # Handle options logic if needed
+            pass
+
+    # Once the menu loop is exited, start the game
+    game = Example()
+    game.initialize()
+
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        # Update game state and draw the game
+        pygame.display.flip()
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
