@@ -7,7 +7,7 @@ class standGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('stand.obj')
+        vertices, texture = my_obj_reader('objetos/stand.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

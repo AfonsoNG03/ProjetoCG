@@ -7,7 +7,7 @@ class ArvoreGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('arvore.obj')
+        vertices, texture = my_obj_reader('objetos/arvore.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

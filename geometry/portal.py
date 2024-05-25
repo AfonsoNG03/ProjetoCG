@@ -7,7 +7,7 @@ class portalGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('Portal.obj')
+        vertices, texture = my_obj_reader('objetos/portal.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

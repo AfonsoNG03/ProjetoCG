@@ -7,7 +7,7 @@ class golfinhoGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('golfinho.obj')
+        vertices, texture = my_obj_reader('objetos/golfinho.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)

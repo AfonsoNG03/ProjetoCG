@@ -7,7 +7,7 @@ class animalGeometry(Geometry):
         super().__init__()
 
         # Carregar vértices do arquivo .obj
-        vertices, texture = my_obj_reader('animal.obj')
+        vertices, texture = my_obj_reader('objetos/animal.obj')
 
 
         self.add_attribute("vec3", "vertexPosition", vertices)
