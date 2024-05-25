@@ -6,14 +6,14 @@ class GameMenu:
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 74)
-        self.options = ["Start Game", "Options", "Exit"]
+        self.options = ["Start Game", "Exit"]
         self.selected_option = 0
 
     def draw_menu(self):
         self.screen.fill((0, 0, 0))
         for i, option in enumerate(self.options):
             if i == self.selected_option:
-                color = (255, 255, 255)
+                color = (255, 0, 0)
             else:
                 color = (100, 100, 100)
             text = self.font.render(option, True, color)
@@ -35,8 +35,6 @@ class GameMenu:
                         if self.selected_option == 0:
                             return "start_game"
                         elif self.selected_option == 1:
-                            return "options"
-                        elif self.selected_option == 2:
                             pygame.quit()
                             sys.exit()
 
