@@ -101,7 +101,7 @@ class Example(Base):
         # Print current working directory to debug
         print("Current working directory:", os.getcwd())
         # Define the path to the music file
-        music_file = 'music/Megaman_X.mp3'
+        music_file = 'music/FF.mp3'
         # Check if the music file exists
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
@@ -114,8 +114,7 @@ class Example(Base):
             except pygame.error as e:
                 print(f"Failed to load music file: {music_file}, error: {e}")
 
-        # No método initialize, carregue uma fonte
-        pygame.font.init()
+        pygame.font.init()# No método initialize, carregue uma fonte
         self.font = pygame.font.Font(None, 24)  # Escolha o tamanho e o estilo da fonte
 
         # Define grid properties
@@ -814,7 +813,7 @@ class Example(Base):
         self.cTime1._material = materialT 
         # Check for collisions
 
-"""def main():
+def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Beach Rush")
@@ -844,7 +843,7 @@ class Example(Base):
     pygame.quit()
 
 if __name__ == "__main__":
-    main()"""
+    main()
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
