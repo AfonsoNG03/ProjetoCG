@@ -24,7 +24,6 @@ from geometry.casa import casaGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.jetski import JetskiGeometry
 from geometry.modelo import ModeloGeometry
-from geometry.modelopul import ModeloPulGeometry
 from geometry.oculos import OculosGeometry
 from geometry.cubo import CuboGeometry
 from geometry.passa import passaGeometry
@@ -99,7 +98,8 @@ class Example(Base):
         print("Current working directory:", os.getcwd())
         # Define the path to the music file
         #music_file = 'music/Megaman_X.mp3'
-        music_file = 'music/troll.mp3'
+        #music_file = 'music/troll.mp3'
+        music_file = 'music/beachbeat.mp3'
         # Check if the music file exists
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
@@ -589,7 +589,7 @@ class Example(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Beach Rush")
+    pygame.display.set_caption("BeachRush")
 
     menu = GameMenu(screen)
     while True:
