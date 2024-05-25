@@ -51,6 +51,11 @@ class Input:
             # Quit event occurs by clicking button to close window
             if event.type == pygame.QUIT:
                 self._quit = True
+
+            #When escape key is pressed, quit the game
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self._quit = True
             # Check for key-down and key-up events;
             # get name of key from event and append to or remove from corresponding lists
             if event.type == pygame.KEYDOWN:
