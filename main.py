@@ -238,16 +238,21 @@ class Example(Base):
         "grupo5_x": [[-9, 30.0, 50.0]],
         "grupo5_y": [[-9, 32.0, 42.0], [-9, 34.0, 34.0], [-9, 36.0, 26.0]],
         "grupo6_x": [[-18, 38.0, 18.0] , [-18, 40.0, 26.0], [-18, 42.0, 34.0], [-18, 44.0, 42.0]],
-        "Plataform": [[-18, 46.0, 50.0], [-16, 46, 50], [-16, 46, 48], [-18, 46, 48], [-20, 46, 48], [-20, 46, 50], [-20, 46, 52] , [-18, 46, 52], [-16, 46, 52]
-                    ,[-14, 46, 52], [-14, 46, 50], [-14, 46, 48], [-22, 46, 48], [-22, 46, 50], [-22, 46, 52]],
-        "Plataform2": [[-18, 46.0, -50.0], [-16, 46, -50], [-16, 46, -48], [-18, 46, -48], [-20, 46, -48], [-20, 46, -50], [-20, 46, -52] , [-18, 46, -52], [-16, 46, -52]
-                    ,[-14, 46, -52], [-14, 46, -50], [-14, 46, -48], [-22, 46, -48], [-22, 46, -50], [-22, 46, -52]],
+        "Plataform": [[-18, 46.0, 50.0], [-16, 46, 50], [-16, 46, 48], [-18, 46, 48], [-20, 46, 48], 
+                    [-20, 46, 50], [-20, 46, 52] , [-18, 46, 52], [-16, 46, 52]
+                    ,[-14, 46, 52], [-14, 46, 50], [-14, 46, 48], [-22, 46, 48], 
+                    [-22, 46, 50], [-22, 46, 52]],
+        "Plataform2": [[-18, 46.0, -50.0], [-16, 46, -50], [-16, 46, -48], [-18, 46, -48], [-20, 46, -48], 
+                    [-20, 46, -50], [-20, 46, -52] , [-18, 46, -52], [-16, 46, -52],
+                    [-14, 46, -52], [-14, 46, -50], [-14, 46, -48], [-22, 46, -48], 
+                    [-22, 46, -50], [-22, 46, -52]],
         "grupo7_x": [[-3, 40, -50], [6, 35, -50]],
         "grupo8_x": [[20, 30, -50], [25, 25, -50] , [35, 20, -50]],
         "grupo9_x": [[40, 22, -42], [48, 24, -36] , [40, 26, -28]],
         "Fim": [[48, 26, -20], [48, 26, -10] , [48, 26, 0],
-                [48,26,2] , [48,26,4] , [48,26,6] , [46,26,2], [46,26,4], [46,26,6], [50,26,2], [50,26,4], [50,26,6]
-                , [52,26,2], [52,26,4], [52,26,6], [44,26,2], [44,26,4], [44,26,6]],
+                [48,26,2] , [48,26,4] , [48,26,6] , [46,26,2], [46,26,4], [46,26,6], [50,26,2], 
+                [50,26,4], [50,26,6], [52,26,2], [52,26,4], [52,26,6], 
+                [44,26,2], [44,26,4], [44,26,6]],
         }
 
         # Create and store the cube meshes in the same dictionary
@@ -408,7 +413,6 @@ class Example(Base):
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
         portal_geometry = portalGeometry()
         portal = Mesh(portal_geometry, portal_material)
-        #portal.set_position([-1.75, 35, 90.5])
         portal.set_position([-18, 52.0, 48.0])
         self.scene.add(portal)
         portal = Mesh(portal_geometry, portal_material)
@@ -506,11 +510,8 @@ class Example(Base):
         # Criação da camera
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, -1])
-        #self.camera.set_position([-1.75,29.5+2.93,79.5-1])
         self.rig.add(self.camera)
         self.scene.add(self.rig)
-        #self.scene.add(self.rig2)
-        #self.scene.add(self.rig3)
 
         # Criaçao da camara alternativa
         self.static_camera = Camera(aspect_ratio=800/600)
@@ -524,9 +525,7 @@ class Example(Base):
         self.cinematic_camera.set_position([10, 10, 10])
         model_position = self.modelo.global_position
         self.cinematic_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
-
         self.active_camera = self.camera
-
         self.toggle_camera = False
 
     # Function to read times from the file and return the three lowest times
@@ -604,7 +603,6 @@ class Example(Base):
 
         # Calculate the vector from the camera to the object
         collision_vector = obj_pos - cam_pos
-
         collision_vector[1] -= 0.15
 
         # Normalize the vector to get the direction
@@ -664,7 +662,6 @@ class Example(Base):
         
         return False
     
-
     #Diferentes posicoes para a camera cinematogra
     posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
 
@@ -727,15 +724,12 @@ class Example(Base):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         time2 = self.time * 0.5  # Adjust the speed of the movement
 
-         # Check if the player fell
+        # Check if the player fell
         self.check_if_player_fell()
-        
         # Check if the player reached the start
         self.check_if_player_reached_start()
-        
         # Check if the player reached the end
         self.check_if_player_reached_end()
-
 
         if self.active_camera == self.cinematic_camera:
             self.tempo += self.delta_time
@@ -779,13 +773,11 @@ class Example(Base):
                     new_y = original_position[1] + amplitude * math.sin(time2 + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
         
-        # [-18, 52.0, 48.0]
+        # 
         if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
-            #self.rig.set_position([0, 0, 0])
             self.checkPoint = True
             self.rig.translate(0, 0, -100, False)
             self.rig3.translate(0, 0, -100, False)
-            #self.active_camera = self.camera
 
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
@@ -818,9 +810,8 @@ class Example(Base):
                                font_size=32, font_color=[200, 0, 0],
                                image_width=600, image_height=300, transparent=True)
         materialT = TextureMaterial(cTime)
-
+        
         self.cTime1._material = materialT 
-
         # Check for collisions
 
 """def main():
