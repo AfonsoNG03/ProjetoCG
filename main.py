@@ -97,7 +97,8 @@ class Example(Base):
         # Print current working directory to debug
         print("Current working directory:", os.getcwd())
         # Define the path to the music file
-        music_file = 'music/FF.mp3'
+        #music_file = 'music/Megaman_X.mp3'
+        music_file = 'music/troll.mp3'
         # Check if the music file exists
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
@@ -109,9 +110,6 @@ class Example(Base):
                 print(f"Playing music: {music_file}")
             except pygame.error as e:
                 print(f"Failed to load music file: {music_file}, error: {e}")
-
-        pygame.font.init()# No método initialize, carregue uma fonte
-        self.font = pygame.font.Font(None, 24)  # Escolha o tamanho e o estilo da fonte
 
         # Define grid properties
         self.grid_size = 2  # Size of each grid cell
@@ -585,168 +583,7 @@ class Example(Base):
             if direction[1] > 0:
                 self.rig.translate(0,0 , 0.1)
             else:
-                if collision_direction[2] > 0:
-                    #direction = 'front'
-                    self.rig.translate(0, 0, -0.1, False)
-                    self.rig3.translate(0, 0, -0.1, False)
-                else:
-                    #direction = 'back'
-                    self.rig.translate(0, 0, 0.1, False)
-                    self.rig3.translate(0, 0, 0.1, False)
-        
-        return False
-    
-    #Diferentes posicoes para a camera cinematogra
-    posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
-
-    def start_timer(self):
-        self.start_time = time.time()
-        self.timer_running = True
-        print("Timer started")
-
-    def stop_timer(self):
-        if self.timer_running:
-            elapsed_time = time.time() - self.start_time
-            self.timer_running = False
-            print(f"Timer stopped: {elapsed_time:.2f} seconds")
-            self.save_time_to_file(elapsed_time)
-
-    def reset_timer(self):
-        self.start_time = 0
-        self.timer_running = False
-        print("Timer reset")
-
-    def save_time_to_file(self, elapsed_time):
-        with open(self.time_file_path, "a") as file:
-            file.write(f"Time: {elapsed_time:.2f} seconds\n")
-        print(f"Time saved to {self.time_file_path}")
-
-    def check_if_player_fell(self):
-        # Example condition to check if the player fell
-        if self.rig.global_position[1] <= 0 and self.timer_running:  # Adjust based on your game's logic
-            if self.checkPoint:
-                self.rig.set_position([-18, 47, -52])
-                self.rig3.set_position([-18, 47, -52])
-            else: 
-                self.reset_timer()
-                self.rig.set_position([0, 0, 0])  # Reset player position
-                self.rig3.set_position([0, 0, 0])  # Reset player position
-
-    def check_if_player_reached_start(self):
-        # Example condition to check if the player reached the start
-        if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.cube_start_position)) < 2:
-            if not self.timer_running:
-                self.start_timer()
-
-    def check_if_player_reached_end(self):
-        # Example condition to check if the player reached the end
-        if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.final_portal_position)) < 2:
-            self.stop_timer()
-            self.rig.set_position([0, 0, 0])  # Reset player position
-            self.rig3.set_position([0, 0, 0])  # Reset player position
-            time_file_path = pathlib.Path("time_records.txt")
-            self.three_lowest_times = self.get_three_lowest_times(time_file_path)
-            message = TextTexture(text=self.tempos_string,
-                               system_font_name="Impact",
-                               font_size=32, font_color=[200, 0, 0],
-                               image_width=600, image_height=300, transparent=True)
-            material = TextureMaterial(message)
-            self.mensagem._material = material
-            self.checkPoint = False
-
-    def update(self):
-        self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        time2 = self.time * 0.5  # Adjust the speed of the movement
-
-        # Check if the player fell
-        self.check_if_player_fell()
-        # Check if the player reached the start
-        self.check_if_player_reached_start()
-        # Check if the player reached the end
-        self.check_if_player_reached_end()
-
-        if self.active_camera == self.cinematic_camera:
-            self.tempo += self.delta_time
-            if self.tempo > 4:
-                self.cinematic_camera.set_position(self.posicoes[np.random.randint(0,len(self.posicoes))])
-                self.tempo = 0
-            modelo_position = self.modelo.global_position
-            self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
-
-        amplitudes = {
-            "grupo1": 1.2,
-            "grupo2_x": 2.4,
-            "grupo3_x": 5.0,
-            "grupo3_y": 3,
-            "grupo4_x": 5,
-            "grupo5_x": 5,
-            "grupo5_y": 3.6,
-            "grupo6_x": 5,
-            "Plataform": 0,
-            "Plataform2": 0,
-            "grupo7_x": 3,
-            "grupo8_x": 4,
-            "grupo9_x": 2,
-            "Fim": 0
-        }
-        
-        for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
-            amplitude = amplitudes[grupo]  # Get the amplitude for the current group
-            for i, mesh in enumerate(meshes):
-                original_position = self.cube_positions[grupo][i]
-                if '_y' in grupo:
-                    # Vertical 
-                    new_y = original_position[1] + amplitude * math.sin(time2 + i)
-                    mesh.set_position([original_position[0], new_y, original_position[2]])
-                elif '_x' in grupo:
-                    # Horizontal 
-                    new_x = original_position[0] + amplitude * math.sin(time2 + i)
-                    mesh.set_position([new_x, original_position[1], original_position[2]])
-                else:
-                    # grupo sem '_x' or '_y' adota o tradicional movimento em Y
-                    new_y = original_position[1] + amplitude * math.sin(time2 + i)
-                    mesh.set_position([original_position[0], new_y, original_position[2]])
-        
-        # 
-        if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
-            self.checkPoint = True
-            self.rig.translate(0, 0, -100, False)
-            self.rig3.translate(0, 0, -100, False)
-
-        if self.input.is_key_pressed('c'):
-            if not self.toggle_camera:
-                self.toggle_camera = True
-                if self.active_camera == self.camera:
-                    self.active_camera = self.static_camera
-                else:
-                    self.active_camera = self.camera
-        elif self.input.is_key_pressed('v'):
-            if not self.toggle_camera:
-                self.toggle_camera = True
-                if self.active_camera == self.camera:
-                    self.active_camera = self.cinematic_camera
-                else:
-                    self.active_camera = self.camera
-        else: 
-            self.toggle_camera = False
-        collision = self.check_collisions()  # Get collision direction
-        self.rig.update(self.input, self.delta_time, collision)
-        self.rig2.update(self.input, self.delta_time, collision)
-        self.rig3.update(self.input, self.delta_time, collision) 
-        self.renderer.render(self.scene, self.active_camera)
-        self.static_camera
-        if self.timer_running:
-            elapsed_time = time.time() - self.start_time
-        else:
-            elapsed_time = 0
-        cTime = TextTexture(text= f" Current Time: {elapsed_time:.0f} s",
-                               system_font_name="Impact",
-                               font_size=32, font_color=[200, 0, 0],
-                               image_width=600, image_height=300, transparent=True)
-        materialT = TextureMaterial(cTime)
-        
-        self.cTime1._material = materialT 
-        # Check for collisions
+                self.rig.translate(0, 0, -0.1)
 
 def main():
     pygame.init()
