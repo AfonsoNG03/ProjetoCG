@@ -98,7 +98,7 @@ class Example(Base):
         print("Current working directory:", os.getcwd())
         # Define the path to the music file
         #music_file = 'music/Megaman_X.mp3'
-        music_file = 'music/troll.mp3'
+        music_file = 'music/FF.mp3'
         # Check if the music file exists
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
