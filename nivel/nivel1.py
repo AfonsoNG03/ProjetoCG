@@ -203,7 +203,7 @@ class Nivel1:
 
 
         # Toalhas
-        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
+        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg", "images/lakers.png", "images/mario.png", "images/psg.png", "images/loveless.png", "images/pompup.png", "images/fish.png", "images/muppets.png", "images/owl.png", "images/wazowski.png"]
         toalha_geometry = ToalhaGeometry()
         toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 2],[-20, 0, 10],
                             [-15, 0, 10],[-15, 0, 5],[-10, 0, 5],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
@@ -233,7 +233,7 @@ class Nivel1:
 
 
         # Cadeiras
-        cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        cadeira_material = TextureMaterial(texture=Texture("images/white.png"))
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
@@ -247,7 +247,7 @@ class Nivel1:
 
 
         # Espreguiçadeiras
-        espreguica_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
+        espreguica_material = TextureMaterial(texture=Texture("images/white.png"))
         espreguica_geometry = espreguicaGeometry()
         espreguica_positions= [
                         [-59, 0, 40],[-39, 0, 40],[-29, 0, 40],[-19, 0, 40],[-9, 0, 40],
@@ -369,7 +369,7 @@ class Nivel1:
         salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
         salva_geometry = salvaGeometry()
         salva = Mesh(salva_geometry, salva_material)
-        salva.set_position([-10, 0, 20])
+        salva.set_position([-25, 4.8, 20])
         self.scene.add(salva)
         self.objects_to_ignore.append(salva)
 

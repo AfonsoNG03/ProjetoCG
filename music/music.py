@@ -4,7 +4,7 @@ import pygame.mixer
 class Music:
     def __init__(self):
         pygame.mixer.init()
-        self.music_file = 'music/troll.mp3'
+        self.music_file = 'music/FF2.mp3'
         self.play_music()
     
     def play_music(self):
