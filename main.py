@@ -13,7 +13,7 @@ from colisoes.colisoes import Colisoes
 from tempos.tempo import Tempo
 from nivel.nivel1 import Nivel1
 
-class Example(Base):
+class Main(Base):
     """
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
@@ -167,7 +167,9 @@ class Example(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Beach Rush")
+    pygame.display.set_caption("BeachRush")
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
 
     menu = GameMenu(screen)
     while True:
@@ -175,7 +177,6 @@ def main():
         if choice == "start_game":
             break
         elif choice == "options":
-            # Handle options logic if needed
             pass
     pygame.quit()
 
@@ -183,4 +184,4 @@ if __name__ == "__main__":
     main()
 
 # Instantiate this class and run the program
-Example(screen_size=[800, 600]).run()
+Main(screen_size=[800, 600]).run()
