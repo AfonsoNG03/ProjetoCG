@@ -786,7 +786,7 @@ class Example(Base):
                     self.active_camera = self.camera
         else: 
             self.toggle_camera = False
-        collision = self.check_collisions()  # Get collision direction
+        collision = self.check_collisions()
         self.rig.update(self.input, self.delta_time, collision)
         self.rig2.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
@@ -822,6 +822,7 @@ if __name__ == "__main__":
     main()
     icon = pygame.image.load('images/icon.png')
     pygame.display.set_icon(icon)
+    pygame.display.set_caption("BeachRush")
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
