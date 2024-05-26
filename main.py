@@ -45,7 +45,7 @@ from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
 import time
 
-class Example(Base):
+class Main(Base):
     """
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
@@ -796,6 +796,8 @@ class Example(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
 
     menu = GameMenu(screen)
     
@@ -811,7 +813,4 @@ if __name__ == "__main__":
     main()
     icon = pygame.image.load('images/icon.png')
     pygame.display.set_icon(icon)
-    pygame.display.set_caption("BeachRush")
-
-# Instantiate this class and run the program
-Example(screen_size=[800, 600]).run()
+    Main(screen_size=[800, 600]).run()
