@@ -234,7 +234,7 @@ class Example(Base):
             self.scene.add(rocks)
 
         # Criação das toalhas
-        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg", "images/lakers.png", "images/toalha.jpg", "images/mario.png", "images/psg.png", "images/loveless.png", "images/pompup.png"]
+        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg", "images/lakers.png", "images/toalha.jpg", "images/mario.png", "images/psg.png", "images/loveless.png", "images/pompup.png", "images/fish.png", "images/muppets.png"]
         toalha_geometry = ToalhaGeometry()
         toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 2],[-20, 0, 10],
                             [-15, 0, 10],[-15, 0, 5],[-10, 0, 5],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
