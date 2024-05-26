@@ -31,7 +31,6 @@ class Main(Base):
         self.rig = MovementRig()
         self.rig3 = MovementRig3()
 
-
         # Criação do nivel
         self.Nivel1 = Nivel1(self.scene, self.rig, self.rig3, self.time)
         self.objects_to_ignore = self.Nivel1.objects_to_ignore
@@ -40,7 +39,6 @@ class Main(Base):
         self.objects_to_ignore.append(self.rig)
         self.objects_to_ignore.append(self.rig3)
 
-        
         # Criação da camera principal
         self.camera = Camera(aspect_ratio=800/600)
         self.camera.set_position([0, 2.93, -1])
@@ -89,8 +87,6 @@ class Main(Base):
             modelo_position = self.Nivel1.modelo.global_position
             self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
 
-
-
     def checkpoint(self):
         '''
         Função que controla o checkpoint
@@ -100,8 +96,6 @@ class Main(Base):
             self.rig.translate(0, 0, -100, False)
             self.rig3.translate(0, 0, -100, False)
 
-
-    
     def camera_change(self):
         '''
         Função que controla a mudança de camera
@@ -128,39 +122,29 @@ class Main(Base):
         else: 
             self.toggle_camera = False
 
-
-            
-
     def update(self):
         '''
         Função que atualiza o jogo
         '''
-
         self.Nivel1.distort_material.uniform_dict["time"].data += self.delta_time/5
         self.Nivel1.time = self.time
        
         self.TempoCounter.check_if_player_fell()
-        
         self.TempoCounter.check_if_player_reached_start()
-        
         self.TempoCounter.check_if_player_reached_end()
 
         self.camera_cinematografica()
-
         self.Nivel1.update_Cubos()
-        
+        self.Nivel1.update_jump(self.delta_time)
         self.checkpoint()
-        
         self.camera_change()
-
         
         collision = self.Coli.check_collisions(self.camera, self.static_camera, self.rig, self.rig3, self._delta_time)
 
         self.rig.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
-
+        
         self.renderer.render(self.scene, self.active_camera)
-
         self.TempoCounter.updateCurrentTime(self.Nivel1.cTime1)
 
 

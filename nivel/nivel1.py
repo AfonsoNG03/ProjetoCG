@@ -1,5 +1,3 @@
-
-
 import math
 import numpy as np
 
@@ -15,6 +13,7 @@ from geometry.cubo import CuboGeometry
 from geometry.esperguica import espreguicaGeometry
 from geometry.golfinho import golfinhoGeometry
 from geometry.modelo import ModeloGeometry
+from geometry.modelopul import ModeloPulGeometry
 from geometry.oculos import OculosGeometry
 from geometry.passa import passaGeometry
 from geometry.passa2 import passa2Geometry
@@ -32,7 +31,6 @@ from light.ambient import AmbientLight
 from light.directional import DirectionalLight
 from material.material import Material
 from material.texture import TextureMaterial
-
 
 class Nivel1:
     def __init__(self, scene, rig, rig3, time):
@@ -78,7 +76,6 @@ class Nivel1:
         self.time = time
         self.objects_to_ignore = []
 
-
         # Luz ambiente
         self.ambient_light = AmbientLight(color=[0.1, 0.1, 0.1])
         self.scene.add(self.ambient_light)
@@ -105,7 +102,6 @@ class Nivel1:
         self.ocean.set_position([0, 0, -55])
         self.scene.add(self.ocean)
         self.objects_to_ignore.append(self.ocean)
-    
 
         # Céu
         sky_geometry = SphereGeometry(radius=100)
@@ -113,7 +109,6 @@ class Nivel1:
         self.sky = Mesh(sky_geometry, sky_material)
         self.scene.add(self.sky)
         self.objects_to_ignore.append(self.sky)
-
 
         # Areia
         sand_geometry = RectangleGeometry(width=200, height=100)
@@ -127,7 +122,6 @@ class Nivel1:
         self.scene.add(self.sand)
         self.objects_to_ignore.append(self.sand)
 
-
         # Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -139,7 +133,6 @@ class Nivel1:
             passa.set_position(position)
             self.scene.add(passa)
             self.objects_to_ignore.append(passa)
-
 
         # Passadiço horizontal
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
@@ -181,7 +174,6 @@ class Nivel1:
             self.scene.add(arvore)
             self.objects_to_ignore.append(arvore)
 
-
         # Rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
@@ -201,7 +193,6 @@ class Nivel1:
             self.scene.add(rocks)
             self.objects_to_ignore.append(rocks)
 
-
         # Toalhas
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg", "images/lakers.png", "images/mario.png", "images/psg.png", "images/loveless.png", "images/pompup.png", "images/fish.png", "images/muppets.png", "images/owl.png", "images/wazowski.png"]
         toalha_geometry = ToalhaGeometry()
@@ -217,7 +208,6 @@ class Nivel1:
             self.scene.add(toalha)
             self.objects_to_ignore.append(toalha)
 
-
         # Sombrinhas
         sombrinha_material = TextureMaterial(texture=Texture("images/parasol.jpg"))
         sombrinha_geometry = sombrinhaGeometry()
@@ -230,7 +220,6 @@ class Nivel1:
             sombrinha.set_position(position)
             self.scene.add(sombrinha)
             self.objects_to_ignore.append(sombrinha)
-
 
         # Cadeiras
         cadeira_material = TextureMaterial(texture=Texture("images/white.png"))
@@ -245,7 +234,6 @@ class Nivel1:
             self.scene.add(cadeira)
             self.objects_to_ignore.append(cadeira)
 
-
         # Espreguiçadeiras
         espreguica_material = TextureMaterial(texture=Texture("images/white.png"))
         espreguica_geometry = espreguicaGeometry()
@@ -259,7 +247,6 @@ class Nivel1:
             self.scene.add(espreguica)
             self.objects_to_ignore.append(espreguica)
 
-
         # Casa
         casa_material = TextureMaterial(texture=Texture("images/casa.png"))
         casa_geometry = casaGeometry()
@@ -268,15 +255,14 @@ class Nivel1:
         self.scene.add(casa)
         self.objects_to_ignore.append(casa)
 
-
         # Óculos
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
         oculos_geometry = OculosGeometry()
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
+        self.rig.add(self.oculos)
         self.objects_to_ignore.append(self.oculos)
-
 
         # Portais
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
@@ -302,14 +288,12 @@ class Nivel1:
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
 
-
         # Placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
         stand_geometry = standGeometry()
         self.stand = Mesh(stand_geometry, stand_material)
         self.stand.set_position([8, 0, 14])
         self.scene.add(self.stand)
-
 
         # Animais
         animal_material = TextureMaterial(texture=Texture("images/k2.png"))
@@ -323,14 +307,12 @@ class Nivel1:
         golfinho.set_position([-5, -0.25, -20])
         self.scene.add(golfinho)
 
-
         # Bola
         bola_material = TextureMaterial(texture=Texture("images/volleyball.png"))
         bola_geometry = bolaGeometry()
         bola = Mesh(bola_geometry, bola_material)
         bola.set_position([-5, 0.15, -3.5])
         self.scene.add(bola)
-            
 
         # Easter Egg
         pokeball_material = TextureMaterial(texture=Texture("images/poke.png"))
@@ -339,18 +321,19 @@ class Nivel1:
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
 
-
         # Boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
+        modelopul_geometry = ModeloPulGeometry()
         self.modelo = Mesh(modelo_geometry, modelo_material)
+        self.modelopul = Mesh(modelopul_geometry, modelo_material)
         self.modelo.set_position([0, 0, 0])
         self.modelo.rotate_y(110)
+        self.modelopul.set_position([0, 0, 0])
+        self.modelopul.rotate_y(110)
         self.rig.add(self.modelo)
         self.objects_to_ignore.append(self.modelo)
 
-
-        
         # Current time
         RectGeometry = RectangleGeometry(width=2)
         cTime = TextTexture(text= f"0 s",
@@ -364,7 +347,6 @@ class Nivel1:
         self.rig3.add(self.cTime1)
         self.objects_to_ignore.append(self.cTime1)
 
-
         # Nadador salvador
         salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
         salva_geometry = salvaGeometry()
@@ -372,7 +354,6 @@ class Nivel1:
         salva.set_position([-25, 4.8, 20])
         self.scene.add(salva)
         self.objects_to_ignore.append(salva)
-
 
         # Cubos
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
@@ -416,7 +397,6 @@ class Nivel1:
             "Fim": []
         }
 
-
         for grupo, positions in self.cube_positions.items():
             for position in positions:
                 cubo = Mesh(cubo_geometry, cubo_material)
@@ -424,14 +404,24 @@ class Nivel1:
                 self.scene.add(cubo)
                 self.cube_meshes[grupo].append(cubo)
 
-
+    def update_jump(self, delta_time):
+        if self.rig.is_jumping:
+            if self.modelo in self.rig._look_attachment.children_list:
+                self.rig.remove(self.modelo)
+                self.rig.add(self.modelopul)
+                self.oculos.translate(0, -0.16, 0)  # Move os óculos para baixo
+        else:
+            if self.modelopul in self.rig._look_attachment.children_list:
+                self.rig.remove(self.modelopul)
+                self.rig.add(self.modelo)
+                self.oculos.translate(0, 0.16, 0)  # Move os óculos de volta para cima
 
     def update_Cubos(self):
         '''
         Update the positions of the cubes using a sine function.
         '''
         time2 = self.time * 0.5
-        
+
         amplitudes = {
             "grupo1": 1.2,
             "grupo2_x": 2.4,
@@ -448,7 +438,7 @@ class Nivel1:
             "grupo9_x": 2,
             "Fim": 0
         }
-        
+
         for grupo, meshes in self.cube_meshes.items():
             amplitude = amplitudes[grupo]
             for i, mesh in enumerate(meshes):
@@ -465,4 +455,3 @@ class Nivel1:
                     # grupo sem '_x' or '_y' move-se em Y
                     new_y = original_position[1] + amplitude * math.sin(time2 + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
-                
