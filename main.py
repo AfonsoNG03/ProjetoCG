@@ -53,10 +53,10 @@ class Example(Base):
     """
     def initialize(self):
         print("Initializing program...")
+        print("Ao entrar no menu tem as opções de jogar, ver o placar e sair, para sair do placar pressione esc")
         print("Para mexer o modelo usar as teclas w,a,s,d")
         print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
         print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-        #print("Para ativar o modo criativo pressionar a tecla 'u' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -122,8 +122,8 @@ class Example(Base):
         # Tempos
         self.start_time = 0
         self.timer_running = False
-        self.cube_start_position = [-1.75, 2.0, 19.5]  # Adjust based on your first cube position
-        self.final_portal_position = [48, 26, 2]  # Adjust based on your final portal position
+        self.cube_start_position = [-1.75, 2.0, 19.5] 
+        self.final_portal_position = [48, 26, 2]  
         self.time_file_path = pathlib.Path("time_records.txt")
 
         self.tempos_string = "|| "
@@ -333,7 +333,6 @@ class Example(Base):
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
         portal_geometry = portalGeometry()
         portal = Mesh(portal_geometry, portal_material)
-        #portal.set_position([-1.75, 35, 90.5])
         portal.set_position([-18, 52.0, 48.0])
         self.scene.add(portal)
         self.objects_to_ignore.append(portal)
@@ -354,14 +353,12 @@ class Example(Base):
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
 
-
         #placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
         stand_geometry = standGeometry()
         self.stand = Mesh(stand_geometry, stand_material)
         self.stand.set_position([8, 0, 14])
         self.scene.add(self.stand)
-
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
@@ -585,7 +582,6 @@ class Example(Base):
 
         # Calculate the vector from the camera to the object
         collision_vector = obj_pos - cam_pos
-
         collision_vector[1] -= 0.15
 
         # Normalize the vector to get the direction
@@ -705,15 +701,12 @@ class Example(Base):
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
-        # Time-based movement using sine function
         time2 = self.time * 0.5  # Adjust the speed of the movement
         
         # Check if the player fell
         self.check_if_player_fell()
-        
         # Check if the player reached the start
         self.check_if_player_reached_start()
-        
         # Check if the player reached the end
         self.check_if_player_reached_end()
 
@@ -724,9 +717,6 @@ class Example(Base):
                 self.tempo = 0
             modelo_position = self.modelo.global_position
             self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
-
-
-        #self.stand.look_at(look_at_position)
         
         # Define different amplitudes for each group
         amplitudes = {
@@ -764,7 +754,6 @@ class Example(Base):
                     mesh.set_position([original_position[0], new_y, original_position[2]])
         
         if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
-            #self.rig.set_position([0, 0, 0])
             self.checkPoint = True
             self.rig.translate(0, 0, -100, False)
             self.rig2.translate(0, 0, -100, False)
