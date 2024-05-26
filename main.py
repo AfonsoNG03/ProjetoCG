@@ -167,9 +167,6 @@ class Main(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("BeachRush")
-    icon = pygame.image.load('images/icon.png')
-    pygame.display.set_icon(icon)
 
     menu = GameMenu(screen)
     while True:

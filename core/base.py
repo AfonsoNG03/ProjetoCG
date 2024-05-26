@@ -18,8 +18,10 @@ class Base:
         pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
         # Create and display the window
         self._screen = pygame.display.set_mode(screen_size, display_flags)
-        # Set the text that appears in the title bar of the window
-        pygame.display.set_caption("Beach Rush")
+        # Set the text and icon that appears in the title bar of the window
+        pygame.display.set_caption("BeachRush")
+        icon = pygame.image.load('images/icon.png')
+        pygame.display.set_icon(icon)
         # Determine if main loop is active
         self._running = True
         # Manage time-related data and operations
