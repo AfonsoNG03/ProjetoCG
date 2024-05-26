@@ -2,6 +2,10 @@ import math
 from core_ext.object3d import Object3D
 
 class MovementRig3(Object3D):
+    """
+    Add moving forwards and backwards, left and right, up and down (all local translations),
+    as well as turning left and right, and looking up and down
+    """
     def __init__(self, units_per_second=3, degrees_per_second=60):
         super().__init__()
         self._look_attachment = Object3D()
@@ -16,12 +20,11 @@ class MovementRig3(Object3D):
         self.mouse_y = 0
         self.is_jumping = False
         self.jump_speed = 10
+        self.fall_speed = 0.0
+        self.gravity = 15.0
         self.modo_criativo_enabled = False
-        self._heightMesh = 0.0
 
-        self.current_rotation_x = 0
-        self.current_rotation_y = 0
-
+        # Default key mappings
         self.keys = {
             "MOVE_FORWARDS": "w",
             "MOVE_BACKWARDS": "s",
@@ -37,6 +40,10 @@ class MovementRig3(Object3D):
             "SPRINT": "left shift",
             "MODO_CRIATIVO": "u"
         }
+
+        """ self.velocity = [0, 0, 0]
+        self.acceleration = 20  # Acceleration rate
+        self.friction = 8  # Friction to slow down """
 
     def add(self, child):
         self._look_attachment.add(child)
@@ -60,13 +67,16 @@ class MovementRig3(Object3D):
             "MOVE_DOWN": "x"
         })
 
-    def set_rotation_x(self, angle):
-        self._look_attachment.rotate_x(angle - self.current_rotation_x)
-        self.current_rotation_x = angle
-
-    def set_rotation_y(self, angle):
-        self.rotate_y(angle - self.current_rotation_y)
-        self.current_rotation_y = angle
+    """ def apply_friction(self, delta_time):
+        for i in range(3):
+            if self.velocity[i] > 0:
+                self.velocity[i] -= self.friction * delta_time
+                if self.velocity[i] < 0:
+                    self.velocity[i] = 0
+            elif self.velocity[i] < 0:
+                self.velocity[i] += self.friction * delta_time
+                if self.velocity[i] > 0:
+                    self.velocity[i] = 0 """
 
     def update(self, input_object, delta_time, collision=False):
         move_amount = self._units_per_second * delta_time
@@ -81,20 +91,34 @@ class MovementRig3(Object3D):
         if input_object.is_key_pressed(self.keys["MODO_CRIATIVO"]):
             self.modo_criativo_enabled = not self.modo_criativo_enabled
 
+        if self.global_position[1] < 0:
+            self.translate(0, -self.global_position[1], 0)
+            self.fall_speed = 0.0
+        
+        if collision:
+            self.fall_speed = 0.0
+
+        if self.global_position[1] > 0 and not self.is_jumping and not collision:
+            self.fall_speed += self.gravity * delta_time
+            self.translate(0, -self.fall_speed * delta_time, 0)
+            if self.global_position[1] <= 0:
+                self.global_position[1] = 0
+                self.fall_speed = 0.0
+
         if self.is_jumping:
             self.translate(0, self.jump_speed * delta_time, 0)
             self.jump_speed -= 15 * delta_time
-            if collision or self.global_position[1] <= 0:
+            if collision:
                 self.is_jumping = False
                 self.jump_speed = 10
-                if self.global_position[1] <= 0:
-                    self.global_position[1] = 0
+                self.translate(0, 16 * delta_time, 0)
+                #self.translate(0, 0.5, 0)
+            if self.global_position[1] <= 0:
+                self.is_jumping = False
+                self.jump_speed = 10
+                self.global_position[1] = 0
 
         self.keys_pressed = input_object.key_pressed_list
-        if collision:
-            self.restrict_movement()
-        else:
-            self.allow_movement()
 
         movement_actions = {
             "MOVE_FORWARDS": (0, 0, -move_amount),
@@ -104,6 +128,18 @@ class MovementRig3(Object3D):
             "MOVE_UP": (0, move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0),
             "MOVE_DOWN": (0, -move_amount, 0) if self.modo_criativo_enabled else (0, 0, 0)
         }
+
+        """ for action, direction in movement_actions.items():
+            if input_object.is_key_pressed(self.keys[action]):
+                for i in range(3):
+                    self.velocity[i] += direction[i] * self.acceleration * delta_time
+
+        self.apply_friction(delta_time)
+
+        for i in range(3):
+            self.velocity[i] = max(min(self.velocity[i], move_amount), -move_amount)
+
+        self.translate(*[v * delta_time for v in self.velocity]) """
 
         for action, translation in movement_actions.items():
             if input_object.is_key_pressed(self.keys[action]):
@@ -117,7 +153,6 @@ class MovementRig3(Object3D):
         for action, rotation in rotation_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "TURN_RIGHT" and input_object.mouse_x > 0) or (action == "TURN_LEFT" and input_object.mouse_x < 0):
                 self.rotate_y(rotation)
-                self.current_rotation_y += rotation
 
         look_actions = {
             "LOOK_UP": rotate_amount,
@@ -127,4 +162,3 @@ class MovementRig3(Object3D):
         for action, rotation in look_actions.items():
             if input_object.is_key_pressed(self.keys[action]) or (action == "LOOK_UP" and input_object.mouse_y < 0) or (action == "LOOK_DOWN" and input_object.mouse_y > 0):
                 self._look_attachment.rotate_x(rotation)
-                self.current_rotation_x += rotation
