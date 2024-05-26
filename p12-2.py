@@ -93,10 +93,6 @@ class Example(Base):
         """
         #
 
-        # No método initialize, carregue uma fonte
-        pygame.font.init()
-        self.font = pygame.font.Font(None, 24)  # Escolha o tamanho e o estilo da fonte
-
         # Define grid properties
         self.grid_size = 5  # Size of each grid cell
         self.grid = {}  # Dictionary to store objects in each grid cell

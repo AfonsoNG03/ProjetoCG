@@ -43,6 +43,7 @@ from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
 from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
+import time
 
 class Example(Base):
     """
@@ -94,6 +95,24 @@ class Example(Base):
         self.grid = {}  # Dictionary to store objects in each grid cell
         self.tempo = 0
         self.objects_to_ignore = []
+
+        # File path to the time records
+        time_file_path = pathlib.Path("time_records.txt")
+        self.three_lowest_times = self.get_three_lowest_times(time_file_path)
+        self.checkPoint = False
+
+        # Tempos
+
+        self.start_time = 0
+        self.timer_running = False
+        self.cube_start_position = [-1.75, 2.0, 19.5]  # Adjust based on your first cube position
+        self.final_portal_position = [48, 26, 2]  # Adjust based on your final portal position
+        self.time_file_path = pathlib.Path("time_records.txt")
+
+        self.tempos_string = "|| "
+        for i, time in enumerate(self.three_lowest_times):
+            self.tempos_string += f"{i+1} -> {time:.0f} s  || "
+
 
         # Criação da cena
         self.renderer = Renderer()
@@ -154,7 +173,6 @@ class Example(Base):
         self.scene.add(self.sand)
         self.objects_to_ignore.append(self.sand)
 
-        '''
         #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -181,8 +199,7 @@ class Example(Base):
             passa.set_position(position)
             self.scene.add(passa)
             self.objects_to_ignore.append(passa)
-        '''
-        '''
+
         #criação das árvores
         #coordenadas, sentido positivo da direita para a esquerda
         arvore_material = TextureMaterial(texture=Texture("images/arvore2.jpg"))
@@ -208,8 +225,7 @@ class Example(Base):
             arvore.set_position(position)
             self.scene.add(arvore)
             self.objects_to_ignore.append(arvore)
-            ''' 
-        '''
+
         # Criação rochas
         rocks_material = TextureMaterial(texture=Texture("images/rock.jpg"))
         rocks_geometry = rocksGeometry()
@@ -228,8 +244,7 @@ class Example(Base):
             rocks.set_position(position)
             self.scene.add(rocks)
             self.objects_to_ignore.append(rocks)
-        '''
-        '''
+
         # Criação das toalhas
         texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
         toalha_geometry = ToalhaGeometry()
@@ -257,8 +272,7 @@ class Example(Base):
             sombrinha.set_position(position)
             self.scene.add(sombrinha)
             self.objects_to_ignore.append(sombrinha)
-            '''
-        '''
+
         #criação da cadeira
         cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
         cadeira_geometry = cadeiraGeometry()
@@ -302,17 +316,24 @@ class Example(Base):
         self.oculos.rotate_y(179.1)
         self.objects_to_ignore.append(self.oculos)
 
-        # Criação do portal
+         # Criação do portal
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
         portal_geometry = portalGeometry()
         portal = Mesh(portal_geometry, portal_material)
         #portal.set_position([-1.75, 35, 90.5])
-        portal.set_position([-1.75, 36, 86])
+        portal.set_position([-18, 52.0, 48.0])
         self.scene.add(portal)
         self.objects_to_ignore.append(portal)
-        '''
-        
-        '''
+        portal = Mesh(portal_geometry, portal_material)
+        portal.set_position([-24, 52.0, -50.0])
+        portal.rotate_y(math.pi/2)
+        self.scene.add(portal)
+        self.objects_to_ignore.append(portal)
+        portal = Mesh(portal_geometry, portal_material)
+        portal.set_position([48,32,2])
+        self.scene.add(portal)
+        self.objects_to_ignore.append(portal)
+
         #placa das direções
         placa_material = TextureMaterial(texture=Texture("images/p2.png"))
         placa_geometry = placaGeometry()
@@ -361,7 +382,7 @@ class Example(Base):
         pokeball = Mesh(pokeball_geometry, pokeball_material)
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
-        '''
+
         #modelo do boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
         modelo_geometry = ModeloGeometry()
@@ -370,6 +391,32 @@ class Example(Base):
         self.modelo.rotate_y(110)
         self.rig.add(self.modelo)
         self.objects_to_ignore.append(self.modelo)
+
+        # LeaderBoard
+        geometry = RectangleGeometry(width=2)
+        message = TextTexture(text=self.tempos_string,
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+        material = TextureMaterial(message)
+        self.mensagem = Mesh(geometry, material)
+        self.mensagem.set_position([-1.5, 4.1, 0])
+        self.rig.add(self.mensagem)
+        self.rig3.add(self.mensagem)
+        self.objects_to_ignore.append(self.mensagem)
+
+        RectGeometry = RectangleGeometry(width=2)
+        cTime = TextTexture(text= f"{self.start_time:.0f} s",
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+        materialT = TextureMaterial(cTime)
+        self.cTime1 = Mesh(RectGeometry, materialT)
+        self.cTime1.set_position([2.8, 4.1, 0])
+        self.rig.add(self.cTime1)
+        self.rig3.add(self.cTime1)
+        self.objects_to_ignore.append(self.cTime1)
+
 
          # Distancias Maximas ->
         # 0,0,0 -> 0,0,12
@@ -395,7 +442,6 @@ class Example(Base):
         self.scene.add(salva)
         self.objects_to_ignore.append(salva)
 
-        #criação do cubo
         cubo_material = TextureMaterial(texture=Texture("images/mine.png"))
         cubo_geometry = CuboGeometry()
         cubo = Mesh(cubo_geometry, cubo_material)
@@ -404,12 +450,20 @@ class Example(Base):
             "grupo2_x": [[-1.75, 8.0, 43.5], [-1.75, 10.0, 51.5], [-1.75, 12.0, 59.5]],
             "grupo3_x": [[-1.75, 14.0, 67.5]],
             "grupo3_y": [[-1.75, 16.0, 75.5], [-1.75, 18.0, 83.5], [-1.75, 20.0, 90]],
-            "grupo4_x": [[-5, 22.0, 82.0]],
-            "grupo4_y": [[-5, 24.0, 74.0], [-5, 26.0, 66.0], [-5, 28.0, 58.0]],
-            "grupo5_x": [[-5, 30.0, 50.0]],
-            "grupo5_y": [[-5, 32.0, 42.0], [-5, 34.0, 34.0], [-5, 36.0, 26.0]],
-            "grupo6_x": [[-9, 38.0, 18.0]],
-            "grupo6_y": [[-9, 40.0, 26.0], [-9, 42.0, 34.0], [-9, 44.0, 42.0]],
+            "grupo4_x": [[-9, 22.0, 82.0], [-9, 24.0, 74.0], [-9, 26.0, 66.0], [-9, 28.0, 58.0]],
+            "grupo5_x": [[-9, 30.0, 50.0]],
+            "grupo5_y": [[-9, 32.0, 42.0], [-9, 34.0, 34.0], [-9, 36.0, 26.0]],
+            "grupo6_x": [[-18, 38.0, 18.0] , [-18, 40.0, 26.0], [-18, 42.0, 34.0], [-18, 44.0, 42.0]],
+            "Plataform": [[-18, 46.0, 50.0], [-16, 46, 50], [-16, 46, 48], [-18, 46, 48], [-20, 46, 48], [-20, 46, 50], [-20, 46, 52] , [-18, 46, 52], [-16, 46, 52]
+                        ,[-14, 46, 52], [-14, 46, 50], [-14, 46, 48], [-22, 46, 48], [-22, 46, 50], [-22, 46, 52]],
+            "Plataform2": [[-18, 46.0, -50.0], [-16, 46, -50], [-16, 46, -48], [-18, 46, -48], [-20, 46, -48], [-20, 46, -50], [-20, 46, -52] , [-18, 46, -52], [-16, 46, -52]
+                        ,[-14, 46, -52], [-14, 46, -50], [-14, 46, -48], [-22, 46, -48], [-22, 46, -50], [-22, 46, -52]],
+            "grupo7_x": [[-3, 40, -50], [6, 35, -50]],
+            "grupo8_x": [[20, 30, -50], [25, 25, -50] , [35, 20, -50]],
+            "grupo9_x": [[40, 22, -42], [48, 24, -36] , [40, 26, -28]],
+            "Fim": [[48, 26, -20], [48, 26, -10] , [48, 26, 0],
+                    [48,26,2] , [48,26,4] , [48,26,6] , [46,26,2], [46,26,4], [46,26,6], [50,26,2], [50,26,4], [50,26,6]
+                    , [52,26,2], [52,26,4], [52,26,6], [44,26,2], [44,26,4], [44,26,6]],
         }
 
         # Create and store the cube meshes in the same dictionary
@@ -419,11 +473,15 @@ class Example(Base):
             "grupo3_x": [],
             "grupo3_y": [],
             "grupo4_x": [],
-            "grupo4_y": [],
             "grupo5_x": [],
             "grupo5_y": [],
             "grupo6_x": [],
-            "grupo6_y": [],
+            "Plataform": [],
+            "Plataform2": [],
+            "grupo7_x": [],
+            "grupo8_x": [],
+            "grupo9_x": [],
+            "Fim": []
         }
         # Create the cubes and store the references in the dictionary
         for grupo, positions in self.cube_positions.items():
@@ -459,9 +517,15 @@ class Example(Base):
 
         self.update_grid()
 
-
-        #self.objects_To_Ignore = [self.rig, self.rig2, self.rig3, self.ambient_light, self.directional_light, self.sky, self.sand, self.ocean, self.modelo, self.oculos]
-
+    # Function to read times from the file and return the three lowest times
+    def get_three_lowest_times(self, file_path):
+        times = []
+        with open(file_path, "r") as file:
+            for line in file:
+                if "Time:" in line:
+                    time_str = line.split("Time:")[1].strip().split()[0]
+                    times.append(float(time_str))
+        return sorted(times)[:3]
 
     def add_to_grid(self, obj):
         """
@@ -591,22 +655,74 @@ class Example(Base):
     #Diferentes posicoes para a camera cinematogra
     posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
 
+    def start_timer(self):
+        self.start_time = time.time()
+        self.timer_running = True
+        print("Timer started")
+
+    def stop_timer(self):
+        if self.timer_running:
+            elapsed_time = time.time() - self.start_time
+            self.timer_running = False
+            print(f"Timer stopped: {elapsed_time:.2f} seconds")
+            self.save_time_to_file(elapsed_time)
+
+    def reset_timer(self):
+        self.start_time = 0
+        self.timer_running = False
+        print("Timer reset")
+
+    def save_time_to_file(self, elapsed_time):
+        with open(self.time_file_path, "a") as file:
+            file.write(f"Time: {elapsed_time:.2f} seconds\n")
+        print(f"Time saved to {self.time_file_path}")
+
+    def check_if_player_fell(self):
+        # Example condition to check if the player fell
+        if self.rig.global_position[1] <= 0 and self.timer_running:  # Adjust based on your game's logic
+            if self.checkPoint:
+                self.rig.set_position([-18, 47, -52])
+                self.rig3.set_position([-18, 47, -52])
+            else: 
+                self.reset_timer()
+                self.rig.set_position([0, 0, 0])  # Reset player position
+                self.rig3.set_position([0, 0, 0])  # Reset player position
+
+    def check_if_player_reached_start(self):
+        # Example condition to check if the player reached the start
+        if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.cube_start_position)) < 2:
+            if not self.timer_running:
+                self.start_timer()
+
+    def check_if_player_reached_end(self):
+        # Example condition to check if the player reached the end
+        if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.final_portal_position)) < 2:
+            self.stop_timer()
+            self.rig.set_position([0, 0, 0])  # Reset player position
+            self.rig3.set_position([0, 0, 0])  # Reset player position
+            time_file_path = pathlib.Path("time_records.txt")
+            self.three_lowest_times = self.get_three_lowest_times(time_file_path)
+            message = TextTexture(text=self.tempos_string,
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+            material = TextureMaterial(message)
+            self.mensagem._material = material
+            self.checkPoint = False
 
     def update(self):
         self.distort_material.uniform_dict["time"].data += self.delta_time/5
         # Time-based movement using sine function
-        time = self.time * 0.5  # Adjust the speed of the movement
+        time2 = self.time * 0.5  # Adjust the speed of the movement
         
-        # Atualizar a lógica de rotação para apenas no eixo X
-        '''
-        if self.active_camera == self.camera:
-            camera_position = self.camera.global_position
-            look_at_position = [camera_position[0], 0, camera_position[2]]
-        else:
-            modelo_position = self.modelo.global_position
-            look_at_position = [modelo_position[0], 0, modelo_position[2]]
-            '''
+        # Check if the player fell
+        self.check_if_player_fell()
         
+        # Check if the player reached the start
+        self.check_if_player_reached_start()
+        
+        # Check if the player reached the end
+        self.check_if_player_reached_end()
 
         if self.active_camera == self.cinematic_camera:
             self.tempo += self.delta_time
@@ -626,11 +742,15 @@ class Example(Base):
             "grupo3_x": 5.0,
             "grupo3_y": 3,
             "grupo4_x": 5,
-            "grupo4_y": 4,
             "grupo5_x": 5,
             "grupo5_y": 3.6,
             "grupo6_x": 5,
-            "grupo6_y": 1.6,
+            "Plataform": 0,
+            "Plataform2": 0,
+            "grupo7_x": 3,
+            "grupo8_x": 4,
+            "grupo9_x": 2,
+            "Fim": 0
         }
         
         for grupo, meshes in self.cube_meshes.items():#movimentação dos cubos
@@ -639,17 +759,24 @@ class Example(Base):
                 original_position = self.cube_positions[grupo][i]
                 if '_y' in grupo:
                     # Vertical 
-                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    new_y = original_position[1] + amplitude * math.sin(time2 + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
                 elif '_x' in grupo:
                     # Horizontal 
-                    new_x = original_position[0] + amplitude * math.sin(time + i)
+                    new_x = original_position[0] + amplitude * math.sin(time2 + i)
                     mesh.set_position([new_x, original_position[1], original_position[2]])
                 else:
                     # grupo sem '_x' or '_y' adota o tradicional movimento em Y
-                    new_y = original_position[1] + amplitude * math.sin(time + i)
+                    new_y = original_position[1] + amplitude * math.sin(time2 + i)
                     mesh.set_position([original_position[0], new_y, original_position[2]])
         
+        if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
+            #self.rig.set_position([0, 0, 0])
+            self.checkPoint = True
+            self.rig.translate(0, 0, -100, False)
+            self.rig3.translate(0, 0, -100, False)
+            #self.active_camera = self.camera
+
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
                 self.toggle_camera = True
@@ -672,6 +799,17 @@ class Example(Base):
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
         self.static_camera 
+        if self.timer_running:
+            elapsed_time = time.time() - self.start_time
+        else:
+            elapsed_time = 0
+        cTime = TextTexture(text= f" Current Time: {elapsed_time:.0f} s",
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+        materialT = TextureMaterial(cTime)
+
+        self.cTime1._material = materialT
         # Check for collisions
 
 # Instantiate this class and run the program
