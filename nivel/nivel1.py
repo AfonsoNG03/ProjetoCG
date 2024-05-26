@@ -409,12 +409,12 @@ class Nivel1:
             if self.modelo in self.rig._look_attachment.children_list:
                 self.rig.remove(self.modelo)
                 self.rig.add(self.modelopul)
-                self.oculos.translate(0, -0.16, 0)  # Move os óculos para baixo
+                self.oculos.translate(0, -0.16, 0)
         else:
             if self.modelopul in self.rig._look_attachment.children_list:
                 self.rig.remove(self.modelopul)
                 self.rig.add(self.modelo)
-                self.oculos.translate(0, 0.16, 0)  # Move os óculos de volta para cima
+                self.oculos.translate(0, 0.16, 0)
 
     def update_Cubos(self):
         '''
