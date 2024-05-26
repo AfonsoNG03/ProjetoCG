@@ -12,7 +12,7 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
-from extras.movement_rig3 import MovementRig3
+from extras.movement_rig2 import MovementRig2
 from geometry.esperguica import espreguicaGeometry 
 from geometry.animal import animalGeometry
 from geometry.arvore import ArvoreGeometry
@@ -45,7 +45,7 @@ from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
 import time
 
-class Example(Base):
+class Main(Base):
     """
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
@@ -134,9 +134,9 @@ class Example(Base):
         self.renderer = Renderer()
         self.scene = Scene()
         self.rig = MovementRig()
-        self.rig3 = MovementRig3()
+        self.rig2 = MovementRig2()
         self.objects_to_ignore.append(self.rig)
-        self.objects_to_ignore.append(self.rig3)
+        self.objects_to_ignore.append(self.rig2)
 
         # Adiciona luzes
         # Luz ambiente
@@ -287,7 +287,7 @@ class Example(Base):
             self.objects_to_ignore.append(sombrinha)
 
         #criação da cadeira
-        cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        cadeira_material = TextureMaterial(texture=Texture("images/white.png"))
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
@@ -300,7 +300,7 @@ class Example(Base):
             self.objects_to_ignore.append(cadeira)
 
         #criação da espreguiçadeira
-        espreguica_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
+        espreguica_material = TextureMaterial(texture=Texture("images/white.png"))
         espreguica_geometry = espreguicaGeometry()
         espreguica_positions= [
                         [-59, 0, 40],[-39, 0, 40],[-29, 0, 40],[-19, 0, 40],[-9, 0, 40],
@@ -326,6 +326,7 @@ class Example(Base):
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
+        self.rig.add(self.oculos)
         self.objects_to_ignore.append(self.oculos)
 
         #Criação do portal
@@ -411,7 +412,7 @@ class Example(Base):
         self.mensagem = Mesh(geometry, material)
         self.mensagem.set_position([-1.5, 4.1, 0])
         self.rig.add(self.mensagem)
-        self.rig3.add(self.mensagem)
+        self.rig2.add(self.mensagem)
         self.objects_to_ignore.append(self.mensagem)
 
         RectGeometry = RectangleGeometry(width=2)
@@ -423,7 +424,7 @@ class Example(Base):
         self.cTime1 = Mesh(RectGeometry, materialT)
         self.cTime1.set_position([2.8, 4.1, 0])
         self.rig.add(self.cTime1)
-        self.rig3.add(self.cTime1)
+        self.rig2.add(self.cTime1)
         self.objects_to_ignore.append(self.cTime1)
 
         #modelo do nadador salvador
@@ -495,7 +496,7 @@ class Example(Base):
         self.static_camera.set_position([0, 4, 4])
         model_position = self.modelo.global_position
         self.static_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
-        self.rig3.add(self.static_camera)
+        self.rig2.add(self.static_camera)
 
         # Criacao da camara cinemática
         self.cinematic_camera = Camera(aspect_ratio=800/600)
@@ -593,50 +594,51 @@ class Example(Base):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
-                    self.rig3.translate(-0.1, 0, 0, False)
+                    self.rig2.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
-                    self.rig3.translate(0.1, 0, 0, False)
+                    self.rig2.translate(0.1, 0, 0, False)
             elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1])  > abs(collision_direction[2]):
                 if collision_direction[1] > -0.1:
                     #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
-                    self.rig3.translate(0, -0.1, 0, False)
+                    self.rig2.translate(0, -0.1, 0, False)
                 else:
                     #direction = 'above'
                     if self.camera.global_position[1] - other_obj.global_position[1] <= 3.9:
                         self.rig.translate(0, self._delta_time*2.7, 0, False)
-                        self.rig3.translate(0, self._delta_time*2.7, 0, False)
+                        self.rig2.translate(0, self._delta_time*2.7, 0, False)
                     return True
             else:
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
-                    self.rig3.translate(0, 0, -0.1, False)
+                    self.rig2.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
-                    self.rig3.translate(0, 0, 0.1, False)
+                    self.rig2.translate(0, 0, 0.1, False)
         else:
             if abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
-                    self.rig3.translate(-0.1, 0, 0, False)
+                    self.rig2.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
-                    self.rig3.translate(0.1, 0, 0, False)
+                    self.rig2.translate(0.1, 0, 0, False)
             else:
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
-                    self.rig3.translate(0, 0, -0.1, False)
+                    self.rig2.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
-                    self.rig3.translate(0, 0, 0.1, False)
+                    self.rig2.translate(0, 0, 0.1, False)
+        
         return False
     
     #Diferentes posicoes para a camera cinematogra
@@ -669,11 +671,11 @@ class Example(Base):
         if self.rig.global_position[1] <= 0 and self.timer_running:  # Adjust based on your game's logic
             if self.checkPoint:
                 self.rig.set_position([-18, 47, -52])
-                self.rig3.set_position([-18, 47, -52])
+                self.rig2.set_position([-18, 47, -52])
             else: 
                 self.reset_timer()
                 self.rig.set_position([0, 0, 0])  # Reset player position
-                self.rig3.set_position([0, 0, 0])  # Reset player position
+                self.rig2.set_position([0, 0, 0])  # Reset player position
 
     def check_if_player_reached_start(self):
         # Example condition to check if the player reached the start
@@ -686,7 +688,7 @@ class Example(Base):
         if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.final_portal_position)) < 2:
             self.stop_timer()
             self.rig.set_position([0, 0, 0])  # Reset player position
-            self.rig3.set_position([0, 0, 0])  # Reset player position
+            self.rig2.set_position([0, 0, 0])  # Reset player position
             time_file_path = pathlib.Path("time_records.txt")
             self.three_lowest_times = self.get_three_lowest_times(time_file_path)
             message = TextTexture(text=self.tempos_string,
@@ -754,7 +756,8 @@ class Example(Base):
         if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
             self.checkPoint = True
             self.rig.translate(0, 0, -100, False)
-            self.rig3.translate(0, 0, -100, False)
+            self.rig2.translate(0, 0, -100, False)
+            #self.active_camera = self.camera
 
         if self.input.is_key_pressed('c'):
             if not self.toggle_camera:
@@ -772,9 +775,9 @@ class Example(Base):
                     self.active_camera = self.camera
         else: 
             self.toggle_camera = False
-        collision = self.check_collisions()  # Get collision direction
+        collision = self.check_collisions()
         self.rig.update(self.input, self.delta_time, collision)
-        self.rig3.update(self.input, self.delta_time, collision)
+        self.rig2.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
         self.static_camera 
         if self.timer_running:
@@ -793,20 +796,21 @@ class Example(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Beach Rush")
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
 
     menu = GameMenu(screen)
+    
     while True:
         choice = menu.run()
         if choice == "start_game":
             break
         elif choice == "options":
-            # Handle options logic if needed
             pass
     pygame.quit()
 
 if __name__ == "__main__":
     main()
-
-# Instantiate this class and run the program
-Example(screen_size=[800, 600]).run()
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
+    Main(screen_size=[800, 600]).run()
