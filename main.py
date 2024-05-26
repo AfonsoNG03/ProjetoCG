@@ -1,8 +1,11 @@
 import numpy as np
 import math
+import pygame
+import os
 import pathlib
 import sys
 
+from core.menu import GameMenu
 from core.base import Base
 from core_ext.camera import Camera
 from core_ext.mesh import Mesh
@@ -89,6 +92,25 @@ class Example(Base):
                 fragColor = texture2D(image, uvNoise);
             }
         """
+
+        # Initialize Pygame mixer
+        pygame.mixer.init()
+        # Print current working directory to debug
+        print("Current working directory:", os.getcwd())
+        # Define the path to the music file
+        #music_file = 'music/Megaman_X.mp3'
+        music_file = 'music/troll.mp3'
+        # Check if the music file exists
+        if not os.path.isfile(music_file):
+            print(f"Music file not found: {music_file}")
+        else:
+            try:
+                pygame.mixer.music.load(music_file)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)  # musica em loop infinito
+                print(f"Playing music: {music_file}")
+            except pygame.error as e:
+                print(f"Failed to load music file: {music_file}, error: {e}")
 
         # Define grid properties
         self.grid_size = 5  # Size of each grid cell
@@ -811,6 +833,38 @@ class Example(Base):
 
         self.cTime1._material = materialT
         # Check for collisions
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Beach Rush")
+
+    menu = GameMenu(screen)
+    while True:
+        choice = menu.run()
+        if choice == "start_game":
+            break
+        elif choice == "options":
+            # Handle options logic if needed
+            pass
+
+    # Once the menu loop is exited, start the game
+    game = Example()
+    game.initialize()
+
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        # Update game state and draw the game
+        pygame.display.flip()
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
 
 # Instantiate this class and run the program
 Example(screen_size=[800, 600]).run()
