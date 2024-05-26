@@ -14,7 +14,7 @@ class GameMenu:
         self.mouse_active = False
         self.last_mouse_pos = pygame.mouse.get_pos()
 
-        music_file = 'music/beachbeat.mp3'
+        music_file = 'music/FF.mp3'
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
         else:
