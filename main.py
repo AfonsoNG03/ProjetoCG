@@ -45,7 +45,7 @@ from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
 import time
 
-class Example(Base):
+class Main(Base):
     """
     Render the axes and the rotated xy-grid.
     Add box movement: WASDRF(move), QE(turn), TG(look).
@@ -53,10 +53,10 @@ class Example(Base):
     """
     def initialize(self):
         print("Initializing program...")
+        print("Ao entrar no menu tem as opções de jogar, ver o placar e sair, para sair do placar pressione esc")
         print("Para mexer o modelo usar as teclas w,a,s,d")
         print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
         print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-        #print("Para ativar o modo criativo pressionar a tecla 'u' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -95,8 +95,7 @@ class Example(Base):
         # Print current working directory to debug
         print("Current working directory:", os.getcwd())
         # Define the path to the music file
-        #music_file = 'music/Megaman_X.mp3'
-        music_file = 'music/troll.mp3'
+        music_file = 'music/FF2.mp3'
         # Check if the music file exists
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
@@ -121,11 +120,10 @@ class Example(Base):
         self.checkPoint = False
 
         # Tempos
-
         self.start_time = 0
         self.timer_running = False
-        self.cube_start_position = [-1.75, 2.0, 19.5]  # Adjust based on your first cube position
-        self.final_portal_position = [48, 26, 2]  # Adjust based on your final portal position
+        self.cube_start_position = [-1.75, 2.0, 19.5] 
+        self.final_portal_position = [48, 26, 2]  
         self.time_file_path = pathlib.Path("time_records.txt")
 
         self.tempos_string = "|| "
@@ -189,6 +187,7 @@ class Example(Base):
         self.sand.set_position([0, 0, 45])
         self.scene.add(self.sand)
         self.objects_to_ignore.append(self.sand)
+
 
         #Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
@@ -262,8 +261,8 @@ class Example(Base):
             self.scene.add(rocks)
             self.objects_to_ignore.append(rocks)
 
-        # Criação das toalhas
-        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg"]
+        #Criação das toalhas
+        texturas = ["images/SLB.jpg", "images/goku.png", "images/master.jpg", "images/lakers.png", "images/mario.png", "images/psg.png", "images/loveless.png", "images/pompup.png", "images/fish.png", "images/muppets.png", "images/owl.png", "images/wazowski.png"]
         toalha_geometry = ToalhaGeometry()
         toalha_positions = [[-50, 0, 15],[-50, 0, 10],[-35, 0, 5],[-35, 0, 2],[-20, 0, 10],
                             [-15, 0, 10],[-15, 0, 5],[-10, 0, 5],[-10, 0, 10],[-7, 0, 15],[-6, 0, 10],[-2, 0, 5],
@@ -291,7 +290,7 @@ class Example(Base):
             self.objects_to_ignore.append(sombrinha)
 
         #criação da cadeira
-        cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
+        cadeira_material = TextureMaterial(texture=Texture("images/white.png"))
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
@@ -304,7 +303,7 @@ class Example(Base):
             self.objects_to_ignore.append(cadeira)
 
         #criação da espreguiçadeira
-        espreguica_material = TextureMaterial(texture=Texture("images/golfinho.jpg"))
+        espreguica_material = TextureMaterial(texture=Texture("images/white.png"))
         espreguica_geometry = espreguicaGeometry()
         espreguica_positions= [
                         [-59, 0, 40],[-39, 0, 40],[-29, 0, 40],[-19, 0, 40],[-9, 0, 40],
@@ -331,13 +330,13 @@ class Example(Base):
         self.oculos = Mesh(oculos_geometry, oculos_material)
         self.oculos.set_position([0, 0, 0.09])
         self.oculos.rotate_y(179.1)
+        self.rig.add(self.oculos)
         self.objects_to_ignore.append(self.oculos)
 
-         # Criação do portal
+        #Criação do portal
         portal_material = TextureMaterial(texture=Texture("images/portal.jpg"))
         portal_geometry = portalGeometry()
         portal = Mesh(portal_geometry, portal_material)
-        #portal.set_position([-1.75, 35, 90.5])
         portal.set_position([-18, 52.0, 48.0])
         self.scene.add(portal)
         self.objects_to_ignore.append(portal)
@@ -358,14 +357,12 @@ class Example(Base):
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
 
-
         #placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
         stand_geometry = standGeometry()
         self.stand = Mesh(stand_geometry, stand_material)
         self.stand.set_position([8, 0, 14])
         self.scene.add(self.stand)
-
 
         # Criação do jet ski
         jetski_material = TextureMaterial(texture=Texture("images/blue.jpg"))
@@ -419,6 +416,33 @@ class Example(Base):
         self.mensagem = Mesh(geometry, material)
         self.mensagem.set_position([-1.5, 4.1, 0])
         self.rig.add(self.mensagem)
+        self.rig2.add(self.mensagem)
+        self.objects_to_ignore.append(self.mensagem)
+
+        RectGeometry = RectangleGeometry(width=2)
+        cTime = TextTexture(text= f"{self.start_time:.0f} s",
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+        materialT = TextureMaterial(cTime)
+        self.cTime1 = Mesh(RectGeometry, materialT)
+        self.cTime1.set_position([2.8, 4.1, 0])
+        self.rig.add(self.cTime1)
+        self.rig2.add(self.cTime1)
+        self.objects_to_ignore.append(self.cTime1)
+        self.rig.add(self.modelo)
+        self.objects_to_ignore.append(self.modelo)
+
+        # LeaderBoard
+        geometry = RectangleGeometry(width=2)
+        message = TextTexture(text=self.tempos_string,
+                               system_font_name="Impact",
+                               font_size=32, font_color=[200, 0, 0],
+                               image_width=600, image_height=300, transparent=True)
+        material = TextureMaterial(message)
+        self.mensagem = Mesh(geometry, material)
+        self.mensagem.set_position([-1.5, 4.1, 0])
+        self.rig.add(self.mensagem)
         self.rig3.add(self.mensagem)
         self.objects_to_ignore.append(self.mensagem)
 
@@ -455,7 +479,7 @@ class Example(Base):
         salva_material = TextureMaterial(texture=Texture("images/mass_monster.png"))
         salva_geometry = salvaGeometry()
         salva = Mesh(salva_geometry, salva_material)
-        salva.set_position([-10, 0, 20])
+        salva.set_position([-25, 4.8, 20])
         self.scene.add(salva)
         self.objects_to_ignore.append(salva)
 
@@ -520,7 +544,7 @@ class Example(Base):
         self.static_camera.set_position([0, 4, 4])
         model_position = self.modelo.global_position
         self.static_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
-        self.rig3.add(self.static_camera)
+        self.rig2.add(self.static_camera)
 
         # Criacao da camara cinemática
         self.cinematic_camera = Camera(aspect_ratio=800/600)
@@ -529,7 +553,6 @@ class Example(Base):
         self.cinematic_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
 
         self.active_camera = self.camera
-
         self.toggle_camera = False
 
         self.update_grid()
@@ -609,7 +632,6 @@ class Example(Base):
 
         # Calculate the vector from the camera to the object
         collision_vector = obj_pos - cam_pos
-
         collision_vector[1] -= 0.15
 
         # Normalize the vector to get the direction
@@ -622,50 +644,50 @@ class Example(Base):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
-                    self.rig3.translate(-0.1, 0, 0, False)
+                    self.rig2.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
-                    self.rig3.translate(0.1, 0, 0, False)
+                    self.rig2.translate(0.1, 0, 0, False)
             elif abs(collision_direction[1]) > abs(collision_direction[0]) and abs(collision_direction[1])  > abs(collision_direction[2]):
                 if collision_direction[1] > -0.1:
                     #direction = 'below'
                     self.rig.translate(0, -0.1, 0, False)
-                    self.rig3.translate(0, -0.1, 0, False)
+                    self.rig2.translate(0, -0.1, 0, False)
                 else:
                     #direction = 'above'
                     if self.camera.global_position[1] - other_obj.global_position[1] <= 3.9:
                         self.rig.translate(0, self._delta_time*2.7, 0, False)
-                        self.rig3.translate(0, self._delta_time*2.7, 0, False)
+                        self.rig2.translate(0, self._delta_time*2.7, 0, False)
                     return True
             else:
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
-                    self.rig3.translate(0, 0, -0.1, False)
+                    self.rig2.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
-                    self.rig3.translate(0, 0, 0.1, False)
+                    self.rig2.translate(0, 0, 0.1, False)
         else:
             if abs(collision_direction[0]) > abs(collision_direction[2]):
                 if collision_direction[0] > 0:
                     #direction = 'right'
                     self.rig.translate(-0.1, 0, 0, False)
-                    self.rig3.translate(-0.1, 0, 0, False)
+                    self.rig2.translate(-0.1, 0, 0, False)
                 else:
                     #direction = 'left'
                     self.rig.translate(0.1, 0, 0, False)
-                    self.rig3.translate(0.1, 0, 0, False)
+                    self.rig2.translate(0.1, 0, 0, False)
             else:
                 if collision_direction[2] > 0:
                     #direction = 'front'
                     self.rig.translate(0, 0, -0.1, False)
-                    self.rig3.translate(0, 0, -0.1, False)
+                    self.rig2.translate(0, 0, -0.1, False)
                 else:
                     #direction = 'back'
                     self.rig.translate(0, 0, 0.1, False)
-                    self.rig3.translate(0, 0, 0.1, False)
+                    self.rig2.translate(0, 0, 0.1, False)
         
         return False
     
@@ -699,11 +721,11 @@ class Example(Base):
         if self.rig.global_position[1] <= 0 and self.timer_running:  # Adjust based on your game's logic
             if self.checkPoint:
                 self.rig.set_position([-18, 47, -52])
-                self.rig3.set_position([-18, 47, -52])
+                self.rig2.set_position([-18, 47, -52])
             else: 
                 self.reset_timer()
                 self.rig.set_position([0, 0, 0])  # Reset player position
-                self.rig3.set_position([0, 0, 0])  # Reset player position
+                self.rig2.set_position([0, 0, 0])  # Reset player position
 
     def check_if_player_reached_start(self):
         # Example condition to check if the player reached the start
@@ -716,7 +738,7 @@ class Example(Base):
         if np.linalg.norm(np.array(self.rig.global_position) - np.array(self.final_portal_position)) < 2:
             self.stop_timer()
             self.rig.set_position([0, 0, 0])  # Reset player position
-            self.rig3.set_position([0, 0, 0])  # Reset player position
+            self.rig2.set_position([0, 0, 0])  # Reset player position
             time_file_path = pathlib.Path("time_records.txt")
             self.three_lowest_times = self.get_three_lowest_times(time_file_path)
             message = TextTexture(text=self.tempos_string,
@@ -734,10 +756,8 @@ class Example(Base):
         
         # Check if the player fell
         self.check_if_player_fell()
-        
         # Check if the player reached the start
         self.check_if_player_reached_start()
-        
         # Check if the player reached the end
         self.check_if_player_reached_end()
 
@@ -751,6 +771,8 @@ class Example(Base):
 
 
         #self.stand.look_at(look_at_position)
+        
+        # Define different amplitudes for each group
         
         # Define different amplitudes for each group
         amplitudes = {
@@ -788,10 +810,9 @@ class Example(Base):
                     mesh.set_position([original_position[0], new_y, original_position[2]])
         
         if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
-            #self.rig.set_position([0, 0, 0])
             self.checkPoint = True
             self.rig.translate(0, 0, -100, False)
-            self.rig3.translate(0, 0, -100, False)
+            self.rig2.translate(0, 0, -100, False)
             #self.active_camera = self.camera
 
         if self.input.is_key_pressed('c'):
@@ -810,7 +831,7 @@ class Example(Base):
                     self.active_camera = self.camera
         else: 
             self.toggle_camera = False
-        collision = self.check_collisions()  # Get collision direction
+        collision = self.check_collisions()
         self.rig.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
@@ -831,20 +852,21 @@ class Example(Base):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Beach Rush")
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
 
     menu = GameMenu(screen)
+    
     while True:
         choice = menu.run()
         if choice == "start_game":
             break
         elif choice == "options":
-            # Handle options logic if needed
             pass
     pygame.quit()
 
 if __name__ == "__main__":
     main()
-
-# Instantiate this class and run the program
-Example(screen_size=[800, 600]).run()
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
+    Main(screen_size=[800, 600]).run()
