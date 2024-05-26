@@ -21,7 +21,7 @@ class GameMenu:
         self.zoom_max = 1.5
         self.zoom_time = 0
 
-        music_file = 'music/beachbeat.mp3'
+        music_file = 'music/FF.mp3'
         if not os.path.isfile(music_file):
             print(f"Music file not found: {music_file}")
         else:
