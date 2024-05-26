@@ -12,7 +12,6 @@ from core_ext.mesh import Mesh
 from core_ext.renderer2 import Renderer
 from core_ext.scene import Scene
 from extras.movement_rig import MovementRig
-from extras.movement_rig2 import MovementRig2
 from extras.movement_rig3 import MovementRig3
 from geometry.esperguica import espreguicaGeometry 
 from geometry.animal import animalGeometry
@@ -41,8 +40,6 @@ from geometry.toalha import ToalhaGeometry
 from light.ambient import AmbientLight
 from light.directional import DirectionalLight
 from material.material import Material
-from material.phong import PhongMaterial
-from material.surface import SurfaceMaterial
 from core_ext.texture import Texture
 from extras.text_texture import TextTexture
 from material.texture import TextureMaterial
@@ -59,7 +56,7 @@ class Example(Base):
         print("Para mexer o modelo usar as teclas w,a,s,d")
         print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
         print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-        print("Para ativar o modo criativo pressionar a tecla 'u' e usar 'z' para subir e 'x' para descer")
+        #print("Para ativar o modo criativo pressionar a tecla 'u' e usar 'z' para subir e 'x' para descer")
 
         # Shaders para distorção
         vertex_shader_code = """
@@ -140,10 +137,8 @@ class Example(Base):
         self.renderer = Renderer()
         self.scene = Scene()
         self.rig = MovementRig()
-        self.rig2 = MovementRig2()
         self.rig3 = MovementRig3()
         self.objects_to_ignore.append(self.rig)
-        self.objects_to_ignore.append(self.rig2)
         self.objects_to_ignore.append(self.rig3)
 
         # Adiciona luzes
@@ -817,7 +812,6 @@ class Example(Base):
             self.toggle_camera = False
         collision = self.check_collisions()  # Get collision direction
         self.rig.update(self.input, self.delta_time, collision)
-        self.rig2.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
         self.renderer.render(self.scene, self.active_camera)
         self.static_camera 
@@ -847,20 +841,6 @@ def main():
         elif choice == "options":
             # Handle options logic if needed
             pass
-
-    # Once the menu loop is exited, start the game
-    game = Example()
-    game.initialize()
-
-    # Main game loop
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        # Update game state and draw the game
-        pygame.display.flip()
-
     pygame.quit()
 
 if __name__ == "__main__":
