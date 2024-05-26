@@ -42,4 +42,7 @@ class GameMenu:
 
             self.draw_menu()
             pygame.display.flip()
+            pygame.display.set_caption("BeachRush")
+            icon = pygame.image.load('images/icon.png')
+            pygame.display.set_icon(icon)
             self.clock.tick(60)
