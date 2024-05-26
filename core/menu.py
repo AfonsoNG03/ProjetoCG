@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import math
 
 class GameMenu:
     def __init__(self, screen):
@@ -13,6 +14,12 @@ class GameMenu:
         self.background_image = pygame.image.load("images/2.png").convert()
         self.mouse_active = False
         self.last_mouse_pos = pygame.mouse.get_pos()
+        self.zoom_factor = 1
+        self.zoom_direction = 1
+        self.zoom_speed = 0.005
+        self.zoom_min = 1
+        self.zoom_max = 1.5
+        self.zoom_time = 0
 
         music_file = 'music/beachbeat.mp3'
         if not os.path.isfile(music_file):
@@ -27,7 +34,18 @@ class GameMenu:
                 print(f"Failed to load music file: {music_file}, error: {e}")
 
     def draw_menu(self):
-        self.screen.blit(self.background_image, (0, 0))
+        self.zoom_time += self.zoom_speed
+        self.zoom_factor = self.zoom_min + (self.zoom_max - self.zoom_min) * (0.5 + 0.5 * math.sin(self.zoom_time))
+
+        background_width = int(self.background_image.get_width() * self.zoom_factor)
+        background_height = int(self.background_image.get_height() * self.zoom_factor)
+
+        zoomed_background = pygame.transform.scale(self.background_image, (background_width, background_height))
+
+        x = (self.screen.get_width() - background_width) // 2
+        y = (self.screen.get_height() - background_height) // 2
+
+        self.screen.blit(zoomed_background, (x, y))
 
         box_width = 300
         box_height = 80
