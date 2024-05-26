@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 class GameMenu:
     def __init__(self, screen):
@@ -10,10 +11,23 @@ class GameMenu:
         self.options = ["Start Game", "Scoreboard", "Exit"]
         self.selected_option = 0
         self.background_image = pygame.image.load("images/2.png").convert()
+        self.mouse_active = False  # Variável para controlar o estado do mouse
+        self.last_mouse_pos = pygame.mouse.get_pos()  # Posição anterior do mouse
 
+        # Música
+        music_file = 'music/beachbeat.mp3'
+        if not os.path.isfile(music_file):
+            print(f"Music file not found: {music_file}")
+        else:
+            try:
+                pygame.mixer.music.load(music_file)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)  # Música em loop infinito
+                print(f"Playing music: {music_file}")
+            except pygame.error as e:
+                print(f"Failed to load music file: {music_file}, error: {e}")
 
     def draw_menu(self):
-        # Imagem de fundo
         self.screen.blit(self.background_image, (0, 0))
 
         # Dimensões dos retângulos
@@ -96,11 +110,22 @@ class GameMenu:
 
     def run(self):
         while True:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_clicked = False
+
+            # Check if the mouse has moved
+            if mouse_pos != self.last_mouse_pos:
+                self.mouse_active = True
+                self.last_mouse_pos = mouse_pos
+            else:
+                self.mouse_active = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
+                    self.mouse_active = False  # Ignore mouse until it moves again
                     if event.key == pygame.K_UP:
                         self.selected_option = (self.selected_option - 1) % len(self.options)
                     elif event.key == pygame.K_DOWN:
@@ -113,6 +138,23 @@ class GameMenu:
                         elif self.selected_option == 2:
                             pygame.quit()
                             sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_clicked = True
+
+            # Verifica a seleção do mouse se ele está ativo ou não
+            for i, option_box in enumerate(self.option_boxes):
+                if option_box.collidepoint(mouse_pos):
+                    if self.mouse_active:
+                        self.selected_option = i
+                    if mouse_clicked:
+                        self.selected_option = i
+                        if i == 0:
+                            return "start_game"
+                        elif i == 1:
+                            self.show_Scoreboard()
+                        elif i == 2:
+                            pygame.quit()
+                            sys.exit()
 
             self.draw_menu()
             pygame.display.flip()
@@ -120,3 +162,10 @@ class GameMenu:
             icon = pygame.image.load('images/icon.png')
             pygame.display.set_icon(icon)
             self.clock.tick(60)
+
+if __name__ == "__main__":
+    pygame.init()
+    pygame.mixer.init()  # Inicializar o mixer do pygame
+    screen = pygame.display.set_mode((800, 600))
+    menu = GameMenu(screen)
+    menu.run()
