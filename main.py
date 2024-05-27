@@ -105,12 +105,12 @@ class Main(Base):
                 self.toggle_camera = True
                 if self.active_camera == self.camera:
                     self.active_camera = self.static_camera
-                    #self.Nivel1.cTime1.set_position([2.8, 4.1, 0])
-                    #self.TempoCounter.mensagem.set_position([-1.5, 4.1, 0])
+                    self.Nivel1.cTime1.set_position([2.8, 4.1, 0])
+                    self.TempoCounter.mensagem.set_position([-1.5, 4.1, 0])
                 else:
                     self.active_camera = self.camera
-                    self.Nivel1.cTime1.set_position([2.5, 4.1, -4])
-                    self.TempoCounter.mensagem.set_position([-1.3, 4.1, -4])
+                    #self.Nivel1.cTime1.set_position([2.5, 4.1, -4])
+                    #self.TempoCounter.mensagem.set_position([-1.3, 4.1, -4])
 
         elif self.input.is_key_pressed('v'):
             if not self.toggle_camera:
