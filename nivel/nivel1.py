@@ -223,7 +223,7 @@ class Nivel1:
             self.objects_to_ignore.append(sombrinha)
 
         # Cadeiras
-        cadeira_material = TextureMaterial(texture=Texture("images/white.png"))
+        cadeira_material = TextureMaterial(texture=Texture("images/cadeira.jpg"))
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
@@ -236,7 +236,7 @@ class Nivel1:
             self.objects_to_ignore.append(cadeira)
 
         # Espreguiçadeiras
-        espreguica_material = TextureMaterial(texture=Texture("images/white.png"))
+        espreguica_material = TextureMaterial(texture=Texture("images/esp.jpg"))
         espreguica_geometry = espreguicaGeometry()
         espreguica_positions= [
                         [-59, 0, 40],[-39, 0, 40],[-29, 0, 40],[-19, 0, 40],[-9, 0, 40],
