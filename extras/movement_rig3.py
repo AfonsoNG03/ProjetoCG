@@ -21,7 +21,7 @@ class MovementRig3(Object3D):
         self.is_jumping = False
         self.jump_speed = 10
         self.fall_speed = 0.0
-        self.gravity = 15.0
+        self.gravity = 12.0
         self.modo_criativo_enabled = False
 
         # Default key mappings

@@ -99,8 +99,8 @@ class Colisoes:
                 else:
                     #direction = 'above'
                     if camera.global_position[1] - other_obj.global_position[1] <= 3.9:
-                        rig.translate(0, delta_time*2.7, 0, False)
-                        rig3.translate(0, delta_time*2.7, 0, False)
+                        rig.translate(0, 0.1, 0, False)
+                        rig3.translate(0, 0.1, 0, False)
                     return True
             else:
                 if collision_direction[2] > 0:

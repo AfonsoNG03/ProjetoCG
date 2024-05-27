@@ -122,6 +122,7 @@ class Nivel1:
         self.scene.add(self.sand)
         self.objects_to_ignore.append(self.sand)
 
+        
         # Passadiço vertical
         passa_material = TextureMaterial(texture=Texture("images/passa.png"))
         passa_geometry = passaGeometry()
@@ -250,10 +251,10 @@ class Nivel1:
         # Casa
         casa_material = TextureMaterial(texture=Texture("images/casa.png"))
         casa_geometry = casaGeometry()
-        casa = Mesh(casa_geometry, casa_material)
+        casa = Mesh(casa_geometry, casa_material, True, 5)
         casa.set_position([-30, 0, 30])
         self.scene.add(casa)
-        self.objects_to_ignore.append(casa)
+
 
         # Óculos
         oculos_material = TextureMaterial(texture=Texture("images/oculos.jpg"))
@@ -287,6 +288,8 @@ class Nivel1:
         placa = Mesh(placa_geometry, placa_material)
         placa.set_position([-2, 0, 16])
         self.scene.add(placa)
+        self.objects_to_ignore.append(placa)
+
 
         # Placa das instruções
         stand_material = TextureMaterial(texture=Texture("images/metal.jpg"))
@@ -320,6 +323,7 @@ class Nivel1:
         pokeball = Mesh(pokeball_geometry, pokeball_material)
         pokeball.set_position([0, -0.001, -12])
         self.scene.add(pokeball)
+        self.objects_to_ignore.append(pokeball)
 
         # Boneco
         modelo_material = TextureMaterial(texture=Texture("images/Cor_Modelo.jpg"))
@@ -423,13 +427,13 @@ class Nivel1:
         time2 = self.time * 0.5
 
         amplitudes = {
-            "grupo1": 1.2,
+            "grupo1": 0,#1.2,
             "grupo2_x": 2.4,
             "grupo3_x": 5.0,
-            "grupo3_y": 3,
+            "grupo3_y": 0,#3,
             "grupo4_x": 5,
             "grupo5_x": 5,
-            "grupo5_y": 3.6,
+            "grupo5_y": 0,#3.6,
             "grupo6_x": 5,
             "Plataform": 0,
             "Plataform2": 0,

@@ -12,6 +12,8 @@ class GameMenu:
         self.options = ["Start Game", "Scoreboard", "Exit"]
         self.selected_option = 0
         self.background_image = pygame.image.load("images/2.png").convert()
+        self.logo_image = pygame.image.load("images/beachrush.png").convert_alpha()  # Carrega a imagem do logo com transparência
+        self.logo_image = pygame.transform.scale(self.logo_image, (300, 200))  # Redimensiona a imagem do logo
         self.mouse_active = False
         self.last_mouse_pos = pygame.mouse.get_pos()
         self.zoom_factor = 1
@@ -46,6 +48,11 @@ class GameMenu:
         y = (self.screen.get_height() - background_height) // 2
 
         self.screen.blit(zoomed_background, (x, y))
+
+        # Desenha o logo na parte superior do menu
+        logo_x = (self.screen.get_width() - self.logo_image.get_width()) // 2
+        logo_y = -20
+        self.screen.blit(self.logo_image, (logo_x, logo_y))
 
         box_width = 300
         box_height = 80
