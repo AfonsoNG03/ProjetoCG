@@ -223,7 +223,7 @@ class Nivel1:
             self.objects_to_ignore.append(sombrinha)
 
         # Cadeiras
-        cadeira_material = TextureMaterial(texture=Texture("images/cadeira.jpg"))
+        cadeira_material = TextureMaterial(texture=Texture("images/whool.jpg"))
         cadeira_geometry = cadeiraGeometry()
         cadeira_positions= [
                         [-59, 0, 9],[-39, 0, 4],[-29, 0, 6.5],[-19, 0, 4],[-9, 0, 10],
