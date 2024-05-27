@@ -1,168 +1,177 @@
-import numpy as np
 import pygame
+import sys
+import os
+import math
 
-from core.menu import GameMenu
-from core.base import Base
-from core_ext.camera import Camera
-from core_ext.renderer2 import Renderer
-from core_ext.scene import Scene
-from extras.movement_rig import MovementRig
-from extras.movement_rig3 import MovementRig3
-from music.music import Music
-from colisoes.colisoes import Colisoes
-from tempos.tempo import Tempo
-from nivel.nivel1 import Nivel1
+class GameMenu:
+    def __init__(self, screen):
+        self.screen = screen
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 74)
+        self.option_boxes = []
+        self.options = ["Start Game", "Scoreboard", "Exit"]
+        self.selected_option = 0
+        self.background_image = pygame.image.load("images/2.png").convert()
+        self.logo_image = pygame.image.load("images/beachrush.png").convert_alpha()  # Carrega a imagem do logo com transparência
+        self.logo_image = pygame.transform.scale(self.logo_image, (300, 200))  # Redimensiona a imagem do logo
+        self.mouse_active = False
+        self.last_mouse_pos = pygame.mouse.get_pos()
+        self.zoom_factor = 1
+        self.zoom_direction = 1
+        self.zoom_speed = 0.005
+        self.zoom_min = 1
+        self.zoom_max = 1.5
+        self.zoom_time = 0
 
-class Main(Base):
-    """
-    Render the axes and the rotated xy-grid.
-    Add box movement: WASDRF(move), QE(turn), TG(look).
-    Para mexer a camera usar up left right down e as teclas p l n m
-    """
-    def initialize(self):
-        print("Initializing program...")
-        print("Para mexer o modelo usar as teclas w,a,s,d")
-        print("Para mexer a camera usar as teclas q(esquerda),e (direita),t (cima), g(baixo) ou o cursor")
-        print("Para mudar a camera telca 'c', espaço para saltar e shift para sprintar")
-      
-        # Criação da cena e rigs
-        self.renderer = Renderer()
-        self.scene = Scene()
-        self.rig = MovementRig()
-        self.rig3 = MovementRig3()
+        music_file = 'music/FF.mp3'
+        if not os.path.isfile(music_file):
+            print(f"Music file not found: {music_file}")
+        else:
+            try:
+                pygame.mixer.music.load(music_file)
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)
+                print(f"Playing music: {music_file}")
+            except pygame.error as e:
+                print(f"Failed to load music file: {music_file}, error: {e}")
 
-        # Criação do nivel
-        self.Nivel1 = Nivel1(self.scene, self.rig, self.rig3, self.time)
-        self.objects_to_ignore = self.Nivel1.objects_to_ignore
+    def draw_menu(self):
+        self.zoom_time += self.zoom_speed
+        self.zoom_factor = self.zoom_min + (self.zoom_max - self.zoom_min) * (0.5 + 0.5 * math.sin(self.zoom_time))
 
-        # Adiciona os objetos a serem ignorados
-        self.objects_to_ignore.append(self.rig)
-        self.objects_to_ignore.append(self.rig3)
+        background_width = int(self.background_image.get_width() * self.zoom_factor)
+        background_height = int(self.background_image.get_height() * self.zoom_factor)
 
-        # Criação da camera principal
-        self.camera = Camera(aspect_ratio=800/600)
-        self.camera.set_position([0, 2.93, -1])
-        self.rig.add(self.camera)
-        self.scene.add(self.rig)
+        zoomed_background = pygame.transform.scale(self.background_image, (background_width, background_height))
 
-        # Criaçao da camara alternativa
-        self.static_camera = Camera(aspect_ratio=800/600)
-        self.static_camera.set_position([0, 4, 4])
-        model_position = self.Nivel1.modelo.global_position
-        self.static_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
-        self.rig3.add(self.static_camera)
+        x = (self.screen.get_width() - background_width) // 2
+        y = (self.screen.get_height() - background_height) // 2
 
-        # Criacao da camara cinemática
-        self.cinematic_camera = Camera(aspect_ratio=800/600)
-        self.cinematic_camera.set_position([10, 10, 10])
-        model_position = self.Nivel1.modelo.global_position
-        self.cinematic_camera.look_at([model_position[0], model_position[1]+2.5, model_position[2]])
+        self.screen.blit(zoomed_background, (x, y))
 
-        # Adiciona a camera a cena
-        self.active_camera = self.camera
-        self.toggle_camera = False
+        # Desenha o logo na parte superior do menu
+        logo_x = (self.screen.get_width() - self.logo_image.get_width()) // 2
+        logo_y = -20
+        self.screen.blit(self.logo_image, (logo_x, logo_y))
 
-        # Tratamento de colisões
-        self.Coli = Colisoes(self.objects_to_ignore)
-        self.Coli.update_grid(self.scene)
+        box_width = 300
+        box_height = 80
+        margin = 20
+        total_height = len(self.options) * (box_height + margin) - margin
+        start_y = (self.screen.get_height() - total_height) // 2
 
-        # Criação do tempo
-        self.TempoCounter = Tempo(self.rig, self.rig3)
-        self.objects_to_ignore.append(self.TempoCounter.mensagem)
+        self.option_boxes = []
 
-        #Diferentes posicoes para a camera cinematogra
-        self.posicoes = [[ 10, 10, 10], [30, 30, 30], [1,10,0] , [ 5, 5, 20]]
+        for i, option in enumerate(self.options):
+            box_x = (self.screen.get_width() - box_width) // 2
+            box_y = start_y + i * (box_height + margin)
 
-        Music()
+            option_box = pygame.Rect(box_x, box_y, box_width, box_height)
+            
+            if i == self.selected_option:
+                color = (255, 87, 51)
+            else:
+                color = (51, 125, 255)
+            pygame.draw.rect(self.screen, color, option_box)
 
-    def camera_cinematografica(self):
-        '''
-        Função que controla a camera cinematográfica
-        '''
-        if self.active_camera == self.cinematic_camera:
-            self.TempoCounter.tempo += self.delta_time
-            if self.TempoCounter.tempo > 4:
-                self.cinematic_camera.set_position(self.posicoes[np.random.randint(0,len(self.posicoes))])
-                self.TempoCounter.tempo = 0
-            modelo_position = self.Nivel1.modelo.global_position
-            self.cinematic_camera.look_at([modelo_position[0], modelo_position[1]+2.5, modelo_position[2]])
+            text = self.font.render(option, True, (255, 255, 255))
+            text_rect = text.get_rect(center=option_box.center)
+            self.screen.blit(text, text_rect)
 
-    def checkpoint(self):
-        '''
-        Função que controla o checkpoint
-        '''
-        if self.rig.global_position[0] < -17 and self.rig.global_position[0] > -19 and self.rig.global_position[1] < 49 and self.rig.global_position[1] > 47 and self.rig.global_position[2] < 49 and self.rig.global_position[2] > 47:
-            self.TempoCounter.checkPoint = True
-            self.rig.translate(0, 0, -100, False)
-            self.rig3.translate(0, 0, -100, False)
+            self.option_boxes.append(option_box)
 
-    def camera_change(self):
-        '''
-        Função que controla a mudança de camera
-        '''
-        if self.input.is_key_pressed('c'):
-            if not self.toggle_camera:
-                self.toggle_camera = True
-                if self.active_camera == self.camera:
-                    self.active_camera = self.static_camera
-                    #self.Nivel1.cTime1.set_position([2.8, 4.1, 0])
-                    #self.TempoCounter.mensagem.set_position([-1.5, 4.1, 0])
-                else:
-                    self.active_camera = self.camera
-                    self.Nivel1.cTime1.set_position([2.5, 4.1, -4])
-                    self.TempoCounter.mensagem.set_position([-1.3, 4.1, -4])
+    def show_Scoreboard(self):
+        try:
+            with open("time_records.txt", "r") as file:
+                times = []
+                for line in file:
+                    try:
+                        time_str = line.strip().replace("Time: ", "").replace(" seconds", "")
+                        time = float(time_str)
+                        times.append(time)
+                    except ValueError:
+                        continue
+                times = sorted(times)[:10] 
+        except FileNotFoundError:
+            times = []
 
-        elif self.input.is_key_pressed('v'):
-            if not self.toggle_camera:
-                self.toggle_camera = True
-                if self.active_camera == self.camera:
-                    self.active_camera = self.cinematic_camera
-                else:
-                    self.active_camera = self.camera
-        else: 
-            self.toggle_camera = False
+        self.screen.fill((0, 0, 0))
+        title = self.font.render("Scoreboard", True, (255, 255, 255))
+        self.screen.blit(title, (self.screen.get_width() // 2 - title.get_width() // 2, 50))
 
-    def update(self):
-        '''
-        Função que atualiza o jogo
-        '''
-        self.Nivel1.distort_material.uniform_dict["time"].data += self.delta_time/5
-        self.Nivel1.time = self.time
-       
-        self.TempoCounter.check_if_player_fell()
-        self.TempoCounter.check_if_player_reached_start()
-        self.TempoCounter.check_if_player_reached_end()
+        for i, time in enumerate(times):
+            text = self.font.render(f"{i+1}. {time:.2f} s", True, (255, 255, 255))
+            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, 150 + i * 50))
 
-        self.camera_cinematografica()
-        self.Nivel1.update_Cubos()
-        self.Nivel1.update_jump(self.delta_time)
-        self.checkpoint()
-        self.camera_change()
-        
-        collision = self.Coli.check_collisions(self.camera, self.static_camera, self.rig, self.rig3, self._delta_time)
+        instruction = self.font.render("Press ESC to return to menu", True, (255, 255, 255))
+        self.screen.blit(instruction, (self.screen.get_width() // 2 - instruction.get_width() // 2, 650))
 
-        self.rig.update(self.input, self.delta_time, collision)
-        self.rig3.update(self.input, self.delta_time, collision)
-        
-        self.renderer.render(self.scene, self.active_camera)
-        self.TempoCounter.updateCurrentTime(self.Nivel1.cTime1)
+        pygame.display.flip()
 
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    def run(self):
+        while True:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_clicked = False
 
-    menu = GameMenu(screen)
-    while True:
-        choice = menu.run()
-        if choice == "start_game":
-            break
-        elif choice == "options":
-            pass
-    pygame.quit()
+            if mouse_pos != self.last_mouse_pos:
+                self.mouse_active = True
+                self.last_mouse_pos = mouse_pos
+            else:
+                self.mouse_active = False
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self.mouse_active = False
+                    if event.key == pygame.K_UP:
+                        self.selected_option = (self.selected_option - 1) % len(self.options)
+                    elif event.key == pygame.K_DOWN:
+                        self.selected_option = (self.selected_option + 1) % len(self.options)
+                    elif event.key == pygame.K_RETURN:
+                        if self.selected_option == 0:
+                            return "start_game"
+                        elif self.selected_option == 1:
+                            self.show_Scoreboard()
+                        elif self.selected_option == 2:
+                            pygame.quit()
+                            sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_clicked = True
+
+            for i, option_box in enumerate(self.option_boxes):
+                if option_box.collidepoint(mouse_pos):
+                    if self.mouse_active:
+                        self.selected_option = i
+                    if mouse_clicked:
+                        self.selected_option = i
+                        if i == 0:
+                            return "start_game"
+                        elif i == 1:
+                            self.show_Scoreboard()
+                        elif i == 2:
+                            pygame.quit()
+                            sys.exit()
+
+            self.draw_menu()
+            pygame.display.flip()
+            pygame.display.set_caption("BeachRush")
+            icon = pygame.image.load('images/icon.png')
+            pygame.display.set_icon(icon)
+            self.clock.tick(60)
 
 if __name__ == "__main__":
-    main()
-
-# Instantiate this class and run the program
-Main(screen_size=[800, 600]).run()
+    pygame.init()
+    pygame.mixer.init()
+    screen = pygame.display.set_mode((800, 600))
+    menu = GameMenu(screen)
+    menu.run()
