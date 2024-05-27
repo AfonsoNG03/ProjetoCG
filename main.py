@@ -1,4 +1,3 @@
-import numpy as np
 import pygame
 
 from core.menu import GameMenu
@@ -150,19 +149,7 @@ class Main(Base):
 
 def main():
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((800, 600))
-
     menu = GameMenu(screen)
-    while True:
-        choice = menu.run()
-        if choice == "start_game":
-            break
-        elif choice == "options":
-            pass
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
-
-# Instantiate this class and run the program
-Main(screen_size=[800, 600]).run()
+    menu.run()
