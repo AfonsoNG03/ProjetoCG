@@ -5,6 +5,9 @@ class Input:
     def __init__(self):
         # Has the user quit the application?
         self._quit = False
+        # Full Screen
+
+        self._fullscreen = False
         # lists to store key states
         # down, up: discrete event; lasts for one iteration
         # pressed: continuous event, between down and up events
@@ -56,6 +59,10 @@ class Input:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self._quit = True
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F11:
+                    self._fullscreen = not self._fullscreen
             # Check for key-down and key-up events;
             # get name of key from event and append to or remove from corresponding lists
             if event.type == pygame.KEYDOWN:

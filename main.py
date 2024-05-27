@@ -143,7 +143,7 @@ class Main(Base):
 
         self.rig.update(self.input, self.delta_time, collision)
         self.rig3.update(self.input, self.delta_time, collision)
-        
+            
         self.renderer.render(self.scene, self.active_camera)
         self.TempoCounter.updateCurrentTime(self.Nivel1.cTime1)
 

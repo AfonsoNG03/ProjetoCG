@@ -8,6 +8,7 @@ from light.shadow import Shadow
 
 class Renderer:
     def __init__(self, clear_color=(0, 0, 0)):
+        print("Renderer init")
         GL.glEnable(GL.GL_DEPTH_TEST)
         # required for antialiasing
         GL.glEnable(GL.GL_MULTISAMPLE)
